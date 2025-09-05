@@ -1,0 +1,83 @@
+# Let's create a flow.txt file with the Captain workflow explanation in plain text
+
+workflow_text = """\
+Captain Workflow (Register → Login → Profile → Logout)
+
+1. Captain Registration (POST /captain/register)
+------------------------------------------------
+Client sends JSON with details:
+{
+  "fullname": { "firstname": "Anita", "lastname": "Sharma" },
+  "email": "anita.captain@example.com",
+  "password": "mysecurepass",
+  "vehicle": {
+    "color": "Blue",
+    "capacity": 2,
+    "vehicleType": "motorcycle",
+    "numberPlate": "MH12XY9876"
+  }
+}
+
+Backend:
+- Validates input
+- Checks if captain already exists
+- Pre-save hook hashes password + generates salt
+- Saves captain to MongoDB
+- Generates JWT token with _id, email, role=captain
+- Sends token in response + sets cookie
+
+
+2. Captain Login (POST /captain/login)
+--------------------------------------
+Client sends:
+{
+  "email": "anita.captain@example.com",
+  "password": "mysecurepass"
+}
+
+Backend:
+- Validates credentials
+- Finds captain by email
+- Hashes provided password with stored salt
+- Compares with stored hashed password
+- If match → generates JWT token, sets cookie, returns success
+- If mismatch → throws Invalid email or password
+
+
+3. Get Captain Profile (GET /captain/profile)
+---------------------------------------------
+Client request with token in cookies
+
+Middleware (authCaptain):
+- Reads req.cookies.token
+- Verifies JWT
+- Fetches captain from DB by decoded _id
+- Attaches captain to req.captain
+
+Controller (getCaptainProfile):
+- Returns req.captain (captain profile)
+
+
+4. Captain Logout (GET /captain/logout)
+---------------------------------------
+Client request with token in cookies
+
+Middleware (authCaptain):
+- Ensures token is valid
+
+Controller (logoutCaptain):
+- Extracts token from cookies
+- Saves token in BlacklistedToken collection
+- Clears cookie
+- Returns { "message": "logout Success" }
+
+Next request → authCaptain checks blacklist and rejects old token
+
+
+Security Highlights
+-------------------
+- Passwords hashed with salt (never stored plain)
+- JWT stored in HTTP-only cookies
+- Blacklist prevents reuse of logged-out tokens
+- Middleware (authCaptain) protects profile/logout routes
+"""
