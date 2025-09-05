@@ -20,7 +20,7 @@ const [email,setEmail]=useState('');
   return (
     <div className="h-screen flex flex-col justify-between">
       <div className="p-7">
-        <img className="w-14 mb-10" src="https://pngimg.com/d/uber_PNG24.png"/>
+        <img className="w-14 mb-5" src="https://pngimg.com/d/uber_PNG24.png"/>
         <form onSubmit={submitHandler}>
           <h3 className="text-lg mb-2 font-medium">What's your email</h3>
           <input

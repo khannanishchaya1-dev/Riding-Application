@@ -24,7 +24,7 @@ const UserSignup = () => {
     
   <div className="h-screen flex flex-col justify-between">
       <div className="p-7">
-        <img className="w-14 mb-10" src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"/>
+        <img className="w-14 mb-5" src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"/>
         <form onSubmit={submitHandler}>
           <h3 className="text-base mb-2 font-medium">What's your Name</h3>
           <div className='flex gap-4'>
@@ -71,7 +71,7 @@ const UserSignup = () => {
           </button>
         </form>
         <p className="text-center">
-            Already have an account? <Link to='/signin' className="text-blue-600">Login here</Link>
+            Already have an account? <Link to='/login' className="text-blue-600">Login here</Link>
           </p>
       </div>
       {/* <div className="p-7">
