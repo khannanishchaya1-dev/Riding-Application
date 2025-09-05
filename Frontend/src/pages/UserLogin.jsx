@@ -4,9 +4,14 @@ import { Link } from "react-router-dom";
 const UserLogin = () => {
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
+  const[userData,setData]=useState({});
   const submitHandler = (e)=>{
     e.preventDefault();
-    console.log(email,password);
+    setData({
+      email:email,
+      password:password,
+    })
+    //console.log(userData);
     setEmail('');
     setPassword('');
   }
@@ -42,9 +47,9 @@ const UserLogin = () => {
           </p>
       </div>
       <div className="p-7">
-        <button className="bg-[#10b461] text-white font-semibold px-2 py-2 rounded w-full text-lg">
+        <Link to='/captain-login' className="bg-[#10b461] flex justify-center text-white font-semibold px-2 py-2 rounded w-full text-lg">
           Sign in as Captain
-        </button>
+        </Link>
       </div>
     </div>
   );
