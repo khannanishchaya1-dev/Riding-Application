@@ -1,23 +1,23 @@
 import React,{useContext} from 'react'
 import{Route,Routes,Link} from 'react-router-dom';
 import UserLogin from './pages/UserLogin';
-import Home from './pages/Home';
+import Start from './pages/Start';
 import UserSignup from './pages/UserSignup';
 import CaptainLogin from './pages/CaptainLogin';
 import CaptainSignup from './pages/CaptainSignup';
 import {UserDataContext} from './UserContext/UserContext';
+import Home from './pages/Home';
 
 const App = () => {
-
-console.log(user);
   return (
     <>
-    <Routes>
-      <Route path='/' element={<Home/>}/>
+     <Routes>
+      <Route path='/' element={<Start/>}/>
       <Route path='/login' element={<UserLogin />}/>
       <Route path='/signup' element={<UserSignup />}/>
       <Route path='/captain-login' element={<CaptainLogin/>}/>
       <Route path='/captain-signup' element={<CaptainSignup/>}/>
+      <Route path='/home' element={<Home/>}/>
 
     </Routes>
     </>

@@ -1,10 +1,10 @@
-const USER = require("../models/user");
+const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
 
 const handleUserRegister = async (req, res, next) => {
-  const body = req.body;
+  const { email, password, fullname } = req.body;
   console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -15,13 +15,13 @@ const handleUserRegister = async (req, res, next) => {
 if (isUserAlreadyExist) {
   return res.status(400).json({ message: "User already exists" });
 }
-  const user = await USER.create({
+  const user = await User.create({
     fullname: {
-      firstname: body.fullname.firstname,
-      lastname: body.fullname.lastname,
+      firstname: fullname.firstname,
+      lastname: fullname.lastname,
     },
-    email: body.email,
-    password: body.password,
+    email:email,
+    password:password,
   });
 
   const token = user.generateAuthToken();
@@ -39,7 +39,7 @@ const handleUserLogin =async  (req,res,next)=>{
   }
   
   
-  const user = await USER.findOne({email}).select('+password');
+  const user = await User.findOne({email}).select('+password');
 
   if(!user){
     return res.status(401).json({message:'Invalid email and password'});
