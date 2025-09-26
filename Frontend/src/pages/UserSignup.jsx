@@ -10,7 +10,6 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setData] = useState({});
   const { user, setUser } = useContext(UserDataContext);
   const navigate=useNavigate();
   const submitHandler = async (e) => {
@@ -27,6 +26,7 @@ const UserSignup = () => {
    if(response.status===201){
     const data = response.data;
     setUser(data.user);
+    localStorage.setItem('token',data.token);
     navigate('/home');
    }
     console.log(response.data);

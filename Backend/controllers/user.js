@@ -46,7 +46,7 @@ const handleUserLogin =async  (req,res,next)=>{
   }
   const token = await user.matchPasswordAndGenerateToken(password);
   res.cookie("token",token);
-  res.status(200).json({message:"Welcome"});
+  res.status(200).json({message:"Welcome",token,user});
 
 
 };
@@ -57,7 +57,7 @@ const logoutUser = async (req,res,next)=>{
   const token = req.cookies.token;
 
   await BlacklistedToken.create({token});
-  res.clearCookie('token');
+  res.clearCookie('token',{httpOnly: true});
 
    res.status(200).json({message:"user logged out"})
 };

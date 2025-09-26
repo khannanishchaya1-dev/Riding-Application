@@ -1,21 +1,29 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 
 const CaptainLogin = () => {
 const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const[captainData,setData]=useState({});
-  const submitHandler = (e)=>{
+  const navigate=useNavigate();
+  const submitHandler = async (e)=>{
     e.preventDefault();
-    setData({
+    const captain={
       email:email,
-      password:password,
-    })
-    console.log(captainData);
-    setEmail('');
-    setPassword('');
+      password:password
+    }
+    const response = await axios.post('http://localhost:3000/captains/login',captain);
+      if(response.status===200){
+        const data = response.data;
+        setData(data.captain);
+        localStorage.setItem('token',data.token);
+        navigate('/home');
+        }
+      setEmail('');
+      setPassword('');
   }
   return (
     <div className="h-screen flex flex-col justify-between">

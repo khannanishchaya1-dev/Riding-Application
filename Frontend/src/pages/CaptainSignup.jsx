@@ -1,25 +1,59 @@
 import React from 'react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { CaptainDataContext } from '../UserContext/CaptainContext';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-
-const CaptainSignup = () => {
+const CaptainSignup =() => {
 const[firstName,setFirstName]=useState('');
   const[lastName,setLastName]=useState('');
   const [email,setEmail]=useState('');
-    const [password,setPassword]=useState('');
-    const[userData,setData]=useState({});
-    const submitHandler = (e)=>{
+  const [password,setPassword]=useState('');
+    const [color,setColor]=useState('');
+    const [capacity,setCapacity]=useState('');
+    const [vehicleType,setVehicleType]=useState('');
+    const [numberPlate,setNumberPlate]=useState('');
+   const {captainData, setCaptainData} = useContext(CaptainDataContext);
+    const navigate=useNavigate();
+    const submitHandler = async (e)=>{
       e.preventDefault();
-      setData({
+      const newCaptain={
         email:email,
         password:password,
-        firstName:firstName,
-        lastName:lastName,
-      })
-      //console.log(userData);
-      setEmail('');
-      setPassword('');
+        fullname:{
+          firstname:firstName,
+          lastname:lastName
+        },
+        vehicle: {
+        color:color, // optional default
+        capacity:capacity,
+        vehicleType: vehicleType,
+        numberPlate: numberPlate,
+      },
+      }
+      try{
+      const response = await axios.post('http://localhost:3000/captains/register',newCaptain);
+      if(response.status===201){
+        const data = response.data;
+        setCaptainData(data.captain);
+        localStorage.setItem('token',data.token);
+        navigate('/home');
+        }
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setCapacity("");
+      setColor("");
+      setNumberPlate("");
+      setVehicleType("");
+      }catch (err) {
+      console.error("Signup failed:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Signup failed");
+    }
     }
   return (
     
@@ -62,13 +96,62 @@ const[firstName,setFirstName]=useState('');
           <input
            value={password}
             onChange={(e)=>setPassword(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded w-full text-base mb-7"
+            className="bg-[#eeeeee] px-2 py-2 rounded w-full text-base mb-7 "
             required
             type="password"
             placeholder="password"
           ></input>
+          <h3 className='text-base mb-2 font-medium'>Vehicle Information</h3>
+          <div className='flex gap-4'>
+            <input
+            required
+            value={color}
+            onChange={(e)=>setColor(e.target.value)}
+            className='bg-[#eeeeee] rounded mb-7 w-1/2 text-base px-2 py-2'
+            type='text'
+            placeholder='Color'
+            
+            >  
+            </input>
+            <input
+            required
+            value={capacity}
+            onChange={(e)=>setCapacity(e.target.value)}
+            className='bg-[#eeeeee] rounded mb-7 w-1/2 text-base px-2 py-2'
+            type='text'
+            placeholder='Capacity'
+            
+            >  
+            </input>
+            
+
+          </div>
+          <div className='flex gap-4'>
+            <input
+            required
+            value={vehicleType}
+            onChange={(e)=>setVehicleType(e.target.value)}
+            className='bg-[#eeeeee] rounded mb-7 w-1/2 text-base px-2 py-2'
+            type='text'
+            placeholder='Vehicle Type'
+            
+            >  
+            </input>
+            <input
+            required
+            value={numberPlate}
+            onChange={(e)=>setNumberPlate(e.target.value)}
+            className='bg-[#eeeeee] rounded mb-7 w-1/2 text-base px-2 py-2'
+            type='text'
+            placeholder='Vehicle Number'
+            
+            >  
+            </input>
+            
+
+          </div>
           <button className="bg-[#111] text-white font-semibold px-2 py-2 rounded w-full text-base mb-4">
-            Login
+            Create Captain Account
           </button>
         </form>
         <p className="text-center">

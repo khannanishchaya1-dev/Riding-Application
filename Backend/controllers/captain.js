@@ -54,7 +54,7 @@ const loginCaptain = async (req,res,next)=>{
   const token = await captain.matchPasswordAndGenerateToken(password);
   console.log('token',token);
   res.cookie("token",token);
-  res.status(200).json({message:"Welcome"});
+  res.status(200).json({message:"Welcome",token,captain});
 
 
 };
