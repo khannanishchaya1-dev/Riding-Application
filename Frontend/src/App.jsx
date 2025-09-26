@@ -8,7 +8,9 @@ import CaptainSignup from './pages/CaptainSignup';
 import {UserDataContext} from './UserContext/UserContext';
 import Home from './pages/Home';
 import UserProtectWrapper from './pages/UserProtectWrapper';
+import CaptainProtectWrapper from './pages/CaptainProtectWrapper';
 import UserLoggedOut from './pages/UserLoggedOut';
+import CaptainHome from './pages/CaptainHome';
 
 const App = () => {
   return (
@@ -25,8 +27,10 @@ const App = () => {
       <Route path='/logout' element={
         <UserProtectWrapper> <UserLoggedOut/></UserProtectWrapper>
       }/>
-      
-      
+      <Route path='/captain-home' element={
+        <CaptainProtectWrapper> <CaptainHome/></CaptainProtectWrapper>
+      }/>
+  
 
     </Routes>
     </>

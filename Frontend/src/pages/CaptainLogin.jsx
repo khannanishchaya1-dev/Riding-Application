@@ -20,7 +20,7 @@ const [email,setEmail]=useState('');
         const data = response.data;
         setData(data.captain);
         localStorage.setItem('token',data.token);
-        navigate('/home');
+        navigate('/captain-home');
         }
       setEmail('');
       setPassword('');
