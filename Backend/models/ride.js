@@ -2,7 +2,7 @@ const mongoose=require('mongoose');
 
 
 const rideSchema = new mongoose.Schema({
-  user:{
+  userId:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'USER',
     required:true
@@ -12,11 +12,11 @@ const rideSchema = new mongoose.Schema({
     ref:'CAPTAIN',
     default:null
   },
-  pickupLocation:{
+  origin:{
     type:String,
     required:true
   },
-  dropoffLocation:{
+  destination:{
     type:String,
     required:true
   },
@@ -27,7 +27,6 @@ const rideSchema = new mongoose.Schema({
   },
   fare:{
     type:Number,
-    required:true
   },
   duration:{
     type:Number,//in seconds

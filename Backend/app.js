@@ -8,6 +8,7 @@ const userRoutes = require('./router/user_routes');
 const captainRoutes = require('./router/captain');
 const cookieParser = require('cookie-parser');
 const mapRoutes = require('./router/maps_routes');
+const rideRoutes = require('./router/rides');
 
 app.use(cors());
 app.use(express.json());
@@ -20,4 +21,5 @@ app.get('/',(req,res)=>{
 app.use('/users',userRoutes);
 app.use('/captains',captainRoutes);
 app.use('/maps',mapRoutes);
+app.use('/rides',rideRoutes);
 module.exports=app;
