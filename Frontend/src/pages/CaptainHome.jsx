@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import { Link } from "react-router-dom";
 import CapatainDetails from "../components/CapatainDetails";
 import RidePopUp from "../components/RidePopUp";
@@ -6,11 +6,14 @@ import { useState,useRef } from "react";
 import {useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
+import { CaptainDataContext } from "../UserContext/CaptainContext";
+
 const CaptainHome = () => {
-  const [ridePopUppanel, setridePopUppanel] = useState(true);
+  const [ridePopUppanel, setridePopUppanel] = useState(false);
   const ridePopUppanelRef = useRef(null);
   const [confirmridePopUppanel, setconfirmridePopUppanel] = useState(false);
   const confirmridePopUppanelRef = useRef(null);
+  const [captain]=useContext(CaptainDataContext);
 
   useGSAP(() => {
   if (ridePopUppanel) {
@@ -66,7 +69,7 @@ useGSAP(() => {
         />
       </div>
       <div className="h-2/5 p-6">
-       <CapatainDetails />
+       <CapatainDetails captain={captain}/>
       </div>
       <div ref={ridePopUppanelRef} className=" fixed z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
         <RidePopUp setridePopUppanel={setridePopUppanel} setconfirmridePopUppanel={setconfirmridePopUppanel}/>

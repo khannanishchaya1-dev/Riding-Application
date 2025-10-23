@@ -32,6 +32,8 @@ const captain = await Captain.create({
 
 });
 const token = captain.generateAuthToken();
+
+res.cookie("token",token);
 res.status(201).json({ token, captain });
 
 
@@ -52,7 +54,7 @@ const loginCaptain = async (req,res,next)=>{
   }
   console.log("captain",captain);
   const token = await captain.matchPasswordAndGenerateToken(password);
-  console.log('token',token);
+  
   res.cookie("token",token);
   res.status(200).json({message:"Welcome",token,captain});
 
@@ -64,8 +66,15 @@ return res.status(200).json(req.captain);
 
 const logoutCaptain = async (req,res,next)=>{
   const token = req.cookies.token;
+   if (!token) {
+      return res.status(400).json({ message: "No token provided" });
+    }
+
   await BlacklistedToken.create({token});
   res.clearCookie('token');
+  
+
+
   res.status(200).json({message:"logout Success"})
 }
 

@@ -1,23 +1,27 @@
 const RIDE = require('../models/ride');
 const mapService = require('./maps.service');
+const crypto = require('crypto');
 
 
-async function calculateFare(pickupLocation,destination,vehicleType){
-  if(!pickupLocation || !destination){
+async function calculateFare(origin,destination){
+   
+  if(!origin || !destination){
     throw new error("Pickup and destination locations are required")
   }
+ 
   const baseFare = 50;//in rupees
-  const distance = await mapService.getDistanceTime(pickupLocation,destination);
+  const distance = await mapService.getDistanceTime(origin,destination);
+  
   const distanceInKm = distance.distance.value / 1000;
   const rates = {
     car: { perKm: 15, minFare: 80 },
     auto: { perKm: 10, minFare: 60 },
     moto: { perKm: 8, minFare: 40 }
   };
+  
 
   const durationInMin = distance.duration.value / 60;
   const timeRates = { car: 0.5, auto: 0.3, moto: 0.2 }; // rupees per minute
-
   function compute(VehicleType) {
     const rate = rates[VehicleType];
     const distanceCharge = distanceInKm * rate.perKm;
@@ -26,24 +30,54 @@ async function calculateFare(pickupLocation,destination,vehicleType){
     return Math.max(rate.minFare, Math.round(rawFare * 100) / 100);
   }
 
-  if(!rates[vehicleType]){
-    throw new Error("Invalid vehicle type");
-  }else{
-    return compute(vehicleType);
+  const fares={
+    car:compute('car'),
+    auto:compute('auto'),
+    moto:compute('moto')
   }
+ 
+
+  return fares;
 }
+
 module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
+  
   if(!userId || !origin || !destination || !vehicleType){
+    console.log("issue in frontend")
     throw new Error("All fields are required to create a ride");
   }
-  const fareDetails = await calculateFare(origin,destination,vehicleType);
+
+
+  const fareDetails = await calculateFare(origin,destination);
+  
+  
+  const DistanceTime = await mapService.getDistanceTime(origin,destination);
+  
   // Create a new ride in the database (pseudo code)
+  
   const newRide = await RIDE.create({
     userId,
     origin,
     destination,
     vehicleType,
-    fare: fareDetails
+    fare: fareDetails[vehicleType],
+    otp:this.generateOTP(6),
+    distance:(Number(DistanceTime.distance.value)),
+    duration:(Number(DistanceTime.duration.value)),
   });
   return newRide;
 }
+module.exports.generateOTP=(nums)=>{
+  if(!nums || nums<=0){
+    throw new Error("Invalid number of digits for OTP");
+  }
+  let otp="";
+  for(let i=0;i<nums;i++){
+    otp+=crypto.randomInt(0,10).toString();
+  }
+  return otp;
+
+
+
+}
+module.exports.calculateFare=calculateFare;

@@ -13,7 +13,7 @@ const LookingForDriver = (props) => {
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
               <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <p className='text-sm text-gray-500'>{props.ride.origin}</p>
             </div>
           </div>
           <div className='w-full'>
@@ -21,14 +21,14 @@ const LookingForDriver = (props) => {
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
               <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <p className='text-sm text-gray-500'>{props.ride.destination}</p>
             </div>
           </div>
           </div>
           <div className='w-full flex items-center gap-5 p-3'>
             <i className="text-lg ri-money-rupee-circle-fill"></i>
            <div className='flex flex-col'>
-              <h3 className='text-lg font-medium'>$193</h3>
+              <h3 className='text-lg font-medium'>₹{props.ride.fare}</h3>
               <p className='text-sm text-gray-500'>Cash Payment</p>
             </div>
           </div>

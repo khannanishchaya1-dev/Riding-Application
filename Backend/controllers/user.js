@@ -25,6 +25,7 @@ if (isUserAlreadyExist) {
   });
 
   const token = user.generateAuthToken();
+  res.cookie("token",token);
   res.status(201).json({ token, user });
 };
 const handleUserLogin =async  (req,res,next)=>{
@@ -55,6 +56,10 @@ return res.status(200).json(req.user)
 }
 const logoutUser = async (req,res,next)=>{
   const token = req.cookies.token;
+
+  if (!token) {
+      return res.status(400).json({ message: "No token provided" });
+    }
 
   await BlacklistedToken.create({token});
   res.clearCookie('token',{httpOnly: true});

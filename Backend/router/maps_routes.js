@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {authUser}= require('../middlewares/auth');
 const mapController=require('../controllers/maps');
+const {body}=require('express-validator');
 const {query}=require('express-validator');
 
 router.get('/get-coordinates',query('address').isString().notEmpty(),authUser,mapController.getCoordinates);

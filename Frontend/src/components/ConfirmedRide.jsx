@@ -1,6 +1,9 @@
 import React from 'react'
 
 const ConfirmedRide = (props) => {
+  const handleConfirmRide=()=>{
+    props.create_ride(props.vehicleType);
+  }
   return (
    <>
    <h5 className="p-1 text-center absolute w-[90%] top-0"><i onClick={()=>props.setconfirmRidepanel(false)} className="ri-arrow-down-s-line text-3xl text-gray-400"></i></h5>
@@ -12,30 +15,32 @@ const ConfirmedRide = (props) => {
           <div className='flex items-center gap-5 p-3 border-b-2  border-gray-300'>
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
-              <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <h3 className='text-lg font-medium'>Pickup</h3>
+              <p className='text-sm text-gray-500'>{props.origin}</p>
             </div>
           </div>
           <div className='w-full'>
             <div className='flex items-center gap-5 p-3 border-b-2  border-gray-300'>
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
-              <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <h3 className='text-lg font-medium'>Destination</h3>
+              <p className='text-sm text-gray-500'>{props.destination}</p>
             </div>
           </div>
           </div>
           <div className='w-full flex items-center gap-5 p-3'>
             <i className="text-lg ri-money-rupee-circle-fill"></i>
            <div className='flex flex-col'>
-              <h3 className='text-lg font-medium'>$193</h3>
+              <h3 className='text-lg font-medium'>₹{props.fare[props.vehicleType]}</h3>
               <p className='text-sm text-gray-500'>Cash Payment</p>
             </div>
           </div>
 
         </div>
         <button onClick={() =>{ props.setlookingForVehicle(true)
-          props.setconfirmRidepanel(false)}
+          props.setconfirmRidepanel(false)
+          handleConfirmRide();
+        }
         } className="w-full bg-green-600 text-white font-semibold rounded-lg px-2 py-2 mt-5">Confirm Ride</button>
          </div>
         

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UserLoggedOut = () => {
@@ -15,8 +15,9 @@ const UserLoggedOut = () => {
       })
       .catch((err) => console.error("Logout error:", err))
       .finally(() => {
-        // ✅ Always clear client token
+        // ✅ Always clear client-side token and headers
         localStorage.removeItem("token");
+        delete axios.defaults.headers.common["Authorization"];
         navigate("/login");
       });
   }, [navigate]);

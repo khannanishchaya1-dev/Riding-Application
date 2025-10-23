@@ -5,7 +5,11 @@ const BlacklistedToken = require("../models/blacklist.token")
 
 
 module.exports.authUser = async (req,res,next)=>{
-  const token = req.cookies.token; //|| //req.headers.authorization.split(" ")[1];
+  const token =
+  req.cookies.token ||
+  (req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.split(' ')[1]
+    : null);
   if(!token){
     console.log("No token")
     return res.status(401).json({message:"Unauthorized"})
@@ -31,7 +35,11 @@ module.exports.authUser = async (req,res,next)=>{
 }
 module.exports.authCaptain = async (req,res,next)=>{
   //extract token from cookies
-  const token = req.cookies.token;
+  const token =
+  req.cookies.token ||
+  (req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.split(' ')[1]
+    : null);
   if(!token){
     console.log("No token")
     return res.status(401).json({message:"Unauthorized"})
