@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React, { useContext } from "react";
 import { useState,useEffect, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
@@ -9,6 +9,10 @@ import ConfirmedRide from "../components/ConfirmedRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import axios from "axios";
+import { useSocket } from "../UserContext/SocketContext"; // Import the socket context
+import { UserDataContext } from "../UserContext/UserContext"; // Import user context
+import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
+
 
 const Home = () => {
   const [origin, setorigin] = useState("");
@@ -28,6 +32,19 @@ const Home = () => {
   const [fare, setfare] = useState({});
   const [vehicleType,setvehicleType]=useState("");
   const [ride,setride]=useState({});
+  const { user } = useContext(UserDataContext); // Get user data from context
+  const [captainData] = useContext(CaptainDataContext); // Get captain data from context
+  const { sendMessage } = useSocket();
+  const {receiveMessage}=useSocket();
+
+  useEffect(() => {
+    // Emit the "join" event when the component mounts
+    if (user && user._id) {
+      sendMessage("join", { userId: user._id, userType: "user" });
+    }else{
+      console.log("User data not available")
+    }
+  }, [user, sendMessage]);
 
   const handleSelect = (description) => {
     if (activeField === "origin") {
@@ -184,6 +201,13 @@ const create_ride=async (selectedVehicleType)=>{
 setride(response.data);
 console.log(response.data);
 }
+receiveMessage('ride-confirmed',ride=>{
+  console.log("near,very close")
+setlookingForVehicle(false);
+setWaitingForDriver(true);
+
+
+})
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">

@@ -55,17 +55,21 @@ const captainSchema = new mongoose.Schema(
         unique: true,
       },
     },
-    location:{
-      lat:{
-type:Number,
-      },
-      lng:{
-type:Number,
-      }
+    location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      default: [0, 0],
     },
   },
-  { timestamps: true }
-);
+  socketId:{
+    type:String,
+  }
+}, { timestamps: true });
 
 // Hash password before save
 
@@ -114,5 +118,5 @@ captainSchema.methods.matchPasswordAndGenerateToken = async function (password) 
   return this.generateAuthToken();
 };
 
-const Captain = mongoose.model("Captain", captainSchema);
-module.exports = Captain;
+const captainModel = mongoose.model("captain", captainSchema);
+module.exports = captainModel;

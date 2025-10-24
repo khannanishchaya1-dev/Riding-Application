@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Socket Test</h2>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+      const socket = io("http://localhost:3000"); // your backend address
+
+      socket.on("connect", () => {
+        console.log("Connected:", socket.id);
+
+        // Join event test
+      });
+
+      socket.on("message", (msg) => {
+        console.log("Received message:", msg);
+      });
+
+      // Optional custom event test
+      socket.emit("customEvent", { hello: "world" });
+    </script>
+  </body>
+</html>

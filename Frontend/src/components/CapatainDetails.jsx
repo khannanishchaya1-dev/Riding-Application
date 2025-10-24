@@ -2,7 +2,11 @@ import React,{useContext} from 'react'
 import { CaptainDataContext } from '../UserContext/CaptainContext'
 const CapatainDetails = () => {
   const [captain]=useContext(CaptainDataContext);
-  console.log(captain)
+   // Add a fallback for when captain data is not available
+  if (!captain || !captain.fullname) {
+    return <div>Loading captain details...</div>; // Show a loading message or placeholder
+  }
+
   return (
     <div>
        <div onClick={()=>console.log(captain)} className="flex items-center justify-between">

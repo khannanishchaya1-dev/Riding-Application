@@ -1,4 +1,5 @@
 const axios = require('axios');
+const captainModel = require('../models/captain')
 
 module.exports.getCoordinatesfromAddress = async (address) => {
     if (!address || typeof address !== 'string') {
@@ -24,7 +25,7 @@ module.exports.getCoordinatesfromAddress = async (address) => {
         }
 
         const location = data.results[0].geometry.location; // { lat, lng }
-        return { lat: Number(location.lat), lon: Number(location.lng) };
+        return {lon: Number(location.lng), lat: Number(location.lat) };
     } catch (err) {
         return null;
     }
@@ -99,3 +100,46 @@ module.exports.getAutoSuggestions = async (input) => {
       return [];
   }
 }
+// Haversine formula — calculates distance in kilometers
+module.exports.getDistanceInKm=async (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Earth radius in kilometers
+
+  const dLat = degToRad(lat2 - lat1);
+  const dLon = degToRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degToRad(lat1)) *
+      Math.cos(degToRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distance in kilometers
+}
+
+function degToRad(deg) {
+  return deg * (Math.PI / 180);
+}
+
+
+module.exports.getCaptainsInRadius = async (lat, lon, radius) => {
+  try {
+    console.log("🔍 Finding captains near:", { lat, lon, radius });
+
+    const captains = await captainModel.find({
+      location: {
+        $geoWithin: {
+          $centerSphere: [[lon, lat], radius / 6371], // convert km to radians
+        },
+      },
+    });
+
+    console.log("✅ Found captains:", captains.length);
+    return captains;
+  } catch (error) {
+    console.error("❌ Error finding captains:", error);
+    return [];
+  }
+};

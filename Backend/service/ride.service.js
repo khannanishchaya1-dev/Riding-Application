@@ -1,17 +1,21 @@
+const ride = require('../models/ride');
 const RIDE = require('../models/ride');
 const mapService = require('./maps.service');
 const crypto = require('crypto');
+const rideModel = require('../models/ride')
 
 
-async function calculateFare(origin,destination){
+module.exports.calculateFare=async (origin,destination)=>{
    
+ 
   if(!origin || !destination){
     throw new error("Pickup and destination locations are required")
   }
- 
+  
   const baseFare = 50;//in rupees
   const distance = await mapService.getDistanceTime(origin,destination);
   
+
   const distanceInKm = distance.distance.value / 1000;
   const rates = {
     car: { perKm: 15, minFare: 80 },
@@ -47,11 +51,10 @@ module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
     throw new Error("All fields are required to create a ride");
   }
 
-
-  const fareDetails = await calculateFare(origin,destination);
-  
+  const fareDetails = await this.calculateFare(origin,destination);
   
   const DistanceTime = await mapService.getDistanceTime(origin,destination);
+  
   
   // Create a new ride in the database (pseudo code)
   
@@ -80,4 +83,26 @@ module.exports.generateOTP=(nums)=>{
 
 
 }
-module.exports.calculateFare=calculateFare;
+module.exports.confirmRide = async ({rideId, captain}) => {
+  if (!rideId) {
+    throw new Error("Invalid ride Id");
+  }
+
+  // Update ride and return the updated document
+  const ride = await rideModel.findOneAndUpdate(
+    { _id: rideId },
+    {
+      status: "accepted",
+      captain: captain._id
+    },
+    { new: true } // return updated ride
+  )
+  await ride.populate('userId');
+  console.log(ride); // populate user info
+
+  if (!ride) {
+    throw new Error("Ride not found");
+  }
+
+  return ride;
+}

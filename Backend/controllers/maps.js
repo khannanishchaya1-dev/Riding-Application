@@ -1,6 +1,7 @@
 const mapService = require("../service/maps.service");
 const { validationResult } = require('express-validator');
 
+
 module.exports.getCoordinates=async(req,res)=>{
   const errors=validationResult(req);
   if(!errors.isEmpty()){
@@ -46,3 +47,4 @@ module.exports.getSuggestions=async(req,res)=>{
     res.status(500).json({message:"Internal server error"});
 }
 }
+module.exports
