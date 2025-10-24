@@ -17,9 +17,10 @@ const WaitingForDriver = (props) => {
           alt="Car Icon"
         ></img>
         <div className="text-right">
-          <h2 className="text-lg font-medium">Nishchaya Khanna</h2>
-          <h4 className="text-lg text-gray-500 font-semibold">MP04 AB 1234</h4>
+          <h2 className="text-lg font-medium">{props.ride?.captain?.fullname.firstname}</h2>
+          <h4 className="text-lg text-gray-500 font-semibold">{props.ride?.captain?.vehicle.numberPlate}</h4>
           <p className="text-sm text-gray-500">Hyundai Creta</p>
+          <h1 className="text-lg font-semibold">{"OTP:"+" "+props.ride?.otp}</h1>
         </div>
       </div>
 
@@ -28,7 +29,7 @@ const WaitingForDriver = (props) => {
           <i className=" text-lg ri-user-location-fill"></i>
           <div className="flex flex-col">
             <h3 className="text-lg font-medium">562/11-A</h3>
-            <p className="text-sm text-gray-500">Sector 62, Noida</p>
+            <p className="text-sm text-gray-500">{props.ride?.origin}</p>
           </div>
         </div>
         <div className="w-full">
@@ -36,14 +37,14 @@ const WaitingForDriver = (props) => {
             <i className=" text-lg ri-user-location-fill"></i>
             <div className="flex flex-col">
               <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-500">Sector 62, Noida</p>
+              <p className="text-sm text-gray-500">{props.ride?.destination}</p>
             </div>
           </div>
         </div>
         <div className="w-full flex items-center gap-5 p-3">
           <i className="text-lg ri-money-rupee-circle-fill"></i>
           <div className="flex flex-col">
-            <h3 className="text-lg font-medium">$193</h3>
+            <h3 className="text-lg font-medium">{props.ride?.fare}</h3>
             <p className="text-sm text-gray-500">Cash Payment</p>
           </div>
         </div>

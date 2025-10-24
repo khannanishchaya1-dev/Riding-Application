@@ -53,7 +53,7 @@ const CaptainHome = () => {
   }
 };
 
-    // const intervalId = setInterval(locationUpdateInterval, 5000); // Update location every 5 seconds
+    const intervalId = setInterval(locationUpdateInterval, 5000); // Update location every 5 seconds
     locationUpdateInterval(); // Initial location update on mount
         }, [captainData, sendMessage]);
 
@@ -62,6 +62,10 @@ const CaptainHome = () => {
         setride(data);
         setridePopUppanel(true);
       })
+      useEffect(() => {
+        console.log("Updated ride:", ride);
+      }, [ride]);
+
 
 
   useGSAP(() => {
@@ -148,7 +152,7 @@ async function confirmRide() {
         />
       </div>
       <div ref={confirmridePopUppanelRef} className=" fixed h-screen z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
-        <ConfirmRidePopUp setconfirmridePopUppanel={setconfirmridePopUppanel}  setridePopUppanel={setridePopUppanel}/>
+        <ConfirmRidePopUp setconfirmridePopUppanel={setconfirmridePopUppanel}  setridePopUppanel={setridePopUppanel} ride={ride}/>
       </div>
     </div>
   );

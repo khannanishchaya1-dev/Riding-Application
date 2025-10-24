@@ -83,26 +83,33 @@ module.exports.generateOTP=(nums)=>{
 
 
 }
-module.exports.confirmRide = async ({rideId, captain}) => {
-  if (!rideId) {
-    throw new Error("Invalid ride Id");
-  }
+module.exports.confirmRide = async ({
+    rideId, captain
+}) => {
+    if (!rideId) {
+        throw new Error('Ride id is required');
+    }
 
-  // Update ride and return the updated document
-  const ride = await rideModel.findOneAndUpdate(
-    { _id: rideId },
-    {
-      status: "accepted",
-      captain: captain._id
-    },
-    { new: true } // return updated ride
-  )
-  await ride.populate('userId');
-  console.log(ride); // populate user info
+    await rideModel.findOneAndUpdate({
+        _id: rideId
+    }, {
+        status: 'accepted',
+        captain: captain._id
+    })
+console.log(captain)
+    const ride = await rideModel
+  .findOne({ _id: rideId })
+  .populate('userId')
+  .populate('captain').select('+otp');
 
-  if (!ride) {
-    throw new Error("Ride not found");
-  }
+console.log(ride);
 
-  return ride;
+
+    if (!ride) {
+        throw new Error('Ride not found');
+    }
+
+    return ride;
+
 }
+

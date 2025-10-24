@@ -70,9 +70,12 @@ if(!errors.isEmpty()){
 
 const {rideId} = req.body;
 try{
+
   const ride = await rideService.confirmRide({rideId,captain:req.captain});
   console.log("ride has been confirmed sent sucessfully")
   res.status(200).json({ride});
+  console.log(ride.userId.socketId);
+  console.log(req.captain.socketId);
    sendSocketMessageTo(ride.userId.socketId,{
      event:"ride-confirmed",
      data:ride

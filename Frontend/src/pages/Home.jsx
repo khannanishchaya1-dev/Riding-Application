@@ -37,6 +37,7 @@ const Home = () => {
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket();
 
+
   useEffect(() => {
     // Emit the "join" event when the component mounts
     if (user && user._id) {
@@ -59,6 +60,23 @@ const Home = () => {
   useEffect(() => {
   console.log("Updated ride:", ride);
 }, [ride]); // This will run whenever `ride` changes
+
+useEffect(() => {
+  if (!receiveMessage) return; // ensure socket exists
+
+  const handler = (data) => {
+    console.log("near, very close");
+    setride(data);
+    setvehiclepanel(false);
+    setlookingForVehicle(false);
+    setWaitingForDriver(true);
+    
+  };
+
+  receiveMessage('ride-confirmed', handler);
+
+}, [receiveMessage]);
+
 
   useGSAP(
     () => {
@@ -201,13 +219,6 @@ const create_ride=async (selectedVehicleType)=>{
 setride(response.data);
 console.log(response.data);
 }
-receiveMessage('ride-confirmed',ride=>{
-  console.log("near,very close")
-setlookingForVehicle(false);
-setWaitingForDriver(true);
-
-
-})
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -343,6 +354,8 @@ setWaitingForDriver(true);
         <WaitingForDriver
           waitingForDriver={waitingForDriver}
           setWaitingForDriver={setWaitingForDriver}
+          ride={ride}
+
         />
       </div>
     </div>
