@@ -1,11 +1,41 @@
 import React,{useState} from 'react'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
+import axios from 'axios';
 
 const ConfirmRidePopUp = (props) => {
   const [OTP,setOTP]=useState("");
-  const submitHandler=(e)=>{
+  const navigate = useNavigate();
+  const submitHandler= async (e)=>{
     e.preventDefault();
-  }
+    try {
+        const response = await axios.get(
+          'http://localhost:3000/rides/start-ride',
+          
+        {
+          params: {
+            rideId:props.ride._id,
+            otp:OTP
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+    
+        console.log('✅ Ride started:', response.data);
+
+        if (response.status==200){
+        props.setconfirmridePopUppanel(false);
+        props.setridePopUppanel(false);
+        console.log("Before navigate ride:", props.ride);
+        navigate('/captain-riding',{state:{ride:props.ride}})
+      }
+      } catch (error) {
+        console.log(error);
+        console.error('❌ Error starting ride:', error.response?.data || error.message);
+      }
+      
+    }
+  
   return (
     <div>
    <h5 className="p-1 text-center absolute w-[90%] top-0"><i onClick={()=>props.setridePopUppanel(false)} className="ri-arrow-down-s-line text-3xl text-gray-400"></i></h5>
@@ -49,9 +79,7 @@ const ConfirmRidePopUp = (props) => {
 
 
          <div className='mt-6 w-full'>
-          <form onSubmit={(e)=>{
-            submitHandler(e);
-          }}>
+          <form onSubmit={submitHandler}>
             <input  type='number' onChange={(e)=>{
               setOTP(e.target.value);
               console.log(e.target.value);

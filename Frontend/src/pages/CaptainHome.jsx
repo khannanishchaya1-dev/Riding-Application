@@ -119,7 +119,6 @@ async function confirmRide() {
   }
 }
 
-
  
   return (
     <div className="h-screen w-full">
@@ -130,7 +129,7 @@ async function confirmRide() {
           alt=""
         ></img>
         <Link
-          to="/home"
+          to="/captain-logout"
           className="h-10 w-10 bg-white flex items-center justify-center rounded-full"
         >
           <i className=" text-lg font-medium ri-logout-box-r-line"></i>

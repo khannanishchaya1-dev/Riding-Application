@@ -21,8 +21,8 @@ module.exports.createRide = async (req, res) => {
      res.status(201).json(newRide);
       const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
     console.log(originCoordinates);
-    const getCaptainsInRadius = await mapService.getCaptainsInRadius (originCoordinates.lat,originCoordinates.lon,150); 
-    const distanceMatrix = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,30.6511872, 76.8835584);
+    const getCaptainsInRadius = await mapService.getCaptainsInRadius (originCoordinates.lat,originCoordinates.lon,200); 
+    const distanceMatrix = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,28.2066944, 76.6050304);
     console.log(distanceMatrix);
      newRide.otp=" "// 10 km
     console.log("Captains in radius:", getCaptainsInRadius);
@@ -86,4 +86,24 @@ try{
   res.status(500).json({message:error})
 }
 
+}
+module.exports.startRide=async (req,res)=>{
+  console.log(req.query);
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+
+  }
+  const {rideId,otp}=req.query;
+  try{
+    const ride = await rideService.rideStart({rideId,otp,captain:req.captain});
+    sendSocketMessageTo(ride.userId.socketId,{
+     event:"ride-started",
+     data:ride
+   })
+   return res.status(200).json({ride});
+
+  }catch(err){
+    return res.status(500).json({message:err.message})
+  } 
 }

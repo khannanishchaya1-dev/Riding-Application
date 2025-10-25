@@ -12,7 +12,7 @@ import CaptainProtectWrapper from './pages/CaptainProtectWrapper';
 import UserLoggedOut from './pages/UserLoggedOut';
 import CaptainHome from './pages/CaptainHome';
 import CaptainLoggedOut from './pages/CaptainLoggedOut';
-import Riding from './components/Riding';
+import Riding from './pages/Riding';
 import CaptainRiding from './pages/CaptainRiding';
 import Chat from './pages/Chat';
 

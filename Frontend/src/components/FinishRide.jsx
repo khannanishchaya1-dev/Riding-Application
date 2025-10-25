@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const FinishRide = (props) => {
+  console.log(props.ride);
   return (
     <div>
    <h5 className="p-1 text-center absolute w-[90%] top-0"><i onClick={()=>props.setFinishRidepanel(false)} className="ri-arrow-down-s-line text-3xl text-gray-400"></i></h5>
@@ -9,7 +10,7 @@ const FinishRide = (props) => {
         <div className='flex items-center justify-between bg-yellow-400 m-3.5 rounded-lg'>
           <div className='flex items-center gap-3'>
             <img className='h-12 w-12 rounded-full object-cover' src='https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg'></img>
-          <h2 className='text-lg font-medium'>Harsh Patel</h2>
+          <h2 className='text-lg font-medium'>{props.ride?.userId.fullname.firstname+" "+props.ride?.userId.fullname.lastname}</h2>
           </div>
           <h5 className='text-lg'>2.2 KM</h5>
         </div>
@@ -21,7 +22,7 @@ const FinishRide = (props) => {
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
               <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <p className='text-sm text-gray-500'>{props.ride?.origin}</p>
             </div>
           </div>
           <div className='w-full'>
@@ -29,7 +30,7 @@ const FinishRide = (props) => {
             <i className=" text-lg ri-user-location-fill"></i>
             <div className='flex flex-col'>
               <h3 className='text-lg font-medium'>562/11-A</h3>
-              <p className='text-sm text-gray-500'>Sector 62, Noida</p>
+              <p className='text-sm text-gray-500'>{props.ride?.destination}</p>
             </div>
           </div>
           </div>
@@ -37,7 +38,7 @@ const FinishRide = (props) => {
             <i className="text-lg ri-money-rupee-circle-fill"></i>
            <div className='flex flex-col'>
               <h3 className='text-lg font-medium'>$193</h3>
-              <p className='text-sm text-gray-500'>Cash Payment</p>
+              <p className='text-sm text-gray-500'>{props.ride?.fare}</p>
             </div>
           </div>
 

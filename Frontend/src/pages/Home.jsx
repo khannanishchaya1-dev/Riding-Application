@@ -12,6 +12,7 @@ import axios from "axios";
 import { useSocket } from "../UserContext/SocketContext"; // Import the socket context
 import { UserDataContext } from "../UserContext/UserContext"; // Import user context
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
@@ -36,6 +37,7 @@ const Home = () => {
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -72,8 +74,16 @@ useEffect(() => {
     setWaitingForDriver(true);
     
   };
+  const startRide=(data)=>{
+    console.log('ride-started',data);
+    setride(data);
+    setWaitingForDriver(false);
+    navigate('/riding',{state:{ride:data}});
+
+  }
 
   receiveMessage('ride-confirmed', handler);
+  receiveMessage('ride-started', startRide);
 
 }, [receiveMessage]);
 
@@ -206,6 +216,7 @@ const create_ride=async (selectedVehicleType)=>{
   const ride_details={
     origin,destination,vehicleType:selectedVehicleType
   }
+  try{
   
   const response = await axios.post('http://localhost:3000/rides/create-ride',
       ride_details,
@@ -218,6 +229,9 @@ const create_ride=async (selectedVehicleType)=>{
 
 setride(response.data);
 console.log(response.data);
+  }catch(error){
+    console.log(response?.error?.message || error.message);
+  }
 }
 
   return (
