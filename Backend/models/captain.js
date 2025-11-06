@@ -93,13 +93,14 @@ captainSchema.pre("save", function (next) {
 
 // Method to generate token
 captainSchema.methods.generateAuthToken = function () {
+  const secretKey = process.env.JWT_SECRET;
   const payload = {
     _id: this._id,
     email: this.email,
     role: "captain",
   };
 
-  return jwt.sign(payload,"$#Nishu@123", { expiresIn: "24h"});
+  return jwt.sign(payload, secretKey, { expiresIn: "24h" });
 };
 
 // Method to validate password

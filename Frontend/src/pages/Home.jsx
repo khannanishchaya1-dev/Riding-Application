@@ -13,6 +13,8 @@ import { useSocket } from "../UserContext/SocketContext"; // Import the socket c
 import { UserDataContext } from "../UserContext/UserContext"; // Import user context
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
 import { useNavigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
+
 
 
 const Home = () => {
@@ -33,14 +35,21 @@ const Home = () => {
   const [fare, setfare] = useState({});
   const [vehicleType,setvehicleType]=useState("");
   const [ride,setride]=useState({});
-  const { user } = useContext(UserDataContext); // Get user data from context
+  const { user, setUser } = useContext(UserDataContext); // Get user data from context
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket();
   const navigate = useNavigate();
-
+  
+useEffect(() => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) setUser(JSON.parse(storedUser));
+}, []);
 
   useEffect(() => {
+    if (!user._id) return;
+     console.log("User data:", user);
+     
     // Emit the "join" event when the component mounts
     if (user && user._id) {
       sendMessage("join", { userId: user._id, userType: "user" });
@@ -86,6 +95,7 @@ useEffect(() => {
   receiveMessage('ride-started', startRide);
 
 }, [receiveMessage]);
+
 
 
   useGSAP(
@@ -235,26 +245,22 @@ console.log(response.data);
 }
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div className="h-screen w-screen overflow-hidden">
       {/* Uber Logo */}
       <img
-        className="absolute top-5 left-5 w-12 sm:w-16"
+        className="absolute top-5 left-5 w-15 sm:w-16 z-10"
         src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
         alt="Uber Logo"
       />
 
       {/* Background Animation */}
       <div className="h-screen w-screen">
-        <img
-          className="object-cover w-full h-full"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Uber animation"
-        />
+        <LiveTracking />
       </div>
 
       {/* Bottom Sheet */}
-      <div className="h-screen absolute top-0 w-full flex flex-col justify-end">
-        <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-2xl rounded-t-2xl h-[30%] relative">
+      <div className="h-screen absolute top-0 w-full flex flex-col justify-end z-10">
+        <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-2xl rounded-t-2xl h-[30%] relative ">
           <h1 className="absolute top-5 right-6">
             <i
               ref={panelCloseRef}
@@ -307,7 +313,7 @@ console.log(response.data);
         </div>
         
 
-        <div ref={panelRef} className=" bg-white h-0 ">
+        <div ref={panelRef} className=" bg-white h-0">
           <LocationSearchPanel
             panelOpen={panelOpen}
             setPanelOpen={setPanelOpen}

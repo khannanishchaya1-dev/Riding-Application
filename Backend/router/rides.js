@@ -13,5 +13,6 @@ router.get('/calculate-fare',query('origin').isString().notEmpty().withMessage('
 router.post('/confirm-ride',body('rideId').isMongoId().withMessage("Invalid Ride Id"),
 authCaptain,rideController.confirmRide);
 router.get('/start-ride',authCaptain,query('rideId').isMongoId().withMessage('Invalid ride id'),query('otp').isString().isLength({min:6,max:6}).withMessage('Invalid Otp'),rideController.startRide);
+router.post('/end-ride',body('rideId').isMongoId().withMessage('invalid rideId'),authCaptain,rideController.endRide)
 
 module.exports=router;

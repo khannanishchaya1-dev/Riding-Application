@@ -1,8 +1,37 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 
 const FinishRide = (props) => {
-  console.log(props.ride);
+  const navigate=useNavigate();
+  const endRide = async ()=>{
+    try{
+      console.log("Hitted the endRide",props.ride);
+    const response = await axios.post('http://localhost:3000/rides/end-ride',{
+      rideId:props.ride._id
+
+    },
+  {
+    
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      
+    }
+  })
+  console.log("response bhej diya")
+  
+
+  if(response.status==200){
+   navigate('/captain-home');
+    
+  }
+}catch(error){
+  console.error('❌ Error ending ride:', error.response?.data || error.message);
+}
+  
+
+  }
   return (
     <div>
    <h5 className="p-1 text-center absolute w-[90%] top-0"><i onClick={()=>props.setFinishRidepanel(false)} className="ri-arrow-down-s-line text-3xl text-gray-400"></i></h5>
@@ -37,8 +66,8 @@ const FinishRide = (props) => {
           <div className='w-full flex items-center gap-5 p-3'>
             <i className="text-lg ri-money-rupee-circle-fill"></i>
            <div className='flex flex-col'>
-              <h3 className='text-lg font-medium'>$193</h3>
-              <p className='text-sm text-gray-500'>{props.ride?.fare}</p>
+              <h3 className='text-lg font-medium'>₹{props.ride?.fare}</h3>
+              <p className='text-sm text-gray-500'>Finish only when the payment is done</p>
             </div>
           </div>
 
@@ -46,13 +75,11 @@ const FinishRide = (props) => {
 
 
          <div className='mt-6 w-full'>
-          <form onSubmit={(e)=>{
-            submitHandler(e);
-          }}>
-             <Link to='/captain-home' onClick={() => props.setconfirmridePopUppanel(true)} className="flex justify-center items-center w-full bg-green-600 text-white font-semibold rounded-lg px-2 py-2 mt-5 text-lg">Finish Ride</Link>
+          
+             <button onClick={endRide} className="flex justify-center items-center w-full bg-green-600 text-white font-semibold rounded-lg px-2 py-2 mt-5 text-lg">Finish Ride</button>
         
         
-          </form>
+          
           </div> 
          </div>
         

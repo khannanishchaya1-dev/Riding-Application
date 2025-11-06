@@ -6,6 +6,8 @@ import { BrowserRouter } from 'react-router-dom'
 import UserContext from './UserContext/UserContext.jsx'
 import CaptainContext from './UserContext/CaptainContext.jsx'
 import SocketProvider from "./UserContext/SocketContext.jsx";
+import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,7 +15,7 @@ createRoot(document.getElementById('root')).render(
    <SocketProvider>
       <CaptainContext>
        <UserContext>
-      <App/>
+          <App />
       </UserContext>
       </CaptainContext>
       </SocketProvider>

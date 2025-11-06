@@ -1,6 +1,6 @@
 import React,{useContext,useEffect} from "react";
 import { Link } from "react-router-dom";
-import CapatainDetails from "../components/CapatainDetails";
+import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import { useState,useRef } from "react";
 import {useGSAP} from "@gsap/react";
@@ -9,6 +9,8 @@ import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
 import { useSocket } from "../UserContext/SocketContext"; // Import the socket contextxt
 import axios from 'axios'
+import LiveTracking from "../components/LiveTracking";
+import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 
 
 const CaptainHome = () => {
@@ -20,6 +22,12 @@ const CaptainHome = () => {
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket(); // Use sendMessage function from socket context
   const [ride,setride]=useState({});
+  useEffect(() => {
+    const storedCaptain = localStorage.getItem('captain');
+    if (storedCaptain) {
+      setCaptainData(JSON.parse(storedCaptain));
+    }
+  }, []);
 
    useEffect(() => {
       // Emit the "join" event when the component mounts
@@ -136,14 +144,13 @@ async function confirmRide() {
         </Link>
       </div>
       <div className="h-3/5">
-        <img
-          className="object-cover w-full h-full"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Uber animation"
-        />
+        
+          <LiveTracking />
+        
+        
       </div>
-      <div className="h-2/5 p-6">
-       <CapatainDetails captain={captainData}/>
+      <div className="h-2/5 p-6 bg-yellow-300">
+       <CaptainDetails captain={captainData}/>
       </div>
       <div ref={ridePopUppanelRef} className=" fixed z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
         <RidePopUp setridePopUppanel={setridePopUppanel} setconfirmridePopUppanel={setconfirmridePopUppanel} ride={ride}

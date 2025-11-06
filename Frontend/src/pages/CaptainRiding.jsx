@@ -4,6 +4,7 @@ import {useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import { useState,useRef } from 'react';
 import FinishRide from '../components/FinishRide'
+import LiveTracking from '../components/LiveTracking';
 
 const CaptainRiding = () => {
   const [FinishRidepanel, setFinishRidepanel] = useState(false);
@@ -44,16 +45,12 @@ const CaptainRiding = () => {
         </Link>
       </div>
       <div className="h-4/5">
-        <img
-          className="object-cover w-full h-full"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Uber animation"
-        />
+        <LiveTracking />
       </div>
       <div className="h-1/5 bg-yellow-400 flex items-center justify-between p-4 relative">
-       <h5 className="p-1 text-center absolute w-[90%] top-0"><i className="ri-arrow-up-s-line text-3xl text-black-400"></i></h5>
+       <h5 className="p-1 text-center absolute w-[90%] top-0"><i onClick={()=>{setFinishRidepanel(true)}}className="ri-arrow-up-s-line text-3xl text-black-400"></i></h5>
         <h4 className='text-lg font-semibold'>4 KM away</h4>
-        <button onClick={() => setFinishRidepanel(true)} className=" bg-green-600 text-white font-semibold rounded-lg p-3 px-8 mt-5">Complete Ride</button>
+        <button onClick={() => {setFinishRidepanel(true)}} className=" bg-green-600 text-white font-semibold rounded-lg p-3 px-8 mt-5">Complete Ride</button>
       
       </div>
       <div ref={FinishRideRef} className=" fixed h-screen z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">

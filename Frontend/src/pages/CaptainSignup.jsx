@@ -43,6 +43,7 @@ const CaptainSignup = () => {
         const data = response.data;
         setCaptainData(data.captain);
         localStorage.setItem("token", data.token);
+        localStorage.setItem("captain", JSON.stringify(data.captain));
         navigate("/captain-home");
       }
       setFirstName("");

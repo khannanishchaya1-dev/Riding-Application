@@ -1,20 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {useLocation} from 'react-router-dom';
+import { useSocket } from "../UserContext/SocketContext";
+import {useNavigate} from 'react-router-dom';
+import LiveTracking from "../components/LiveTracking";
 
 const Riding = () => {
   const location=useLocation();
   const {ride}=location.state || {};
+  const {receiveMessage}=useSocket();
+  const navigate = useNavigate();
+  receiveMessage('end-ride',()=>{
+    navigate('/home');
+  })
   return (
-    <div className="h-full w-full">
+    <div className="h-screen w-screen">
       <Link to='/home' className="fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full"><i className=" text-lg font-medium ri-home-5-line"></i>
       </Link>
       <div className="h-1/2">
-        <img
-          className="object-cover w-full h-full"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Uber animation"
-        />
+        <LiveTracking />
       </div>
       <div className="h-1/2 p-5">
         <div className="flex items-center justify-between">

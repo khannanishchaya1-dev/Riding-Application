@@ -1,7 +1,8 @@
 import React,{useContext} from 'react'
 import { CaptainDataContext } from '../UserContext/CaptainContext'
-const CapatainDetails = () => {
+const CaptainDetails = () => {
   const [captain]=useContext(CaptainDataContext);
+  console.log("Captain data in CaptainHome:", captain);
    // Add a fallback for when captain data is not available
   if (!captain || !captain.fullname) {
     return <div>Loading captain details...</div>; // Show a loading message or placeholder
@@ -18,7 +19,7 @@ const CapatainDetails = () => {
             </div>
           </div>
           <div>
-            <h4 className="text-xl font-semibold">$295.23</h4>
+            <h4 className="text-xl font-semibold">₹295.23</h4>
             <p className="text-sm text-gray-600">Earned</p>
           </div>
         </div>
@@ -43,4 +44,4 @@ const CapatainDetails = () => {
   )
 }
 
-export default CapatainDetails
+export default CaptainDetails

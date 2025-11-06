@@ -50,13 +50,14 @@ userSchema.pre("save",function(next){
 });
 
 userSchema.methods.generateAuthToken = function(){
+  const secretKey = process.env.JWT_SECRET;
 
   const payload = {
     _id:this._id,
     email:this.email,
 
 }
-const token = jwt.sign(payload,"$#Nishu@123",{expiresIn:'24h'});
+const token = jwt.sign(payload,secretKey,{expiresIn:'24h'});
 return token;
 
 };

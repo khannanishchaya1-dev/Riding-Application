@@ -5,6 +5,7 @@ const BlacklistedToken = require("../models/blacklist.token")
 
 
 module.exports.authUser = async (req,res,next)=>{
+  const secretKey = process.env.JWT_SECRET;
   const token =
   req.cookies.token ||
   (req.headers.authorization?.startsWith('Bearer ')
@@ -21,7 +22,7 @@ module.exports.authUser = async (req,res,next)=>{
     }
   try{
     //send payload
-    const currUser = jwt.verify(token,"$#Nishu@123");
+    const currUser = jwt.verify(token, secretKey);
     console.log("Decoded token:", currUser);
     const user =await USER.findById(currUser._id);
     req.user = user;
@@ -53,7 +54,7 @@ module.exports.authCaptain = async (req,res,next)=>{
 
   try{
     //send payload
-    const currCaptain = jwt.verify(token,"$#Nishu@123");
+    const currCaptain = jwt.verify(token, process.env.JWT_SECRET);
     console.log("Decoded token:", currCaptain);
     //find from db and send to header
     const captain =await Captain.findById(currCaptain._id);

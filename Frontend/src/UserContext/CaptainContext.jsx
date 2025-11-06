@@ -4,7 +4,13 @@ import {createContext} from 'react'
 export const CaptainDataContext = createContext();
 
 const CaptainContext = ({children}) => {
-  const [captainData, setCaptainData] = useState(null);
+  const [captainData, setCaptainData] = useState({
+     email: '',
+    fullName: {
+      firstName: '',
+      lastName: ''
+    }
+  });
 
 
   return (

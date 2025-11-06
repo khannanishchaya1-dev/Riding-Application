@@ -21,6 +21,7 @@ const [email,setEmail]=useState('');
         setCaptainData(data.captain);
         console.log(data.captain);
         localStorage.setItem('token',data.token);
+        localStorage.setItem('captain',JSON.stringify(data.captain));
         navigate('/captain-home');
         }
       setEmail('');
