@@ -36,7 +36,7 @@ const CaptainSignup = () => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/captains/register",
+        `${import.meta.env.VITE_BACKEND_URL}captains/register`,
         newCaptain
       );
       if (response.status === 201) {

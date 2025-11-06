@@ -32,7 +32,7 @@ const LocationSearchPanel = (props) => {
       setLoading(true)
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get('http://localhost:3000/maps/get-suggestions', {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}maps/get-suggestions`, {
           params: { input: query },
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           timeout: 5000

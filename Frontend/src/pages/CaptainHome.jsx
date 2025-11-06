@@ -109,7 +109,7 @@ useGSAP(() => {
 async function confirmRide() {
   try {
     const response = await axios.post(
-      'http://localhost:3000/rides/confirm-ride',
+      `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
       {
         rideId: ride._id, // request body
       },

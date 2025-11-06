@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-connectMongodb("mongodb://127.0.0.1:27017/Uber");
+connectMongodb(`${process.env.MONGODB_URL}`);
 
 app.get('/',(req,res)=>{
   res.render('index');

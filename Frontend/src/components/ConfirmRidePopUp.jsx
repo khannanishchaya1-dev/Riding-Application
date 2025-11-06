@@ -9,7 +9,7 @@ const ConfirmRidePopUp = (props) => {
     e.preventDefault();
     try {
         const response = await axios.get(
-          'http://localhost:3000/rides/start-ride',
+          `${import.meta.env.VITE_BACKEND_URL}rides/start-ride`,
           
         {
           params: {

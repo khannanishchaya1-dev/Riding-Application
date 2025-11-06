@@ -212,7 +212,7 @@ useEffect(() => {
     setPanelOpen(false);
     setvehiclepanel(true);
 
-     const response = await axios.get('http://localhost:3000/rides/calculate-fare', {
+     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}rides/calculate-fare`, {
       params: {
         origin,destination
       },
@@ -227,8 +227,8 @@ const create_ride=async (selectedVehicleType)=>{
     origin,destination,vehicleType:selectedVehicleType
   }
   try{
-  
-  const response = await axios.post('http://localhost:3000/rides/create-ride',
+
+  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}rides/create-ride`,
       ride_details,
       {
        headers: {

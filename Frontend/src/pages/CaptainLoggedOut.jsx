@@ -7,7 +7,7 @@ const UserLoggedOut = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/users/logout", { withCredentials: true })
+      .get(`${import.meta.env.VITE_BACKEND_URL}users/logout`, { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           console.log("Captain logged out successfully (server)");
@@ -17,6 +17,7 @@ const UserLoggedOut = () => {
       .finally(() => {
         // ✅ Always clear client-side token and headers
         localStorage.removeItem("token");
+        localStorage.removeItem("captain");
         delete axios.defaults.headers.common["Authorization"];
         navigate("/login");
       });

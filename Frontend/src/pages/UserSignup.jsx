@@ -22,7 +22,7 @@ const UserSignup = () => {
       lastname:lastName,
     }
    }
-   const response = await axios.post('http://localhost:3000/users/register', newUser);
+   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/register`, newUser);
    if(response.status===201){
     const data = response.data;
     setUser(data.user);

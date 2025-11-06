@@ -17,7 +17,7 @@ const UserLogin = () => {
       email:email,
       password:password
     }
-    const response = await axios.post('http://localhost:3000/users/login', user);
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/login`, user);
     if(response.status===200){
     const data = response.data;
     setUser(data.user);
