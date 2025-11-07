@@ -16,9 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-connectMongodb(`${process.env.MONGODB_URL}`).then(() => console.log("✅ Connected to MongoDB Atlas"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
+connectMongodb(process.env.MONGODB_URL);
 
 app.get('/',(req,res)=>{
   res.render('index');

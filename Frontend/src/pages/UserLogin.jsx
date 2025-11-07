@@ -26,7 +26,6 @@ const UserLogin = () => {
     localStorage.setItem('user',JSON.stringify(data.user));
     navigate('/home');
    }
-    console.log(response.data);
     setEmail('');
     setPassword('');
   }
