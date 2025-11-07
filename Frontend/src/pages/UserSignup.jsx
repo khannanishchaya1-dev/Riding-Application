@@ -4,6 +4,8 @@ import { Link,useNavigate} from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
 import { UserDataContext } from "../UserContext/UserContext";
+import WheelzyLogo from "../assets/wheelzy.svg";
+
 
 const UserSignup = () => {
   const [firstName, setFirstName] = useState("");
@@ -42,8 +44,9 @@ setLastName("");
     <div className="h-screen flex flex-col justify-between">
       <div className="p-7">
         <img
-          className="w-14 mb-5"
-          src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+          className="w-60 mb-5"
+          src={WheelzyLogo}
+          alt="Wheelzy Logo"
         />
         <form onSubmit={submitHandler}>
           <h3 className="text-base mb-2 font-medium">What's your Name</h3>

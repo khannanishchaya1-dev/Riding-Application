@@ -4,6 +4,8 @@ import {useLocation} from 'react-router-dom';
 import { useSocket } from "../UserContext/SocketContext";
 import {useNavigate} from 'react-router-dom';
 import LiveTracking from "../components/LiveTracking";
+import WheelzyLogo from "../assets/wheelzy.svg";
+
 
 const Riding = () => {
   const location=useLocation();

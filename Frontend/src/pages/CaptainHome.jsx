@@ -11,6 +11,7 @@ import { useSocket } from "../UserContext/SocketContext"; // Import the socket c
 import axios from 'axios'
 import LiveTracking from "../components/LiveTracking";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
+import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
 
 
 const CaptainHome = () => {
@@ -132,9 +133,9 @@ async function confirmRide() {
     <div className="h-screen w-full">
       <div className="fixed p-6 top-0 flex items-center justify-between w-screen">
         <img
-          className="w-14"
-          src="https://pngimg.com/d/uber_PNG24.png"
-          alt=""
+          className="w-60"
+          src={wheelzyCaptainLogo}
+          alt="Wheelzy Captain Logo"
         ></img>
         <Link
           to="/captain-logout"

@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import { CaptainDataContext } from '../UserContext/CaptainContext';
+import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
 
 const CaptainLogin = () => {
 const [email,setEmail]=useState('');
@@ -30,7 +31,7 @@ const [email,setEmail]=useState('');
   return (
     <div className="h-screen flex flex-col justify-between">
       <div className="p-7">
-        <img className="w-14 mb-5" src="https://pngimg.com/d/uber_PNG24.png"/>
+        <img className="w-60 mb-5" src={wheelzyCaptainLogo} alt="Wheelzy Captain Logo"/>
         <form onSubmit={submitHandler}>
           <h3 className="text-lg mb-2 font-medium">What's your email</h3>
           <input

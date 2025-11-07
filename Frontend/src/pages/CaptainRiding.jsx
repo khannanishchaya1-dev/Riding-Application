@@ -5,6 +5,7 @@ import {gsap} from "gsap";
 import { useState,useRef } from 'react';
 import FinishRide from '../components/FinishRide'
 import LiveTracking from '../components/LiveTracking';
+import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
 
 const CaptainRiding = () => {
   const [FinishRidepanel, setFinishRidepanel] = useState(false);
@@ -33,9 +34,9 @@ const CaptainRiding = () => {
       <div className="h-screen w-full">
       <div className="fixed p-6 top-0 flex items-center justify-between w-screen">
         <img
-          className="w-14"
-          src="https://pngimg.com/d/uber_PNG24.png"
-          alt=""
+          className="w-60"
+          src={wheelzyCaptainLogo}
+          alt="Wheelzy Captain Logo"
         ></img>
         <Link
           to="/home"

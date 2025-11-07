@@ -14,6 +14,7 @@ import { UserDataContext } from "../UserContext/UserContext"; // Import user con
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
+import WheelzyLogo from "../assets/wheelzy.svg";
 
 
 
@@ -246,11 +247,11 @@ console.log(response.data);
 
   return (
     <div className="h-screen w-screen overflow-hidden">
-      {/* Uber Logo */}
+      {/* Wheelzy Logo */}
       <img
-        className="absolute top-5 left-5 w-15 sm:w-16 z-10"
-        src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
-        alt="Uber Logo"
+        className="absolute top-5 left-3 w-50 sm:w-16 z-10"
+        src={WheelzyLogo}
+        alt="Wheelzy Logo"
       />
 
       {/* Background Animation */}
