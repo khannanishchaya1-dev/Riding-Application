@@ -1,69 +1,85 @@
-import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
 import { UserDataContext } from "../UserContext/UserContext";
 import WheelzyLogo from "../assets/wheelzy.svg";
 
-
-
 const UserLogin = () => {
-  const [email,setEmail]=useState('');
-  const [password,setPassword]=useState('');
-  const[userData,setData]=useState({});
-  const { user, setUser } = useContext(UserDataContext);
-  const navigate=useNavigate();
-  const submitHandler = async (e)=>{
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { setUser } = useContext(UserDataContext);
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    const user={
-      email:email,
-      password:password
+    const userData = { email, password };
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/login`, userData);
+      if (response.status === 200) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error(error?.response?.data || error.message);
     }
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/login`, user);
-    if(response.status===200){
-    const data = response.data;
-    setUser(data.user);
-    console.log(data.token)
-    localStorage.setItem('token',data.token);
-    localStorage.setItem('user',JSON.stringify(data.user));
-    navigate('/home');
-   }
-    setEmail('');
-    setPassword('');
-  }
+
+    // Reset form
+    setEmail("");
+    setPassword("");
+  };
+
   return (
-    <div className="h-screen flex flex-col justify-between">
-      <div className="p-7">
-        <img className="w-60 mb-5" src={WheelzyLogo} alt="Wheelzy Logo"/>
-        <form onSubmit={submitHandler}>
-          <h3 className="text-lg mb-2 font-medium">What's your email</h3>
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50 px-4 sm:px-6">
+      {/* Logo and Form */}
+      <div className="pt-8">
+        <img src={WheelzyLogo} alt="Wheelzy Logo" className="w-40 sm:w-32 mb-6" />
+
+        <form onSubmit={submitHandler} className="w-full max-w-md">
+          {/* Email */}
+          <h3 className="text-base sm:text-lg mb-2 font-medium">What's your email</h3>
           <input
-          required
+            required
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded  w-full text-lg mb-7"
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:text-lg mb-6"
             type="email"
             placeholder="example@gmail.com"
-          ></input>
-          <h3 className="text-lg mb-2 font-medium">Enter Password</h3>
+          />
+
+          {/* Password */}
+          <h3 className="text-base sm:text-lg mb-2 font-medium">Enter Password</h3>
           <input
-           value={password}
-            onChange={(e)=>setPassword(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded w-full text-lg mb-7"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:text-lg mb-6"
             type="password"
-            placeholder="password"
-          ></input>
-          <button className="bg-[#111] text-white font-semibold px-2 py-2 rounded w-full text-lg mb-4">
+            placeholder="Password"
+          />
+
+          <button className="bg-black text-white font-semibold px-3 py-2 rounded w-full text-base sm:text-lg mb-4 hover:bg-gray-900 transition">
             Login
           </button>
         </form>
-        <p className="text-center">
-            New here? <Link to='/signup' className="text-blue-600">Create new Account</Link>
-          </p>
+
+        {/* Signup Link */}
+        <p className="text-center text-sm sm:text-base">
+          New here?{" "}
+          <Link to="/signup" className="text-blue-600 hover:underline">
+            Create new Account
+          </Link>
+        </p>
       </div>
-      <div className="p-7">
-        <Link to='/captain-login' className="bg-[#10b461] flex justify-center text-white font-semibold px-2 py-2 rounded w-full text-lg">
+
+      {/* Captain Login */}
+      <div className="pt-6 pb-8 w-full max-w-md mx-auto">
+        <Link
+          to="/captain-login"
+          className="bg-green-600 flex justify-center text-white font-semibold px-3 py-2 rounded w-full text-base sm:text-lg hover:bg-green-700 transition"
+        >
           Sign in as Captain
         </Link>
       </div>

@@ -1,109 +1,115 @@
-import React from "react";
-import { useState } from "react";
-import { Link,useNavigate} from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
 import { UserDataContext } from "../UserContext/UserContext";
 import WheelzyLogo from "../assets/wheelzy.svg";
-
 
 const UserSignup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser } = useContext(UserDataContext);
-  const navigate=useNavigate();
+
+  const { setUser } = useContext(UserDataContext);
+  const navigate = useNavigate();
+
   const submitHandler = async (e) => {
     e.preventDefault();
-   const newUser={
-    email:email,
-    password:password,
-    fullname:{
-      firstname:firstName,
-      lastname:lastName,
+    const newUser = {
+      email,
+      password,
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+    };
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/register`, newUser);
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error(error?.response?.data || error.message);
     }
-   }
-   const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/register`, newUser);
-   if(response.status===201){
-    const data = response.data;
-    setUser(data.user);
-    localStorage.setItem('token',data.token);
-    localStorage.setItem('user',JSON.stringify(data.user));
-    navigate('/home');
-   }
-    console.log(response.data);
+
+    // Reset form
+    setFirstName("");
+    setLastName("");
     setEmail("");
     setPassword("");
-    setFirstName("");
-setLastName("");
-setFirstName("");
-setLastName("");
   };
+
   return (
-    <div className="h-screen flex flex-col justify-between">
-      <div className="p-7">
-        <img
-          className="w-60 mb-5"
-          src={WheelzyLogo}
-          alt="Wheelzy Logo"
-        />
-        <form onSubmit={submitHandler}>
-          <h3 className="text-base mb-2 font-medium">What's your Name</h3>
-          <div className="flex gap-4">
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50 px-4 sm:px-6">
+      {/* Logo and Form */}
+      <div className="pt-8 ">
+        <img src={WheelzyLogo} alt="Wheelzy Logo" className="w-40 sm:w-32 mb-6" />
+
+        <form onSubmit={submitHandler} className="w-full max-w-md">
+          {/* Name Inputs */}
+          <h3 className="text-base sm:text-lg mb-2 font-medium">What's your Name</h3>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <input
               required
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="bg-[#eeeeee] px-2 py-2 rounded  w-1/2 text-base mb-7"
+              className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:w-1/2"
               type="text"
               placeholder="First Name"
-            ></input>
+            />
             <input
               required
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="bg-[#eeeeee] px-2 py-2 rounded  w-1/2 text-base mb-7"
+              className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:w-1/2"
               type="text"
               placeholder="Last Name"
-            ></input>
+            />
           </div>
 
-          <h3 className="text-base mb-2 font-medium">What's your email</h3>
+          {/* Email */}
+          <h3 className="text-base sm:text-lg mb-2 font-medium">What's your email</h3>
           <input
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded  w-full text-base mb-7"
+            className="bg-gray-200 px-3 py-2 rounded w-full text-base mb-6"
             type="email"
             placeholder="example@gmail.com"
-          ></input>
-          <h3 className="text-base mb-2 font-medium">Enter Password</h3>
+          />
+
+          {/* Password */}
+          <h3 className="text-base sm:text-lg mb-2 font-medium">Enter Password</h3>
           <input
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded w-full text-base mb-7"
-            required
+            className="bg-gray-200 px-3 py-2 rounded w-full text-base mb-6"
             type="password"
-            placeholder="password"
-          ></input>
-          <button className="bg-[#111] text-white font-semibold px-2 py-2 rounded w-full text-base mb-4">
+            placeholder="Password"
+          />
+
+          <button className="bg-black text-white font-semibold px-3 py-2 rounded w-full text-base mb-4 hover:bg-gray-900 transition">
             Create Account
           </button>
         </form>
-        <p className="text-center">
+
+        {/* Login Link */}
+        <p className="text-center text-sm sm:text-base">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600">
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login here
           </Link>
         </p>
       </div>
-      {/* <div className="p-7">
-        <Link to='/captain-login' className="bg-[#10b461] flex justify-center text-white font-semibold px-2 py-2 rounded w-full text-lg">
-          Sign in as Captain
-        </Link>
-      </div> */}
-      <p className="text-xs text-gray-500 text-center mb-8">
+
+      {/* Terms & Privacy */}
+      <p className="text-xs text-gray-500 text-center my-6 sm:my-8">
         By logging in, you agree to our{" "}
         <a href="/terms" className="text-blue-600 underline">
           Terms of Service

@@ -63,7 +63,7 @@ const CaptainSignup = () => {
   return (
     <div className="h-screen flex flex-col justify-between">
       <div className="p-7">
-        <img className="w-60 mb-5" src={wheelzyCaptainLogo} />
+        <img className="w-40 mb-5" src={wheelzyCaptainLogo} />
         <form onSubmit={submitHandler}>
           <h3 className="text-base mb-2 font-medium">What's your Name</h3>
           <div className="flex gap-4">
@@ -161,17 +161,7 @@ const CaptainSignup = () => {
           Sign in as Captain
         </Link>
       </div> */}
-      <p className="text-xs text-gray-500 text-center mb-8">
-        By logging in, you agree to our{" "}
-        <a href="/terms" className="text-blue-600 underline">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="/privacy" className="text-blue-600 underline">
-          Privacy Policy
-        </a>
-        .
-      </p>
+      
     </div>
   );
 };
