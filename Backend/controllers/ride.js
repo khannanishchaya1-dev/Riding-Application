@@ -2,7 +2,7 @@ const rideService = require('../service/ride.service');
 const { validationResult } = require('express-validator');
 const {calculateFare}=require('../service/ride.service');
 const mapService = require('../service/maps.service')
-const {sendSocketMessageTo}= require('../Socket');
+const {sendSocketMessageTo}= require('../socket');
 const rideModel = require('../models/ride');
 
 // Further ride controller functions would go here
