@@ -20,7 +20,5 @@ createRoot(document.getElementById('root')).render(
       </CaptainContext>
       </SocketProvider>
       </BrowserRouter>
-    
-
   </StrictMode>
 )
