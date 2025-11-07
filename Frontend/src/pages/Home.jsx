@@ -15,7 +15,7 @@ import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import ca
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
 import WheelzyLogo from "../assets/wheelzy.svg";
-import VehiclePanel from "../components/Vehiclepanel";
+import VehiclePanel from "../components/VehiclePanel";
 
 
 
