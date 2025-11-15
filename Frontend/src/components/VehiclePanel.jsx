@@ -13,7 +13,7 @@ const VehiclePanel = (props) => {
         <div onClick={() => handleVehicleSelection('car')} className="flex items-center justify-between w-full p-3 active:border-black border-2 rounded-lg mb-2">
           <img className="h-15" src="https://www.svgrepo.com/show/408292/car-white.svg" alt="Car Icon"></img>
           <div className="w-1/2">
-            <h4 className="font-medium text-lg">UberGo <span><i className="ri-user-fill">4</i></span></h4>
+            <h4 className="font-medium text-lg">WheelzyGo <span><i className="ri-user-fill">4</i></span></h4>
             <h5 className="font-medium text-sm">2 mins away</h5>
             <p className="font-normal text-xs">Affordable, Compact rides</p>
           </div>
@@ -31,7 +31,7 @@ const VehiclePanel = (props) => {
          <div onClick={() => handleVehicleSelection('auto')} className="flex items-center justify-between w-full p-3 active:border-black border-2 rounded-lg mb-2">
           <img className="h-15" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU" alt="Bike Icon"></img>
           <div className="w-1/2">
-            <h4 className="font-medium text-lg">Uber auto <span><i className="ri-user-fill">1</i></span></h4>
+            <h4 className="font-medium text-lg">Wheelzy auto <span><i className="ri-user-fill">1</i></span></h4>
             <h5 className="font-medium text-sm">2 mins away</h5>
             <p className="font-normal text-xs">Affordable, Desi style</p>
           </div>
