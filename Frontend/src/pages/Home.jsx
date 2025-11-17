@@ -265,15 +265,25 @@ console.log(response.data);
         <img 
           src={WheelzyLogo}
           alt="Logo"
-          className="w-24 sm:w-28 md:w-32"
+          className="w-40 sm:w-28 md:w-32"
         />
 
         {/* Hamburger Menu Button */}
-      <Link to="/profile">
-  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200">
-    {user?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
+      
+  <Link to="/profile">
+  <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-black font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200 overflow-hidden">
+    
+    {/* Optional light reflection */}
+    <div className="absolute inset-0 bg-white/20 rounded-full pointer-events-none"></div>
+
+    {/* Letter */}
+    <span className="relative z-10">
+      {user?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
+    </span>
   </div>
-  </Link>
+</Link>
+
+
 
 
 
