@@ -15,7 +15,12 @@ createRoot(document.getElementById('root')).render(
    <SocketProvider>
       <CaptainContext>
        <UserContext>
-          <App />
+        
+      <div className="glass-phone">
+  <App />
+</div>
+
+          
       </UserContext>
       </CaptainContext>
       </SocketProvider>

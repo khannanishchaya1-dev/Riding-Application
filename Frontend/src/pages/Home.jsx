@@ -256,7 +256,7 @@ console.log(response.data);
 }
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative">
+    <div className="h-full w-full overflow-hidden relative">
 
       {/* 🔹 NAVBAR */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between p-4 bg-transparent z-10">

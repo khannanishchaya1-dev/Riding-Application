@@ -120,7 +120,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-50 font-sans p-4 sm:p-8">
+    <div className="min-h-screen flex flex-col items-center bg-gray-50 font-sans ">
 
       {/* 🚀 Main Content Wrapper */}
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden">
