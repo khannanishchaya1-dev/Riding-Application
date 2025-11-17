@@ -66,7 +66,7 @@ const RideItem = ({ ride }) => {
       
       {/* Cost and Arrow (Right) */}
       <div className="flex flex-col items-end space-y-1">
-        <span className="text-lg font-bold text-gray-900">${ride.cost.toFixed(2)}</span>
+        <span className="text-lg font-bold text-gray-900">₹{ride.cost.toFixed(2)}</span>
         <ArrowRight className="w-5 h-5 text-gray-400 hover:text-blue-500 transition" />
       </div>
     </div>
