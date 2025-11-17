@@ -16,6 +16,7 @@ import Riding from './pages/Riding';
 import CaptainRiding from './pages/CaptainRiding';
 import Chat from './pages/Chat';
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
+import ProfilePage from './pages/UserProfile';
 
 const App = () => {
   return (
@@ -35,7 +36,9 @@ const App = () => {
       <Route path='/logout' element={
         <UserProtectWrapper> <UserLoggedOut/></UserProtectWrapper>
       }/>
-      
+      <Route path='/profile' element={
+        <UserProtectWrapper> <ProfilePage/></UserProtectWrapper>
+      }/>
       <Route path='/captain-home' element={
         <CaptainProtectWrapper> <CaptainHome/></CaptainProtectWrapper>
       }/>

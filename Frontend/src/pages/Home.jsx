@@ -16,11 +16,14 @@ import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
 import WheelzyLogo from "../assets/wheelzy.svg";
 import VehiclePanel from "../components/VehiclePanel";
+import { Link } from "react-router-dom";
+
 
 
 
 
 const Home = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [origin, setorigin] = useState("");
   const [destination, setdestination] = useState("");
   const [activeField, setActiveField] = useState(null);
@@ -46,7 +49,12 @@ const Home = () => {
   
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
-  if (storedUser) setUser(JSON.parse(storedUser));
+  if (storedUser){ 
+  setUser(JSON.parse(storedUser))
+}else{
+  console.log("No user data in localStorage");
+  navigate('/login');
+}
 }, []);
 
   useEffect(() => {
@@ -248,14 +256,28 @@ console.log(response.data);
 }
 
   return (
-    <div className="h-screen w-screen overflow-hidden">
-      {/* Wheelzy Logo - Made responsive: w-24 (mobile) to w-40 (desktop) */}
-      <img
-        className="absolute top-5 left-5 w-50 sm:w-32 md:w-40 z-10" 
-        src={WheelzyLogo}
-        alt="Wheelzy Logo"
-      />
+    <div className="h-screen w-screen overflow-hidden relative">
 
+      {/* 🔹 NAVBAR */}
+      <div className="absolute top-0 left-0 w-full flex items-center justify-between p-4 bg-transparent z-20">
+        
+        {/* Logo */}
+        <img 
+          src={WheelzyLogo}
+          alt="Logo"
+          className="w-24 sm:w-28 md:w-32"
+        />
+
+        {/* Hamburger Menu Button */}
+      <Link to="/profile">
+  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200">
+    {user?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
+  </div>
+  </Link>
+
+
+
+      </div>
       {/* Background Animation (LiveTracking) */}
       <div className="h-screen w-screen">
         <LiveTracking />
