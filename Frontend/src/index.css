@@ -1,15 +1,30 @@
 @import "tailwindcss";
 /* This targets the container holding your <App /> component */
 .glass-phone {
-  width: 390px;
+  width: 420px;
   max-width: 100%;
   min-height: 100vh;
   margin: 20px auto;
   padding: 0;
-  border-radius: 30px;
   overflow: hidden;
   backdrop-filter: blur(14px);
   background: rgba(255,255,255,0.75);
   border: 1px solid rgba(255,255,255,0.4);
   box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  border-radius: 26px;
+}
+
+/* 🔥 On real mobile screens -> full width, no blur, no shadow */
+@media (max-width: 768px) {
+  .glass-phone {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    backdrop-filter: none;
+    background: #fff; /* or your app bg */
+    border: none;
+    box-shadow: none;
+  }
 }
