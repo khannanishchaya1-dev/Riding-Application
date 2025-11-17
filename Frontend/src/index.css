@@ -3,7 +3,7 @@
 .glass-phone {
   width: 420px;
   max-width: 100%;
-  min-height: 100vh;
+  min-height: 60vh;
   margin: 20px auto;
   padding: 0;
   overflow: hidden;

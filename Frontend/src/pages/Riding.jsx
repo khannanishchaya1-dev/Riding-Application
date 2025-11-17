@@ -18,7 +18,7 @@ const Riding = () => {
   }, [receiveMessage, navigate]);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-50">
+    <div className="h-screen w-full flex flex-col bg-gray-50">
       {/* Home Button */}
       <Link
         to="/home"
@@ -28,7 +28,8 @@ const Riding = () => {
       </Link>
 
       {/* Live Tracking Map */}
-      <div className="h-1/2 w-full">
+      <div className="h-1/2 w-full bg-amber-500">
+
         <LiveTracking />
       </div>
 
