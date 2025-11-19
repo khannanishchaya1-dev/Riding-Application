@@ -77,10 +77,10 @@ const CaptainSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center sm:p-6 font-sans">
+    <div className="h-full bg-gray-50 flex flex-col items-center justify-center font-sans">
       
       {/* Centered Card Container */}
-      <div className="w-full max-w-lg bg-white p-8 sm:p-10 rounded-xl shadow-2xl space-y-8">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl space-y-8 p-6">
         
         {/* Logo and Title */}
         <div className="flex flex-col items-center mb-6">
