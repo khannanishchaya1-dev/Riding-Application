@@ -131,7 +131,7 @@ async function confirmRide() {
  
   return (
     <div className="h-screen w-full">
-      <div className="fixed p-6 top-0 flex items-center justify-between w-screen z-20">
+      <div className="fixed p-6 top-0 flex items-center justify-between w-screen z-10">
         <img
           className="w-60"
           src={wheelzyCaptainLogo}
@@ -158,7 +158,7 @@ async function confirmRide() {
         confirmRide={confirmRide}
         />
       </div>
-      <div ref={confirmridePopUppanelRef} className=" fixed h-screen z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
+      <div ref={confirmridePopUppanelRef} className=" fixed h-screen z-30 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
         <ConfirmRidePopUp setconfirmridePopUppanel={setconfirmridePopUppanel}  setridePopUppanel={setridePopUppanel} ride={ride}/>
       </div>
     </div>

@@ -163,7 +163,8 @@ module.exports.findRidesByUser = async (user_id) => {
 
   const rides = await RIDE.find({ userId: user_id })
     .populate("userId")
-    .populate("captain");
+    .populate("captain")
+    .sort({ createdAt: -1 }); 
 
   return rides;
 };

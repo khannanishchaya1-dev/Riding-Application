@@ -99,16 +99,10 @@ const ProfilePage = () => {
   }, []);
   useEffect(() => {
   
-  if (!user?._id) return; // Wait until user is available
-
+  if (!user?._id) return; // Wait until user is availab
   const fetchRides = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log("Fetching rides for user:", user._id);
-      console.log("Token:", token);
-      console.log("Request URL:", `${import.meta.env.VITE_BACKEND_URL}rides/find-rides`);
-      console.log("Payload:", { user_id: user._id });
-
       if (!token) {
         console.error("No token found in localStorage!");
         return;
@@ -125,7 +119,6 @@ const ProfilePage = () => {
         }
       );
 
-      console.log("Rides fetched:", res.data.rides);
       setrides(res.data.rides);
     } catch (error) {
       // More detailed logging
