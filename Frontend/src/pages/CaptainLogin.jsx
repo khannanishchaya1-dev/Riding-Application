@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { CaptainDataContext } from '../UserContext/CaptainContext';
 import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import toast from "react-hot-toast";
 
 const CaptainLogin = () => {
 const [email,setEmail]=useState('');
@@ -16,6 +17,7 @@ const [email,setEmail]=useState('');
       email:email,
       password:password
     }
+    try{
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}captains/login`,captain);
       if(response.status===200){
         const data = response.data;
@@ -25,8 +27,13 @@ const [email,setEmail]=useState('');
         localStorage.setItem('captain',JSON.stringify(data.captain));
         navigate('/captain-home');
         }
+      }catch(error){
+        toast.error("Oops! Something seems wrong with the details you entered.");
+        alert("Oops! Something seems wrong with the details you entered.")
+      }
       setEmail('');
       setPassword('');
+
   }
   return (
     <div className="h-screen flex flex-col justify-between">

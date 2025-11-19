@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
 import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import toast from "react-hot-toast";
 
 const CaptainSignup = () => {
   // Existing State
@@ -72,7 +73,7 @@ const CaptainSignup = () => {
     } catch (err) {
       console.error("Signup failed:", err.response?.data || err.message);
       // Replaced alert with console error and message
-      alert(err.response?.data?.message || "Signup failed");
+      toast.error("Oops! Something seems wrong with the details you entered.");
     }
   };
 

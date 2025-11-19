@@ -18,10 +18,12 @@ import Chat from './pages/Chat';
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import ProfilePage from './pages/UserProfile';
 import CaptainProfile from './pages/CaptainProfile';
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
     <>
+    <Toaster position="top-center" reverseOrder={false} />
      <Routes>
       <Route path='/' element={<Start/>}/>
       <Route path='/login' element={<UserLogin />}/>

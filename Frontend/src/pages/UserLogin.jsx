@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
 import WheelzyLogo from "../assets/wheelzy.svg";
+import toast from "react-hot-toast";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
@@ -23,6 +24,8 @@ const UserLogin = () => {
         navigate("/home");
       }
     } catch (error) {
+     
+     toast.error("Oops! Something seems wrong with the details you entered.");
       console.error(error?.response?.data || error.message);
     }
 
