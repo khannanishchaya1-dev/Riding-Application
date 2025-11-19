@@ -1,15 +1,11 @@
-import React, { useEffect, useState, useMemo} from "react";
+import React, { useEffect, useState, useMemo,useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserDataContext } from "../UserContext/UserContext";
 // Assuming useNavigate is available from the runtime environment (like react-router-dom)
 // Since this is a standalone file, we assume the host environment provides these helpers.
 import { LogOut, Mail, User, Car, MapPin, Clock, ArrowRight } from 'lucide-react';
 
-// Mock implementation of useNavigate for the single-file environment
-
-// --- Mock Data Setup ---
-
-// Mock function to simulate fetching user data
 
 const getMockUser = () => {
   const stored = localStorage.getItem("user");
@@ -82,21 +78,11 @@ const RideItem = ({ ride }) => {
 // --- Main Component ---
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserDataContext); // Get user data from context
   const [rides, setrides] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // In a real app, you would check for a real session token
-    const mockUser = getMockUser();
-    
-    // For this example, we always set the mock user
-    setUser(mockUser); 
-    console.log(user)
-
-    // If you need real redirection logic:
-    // if (!localStorage.getItem("authToken")) { navigate("/"); }
-  }, []);
+  
   useEffect(() => {
   
   if (!user?._id) return; // Wait until user is availab
