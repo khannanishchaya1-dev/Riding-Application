@@ -12,7 +12,7 @@ const captainSchema = new mongoose.Schema(
       },
       lastname: {
         type: String,
-        required: false,
+        required: true, // ⭐ Setting lastname to required, matching route validation
       },
     },
     email: {
@@ -20,11 +20,14 @@ const captainSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    phone: { // ⭐ NEW FIELD: Captain's phone number
+      type: String,
+      required: true,
+      unique: true, // Phone numbers should typically be unique
+    },
     password: {
       type: String,
-      required:true,
-      
-
+      required: true,
     },
     salt: {
       type: String,
@@ -43,10 +46,13 @@ const captainSchema = new mongoose.Schema(
         type: Number,
         required: true,
       },
-      //added auto-rickshae
       vehicleType: {
         type: String,
-        enum: ["car", "motorcycle","auto",],
+        enum: ["car", "motorcycle", "auto", "truck"], // ⭐ UPDATED: Added "auto" and kept "truck" (from route validation)
+        required: true,
+      },
+      vehicleModel: { // ⭐ NEW FIELD: Car Name/Model
+        type: String,
         required: true,
       },
       numberPlate: {
@@ -56,20 +62,22 @@ const captainSchema = new mongoose.Schema(
       },
     },
     location: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      default: "Point",
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        default: [0, 0],
+      },
     },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      default: [0, 0],
+    socketId: {
+      type: String,
     },
   },
-  socketId:{
-    type:String,
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 // Hash password before save
 
@@ -79,7 +87,7 @@ captainSchema.pre("save", function (next) {
   // Only hash the password if it has been modified (or is new)
   if (!captain.isModified("password")) return next();
 
-  const salt = randomBytes(16).toString("hex");   // ✅ always use hex encoding
+  const salt = randomBytes(16).toString("hex"); // ✅ always use hex encoding
   const hashedPassword = createHmac("sha256", salt)
     .update(captain.password)
     .digest("hex");
@@ -89,7 +97,6 @@ captainSchema.pre("save", function (next) {
 
   next();
 });
-
 
 // Method to generate token
 captainSchema.methods.generateAuthToken = function () {

@@ -17,9 +17,9 @@ const WaitingForDriver = (props) => {
           alt="Car Icon"
         ></img>
         <div className="text-right">
-          <h2 className="text-lg font-medium">{props.ride?.captain?.fullname.firstname}</h2>
+          <h2 className="text-lg font-medium">{`${props.ride?.captain?.fullname?.firstname ?? ""} ${props.ride?.captain?.fullname?.lastname ?? ""}`}</h2>
           <h4 className="text-lg text-gray-500 font-semibold">{props.ride?.captain?.vehicle.numberPlate}</h4>
-          <p className="text-sm text-gray-500">Hyundai Creta</p>
+          
           <h1 className="text-lg font-semibold">{"OTP:"+" "+props.ride?.otp}</h1>
         </div>
       </div>

@@ -17,6 +17,7 @@ import CaptainRiding from './pages/CaptainRiding';
 import Chat from './pages/Chat';
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import ProfilePage from './pages/UserProfile';
+import CaptainProfile from './pages/CaptainProfile';
 
 const App = () => {
   return (
@@ -41,6 +42,9 @@ const App = () => {
       }/>
       <Route path='/captain-home' element={
         <CaptainProtectWrapper> <CaptainHome/></CaptainProtectWrapper>
+      }/>
+      <Route path='/captain-profile' element={
+        <CaptainProtectWrapper> <CaptainProfile/></CaptainProtectWrapper>
       }/>
       
       <Route path='/captain-logout' element={

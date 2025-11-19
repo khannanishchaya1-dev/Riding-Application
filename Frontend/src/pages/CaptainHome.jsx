@@ -132,17 +132,26 @@ async function confirmRide() {
   return (
     <div className="h-screen w-full">
       <div className="fixed p-6 top-0 flex items-center justify-between w-screen z-10">
-        <img
-          className="w-60"
-          src={wheelzyCaptainLogo}
-          alt="Wheelzy Captain Logo"
-        ></img>
-        <Link
-          to="/captain-logout"
-          className="h-10 w-10 bg-white flex items-center justify-center rounded-full"
-        >
-          <i className=" text-lg font-medium ri-logout-box-r-line"></i>
+        {/* Logo */}
+               <img 
+                 src={wheelzyCaptainLogo}
+                 alt="Logo"
+                 className="w-40 sm:w-28 md:w-32"
+               />
+             
+         <Link to="/captain-profile">
+          <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-black font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200 overflow-hidden">
+            
+            {/* Optional light reflection */}
+            <div className="absolute inset-0 bg-white/20 rounded-full pointer-events-none"></div>
+        
+            {/* Letter */}
+            <span className="relative z-10">
+              {captainData?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
+            </span>
+          </div>
         </Link>
+        
       </div>
       <div className="h-3/5">
         

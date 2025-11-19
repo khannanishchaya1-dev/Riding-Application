@@ -9,6 +9,7 @@ const Riding = () => {
   const { ride } = location.state || {};
   const { receiveMessage } = useSocket();
   const navigate = useNavigate();
+  console.log(ride);
 
   // Navigate home when ride ends
   React.useEffect(() => {
@@ -49,7 +50,7 @@ const Riding = () => {
             <h4 className="text-md sm:text-lg text-gray-500 font-semibold">
               {ride?.captain.vehicle.numberPlate}
             </h4>
-            <p className="text-sm sm:text-md text-gray-500">Hyundai Creta</p>
+            <p className="text-sm sm:text-md text-gray-500">{ride?.captain?.vehicle?.vehicleModel}</p>
           </div>
         </div>
 

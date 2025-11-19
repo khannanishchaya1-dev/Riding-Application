@@ -15,5 +15,6 @@ authCaptain,rideController.confirmRide);
 router.get('/start-ride',authCaptain,query('rideId').isMongoId().withMessage('Invalid ride id'),query('otp').isString().isLength({min:6,max:6}).withMessage('Invalid Otp'),rideController.startRide);
 router.post('/end-ride',body('rideId').isMongoId().withMessage('invalid rideId'),authCaptain,rideController.endRide);
 router.post('/find-rides',body('user_id').isMongoId().withMessage('invalid userId'),authUser,rideController.findRide);
+router.post('/find-captain-rides',body('captain_id').isMongoId().withMessage('invalid captain_id'),authCaptain,rideController.findCaptainRide);
 
 module.exports=router;

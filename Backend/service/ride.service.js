@@ -168,7 +168,19 @@ module.exports.findRidesByUser = async (user_id) => {
 
   return rides;
 };
+module.exports.findRidesByCaptain = async (captain_id) => {
+  
+  if (!captain_id) {
+    throw new Error("User ID is required");
+  }
 
+  const rides = await RIDE.find({ captain: captain_id })
+    .populate("userId")
+    .populate("captain")
+    .sort({ createdAt: -1 }); 
+
+  return rides;
+};
 
 
 

@@ -1,6 +1,6 @@
 const rideService = require('../service/ride.service');
 const { validationResult } = require('express-validator');
-const {calculateFare,findRidesByUser}=require('../service/ride.service');
+const {calculateFare,findRidesByUser,findRidesByCaptain}=require('../service/ride.service');
 const mapService = require('../service/maps.service')
 const {sendSocketMessageTo}= require('../socket');
 const rideModel = require('../models/ride');
@@ -149,3 +149,24 @@ if(!errors.isEmpty()){
     
 }
 
+module.exports.findCaptainRide = async (req,res)=>{
+const errors = validationResult(req);
+if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
+  const captain_id = req.body.captain_id;
+  console.log("captain",captain_id)
+
+  try{
+    const rides = await findRidesByCaptain( captain_id );
+    res.status(200).json({
+      success: true,
+      count: rides.length,
+      rides
+    });
+    
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+    
+}

@@ -1,43 +1,63 @@
 const Captain = require('../models/captain');
 const { validationResult }=require('express-validator');
 const BlacklistedToken = require('../models/blacklist.token')
-const handleCaptainRegister = async (req,res,next)=>{
-  // const body  = req.body;
-  // if(!body.email || !body.password)
-  //|| not required
-const errors = validationResult(req);
-if(!errors.isEmpty()){
-   return res.status(400).json({ errors: errors.array() });
-}
-const {email,fullname,vehicle,password} = req.body;
-const isCaptainAlreadyExist=await Captain.findOne({email})
-if(isCaptainAlreadyExist){
-  return res.status(400).json({message:"Captain already exists"});
-}
+const handleCaptainRegister = async (req, res) => {
+    // 1. Check for validation errors from express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-const captain = await Captain.create({
-  fullname: {
-    firstname: fullname.firstname,
-    lastname: fullname.lastname || "",
-  },
-  email: email,
-  password:password,
-  status: "inactive", // default, can be changed later
-  vehicle: {
-    color: vehicle.color,
-    capacity: vehicle.capacity,
-    vehicleType:vehicle.vehicleType,
-    numberPlate: vehicle.numberPlate,
-  },
+    // Destructure all required fields, including the newly added 'phone'
+    const { email, fullname, vehicle, password, phone } = req.body;
 
-});
-const token = captain.generateAuthToken();
+    // 2. Check if Captain already exists based on unique fields (email, phone, numberPlate)
+    const isCaptainAlreadyExist = await Captain.findOne({
+        $or: [{ email }, { phone }, { 'vehicle.numberPlate': vehicle.numberPlate }]
+    });
 
-res.cookie("token",token);
-res.status(201).json({ token, captain });
+    if (isCaptainAlreadyExist) {
+        let message = "Captain account already exists.";
+        
+        // Provide a specific message based on which field caused the conflict
+        if (isCaptainAlreadyExist.email === email) {
+            message = "A captain with this email already exists. Please login or use a different email.";
+        } else if (isCaptainAlreadyExist.phone === phone) {
+            message = "A captain with this phone number already exists.";
+        } else if (isCaptainAlreadyExist.vehicle.numberPlate === vehicle.numberPlate) {
+            message = "A captain with this vehicle number plate already exists.";
+        }
+        
+        return res.status(400).json({ message });
+    }
 
+    // 3. Create the new captain document
+    const captain = await Captain.create({
+        fullname: {
+            firstname: fullname.firstname,
+            lastname: fullname.lastname,
+        },
+        email: email,
+        phone: phone, // ⭐ Added phone
+        password: password,
+        status: "inactive", 
+        vehicle: {
+            color: vehicle.color,
+            capacity: vehicle.capacity,
+            vehicleType: vehicle.vehicleType,
+            vehicleModel: vehicle.vehicleModel, // ⭐ Added vehicleModel
+            numberPlate: vehicle.numberPlate,
+        },
+    });
 
+    // 4. Generate token and send response
+    const token = captain.generateAuthToken();
+
+    // Assuming you have 'res.cookie' implementation available
+    res.cookie("token", token);
+    res.status(201).json({ token, captain });
 };
+
 const loginCaptain = async (req,res,next)=>{
   const errors = validationResult(req);
   if(!errors.isEmpty()){
