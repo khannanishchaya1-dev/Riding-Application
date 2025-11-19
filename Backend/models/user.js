@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { randomBytes, createHmac }=require("crypto");
 const jwt = require('jsonwebtoken');
+const {rideSchema} = require('./ride');
 const userSchema = new mongoose.Schema({
   fullname:{
     firstname:{
@@ -34,6 +35,7 @@ const userSchema = new mongoose.Schema({
         type:String,
 
     },
+    
 },{ timestamps: true });
 
 userSchema.pre("save",function(next){

@@ -1,4 +1,4 @@
-const ride = require('../models/ride');
+
 const RIDE = require('../models/ride');
 const mapService = require('./maps.service');
 const crypto = require('crypto');
@@ -93,7 +93,7 @@ module.exports.confirmRide = async ({
     await rideModel.findOneAndUpdate({
         _id: rideId
     }, {
-        status: 'accepted',
+        status: 'ACCEPTED',
         captain: captain._id
     })
 console.log(captain)
@@ -121,7 +121,7 @@ module.exports.rideStart = async ({rideId,otp,captain})=>{
     throw new Error('Ride not found');
 
   }
-  if(ride.status!=='accepted'){
+  if(ride.status!=='ACCEPTED'){
     throw new error("ride not accepted yet")
   }
   if(ride.otp!==otp){
@@ -129,7 +129,7 @@ module.exports.rideStart = async ({rideId,otp,captain})=>{
   }
   await rideModel.findByIdAndUpdate({_id:rideId},
     {
-      status:"ongoing"
+      status:"ONGOING"
     });
 
 
@@ -145,15 +145,29 @@ module.exports.endRide= async({rideId,captain})=>{
   if(!ride){
     throw new Error('Ride not found');
   }
-  if(ride.status!=='ongoing')
+  if(ride.status!=="ONGOING")
   {
     throw new Error('Ride not started');
   }
   await rideModel.findOneAndUpdate({_id:rideId},{
-    status:'completed'
+    status:'COMPLETED'
   
   });
   return ride;
 
 }
+module.exports.findRidesByUser = async (user_id) => {
+  if (!user_id) {
+    throw new Error("User ID is required");
+  }
+
+  const rides = await RIDE.find({ userId: user_id })
+    .populate("userId")
+    .populate("captain");
+
+  return rides;
+};
+
+
+
 

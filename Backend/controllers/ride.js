@@ -1,6 +1,6 @@
 const rideService = require('../service/ride.service');
 const { validationResult } = require('express-validator');
-const {calculateFare}=require('../service/ride.service');
+const {calculateFare,findRidesByUser}=require('../service/ride.service');
 const mapService = require('../service/maps.service')
 const {sendSocketMessageTo}= require('../socket');
 const rideModel = require('../models/ride');
@@ -17,7 +17,7 @@ module.exports.createRide = async (req, res) => {
   try {  
       console.log(req.user._id, req.body.origin, req.body.destination, req.body.vehicleType);
     const newRide = await rideService.createRideModel({userId: req.user._id, origin: req.body.origin, destination: req.body.destination, vehicleType: req.body.vehicleType});
-   
+   console.log("Ride is",newRide);
      res.status(201).json(newRide);
       const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
     console.log(originCoordinates);
@@ -27,6 +27,7 @@ module.exports.createRide = async (req, res) => {
      newRide.otp=" "// 10 km
     console.log("Captains in radius:", getCaptainsInRadius);
     const rideWithUser = await rideModel.findOne({_id:newRide._id}).populate('userId');
+    console.log(rideWithUser);
     (getCaptainsInRadius.map(async(captain)=>{
 sendSocketMessageTo(captain.socketId,{
   event:'new-ride',
@@ -128,3 +129,23 @@ module.exports.endRide=async(req,res)=>{
   }
 
 }
+module.exports.findRide = async (req,res)=>{
+const errors = validationResult(req);
+if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
+  const user_id = req.body.user_id;
+
+  try{
+    const rides = await findRidesByUser( user_id );
+    res.status(200).json({
+      success: true,
+      count: rides.length,
+      rides
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+    
+}
+

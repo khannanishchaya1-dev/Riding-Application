@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo} from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // Assuming useNavigate is available from the runtime environment (like react-router-dom)
 // Since this is a standalone file, we assume the host environment provides these helpers.
 import { LogOut, Mail, User, Car, MapPin, Clock, ArrowRight } from 'lucide-react';
@@ -12,19 +13,18 @@ import { LogOut, Mail, User, Car, MapPin, Clock, ArrowRight } from 'lucide-react
 
 const getMockUser = () => {
   const stored = localStorage.getItem("user");
-  if (stored) {
+  if (!stored) {
+    return;
+  }else{
     return JSON.parse(stored);
   }
-  // Default mock user if not found in localStorage
-  return {
-    email: "jane.doe@example.com",
-    createdAt: "2023-08-15T10:00:00.000Z",
-    fullname: {
-      firstname: "Jane",
-      lastname: "Doe"
-    }
-  };
+  
+  
 };
+
+
+
+
 
 // Mock data for previous rides
 const mockRides = [
@@ -38,7 +38,7 @@ const mockRides = [
 
 // Component for a single ride item in the history list
 const RideItem = ({ ride }) => {
-  const statusColor = ride.status === 'Completed' ? 'text-green-600' : 'text-red-500';
+  const statusColor = ride.status === 'COMPLETED' ? 'text-green-600' : 'text-red-500';
   
   return (
     <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-100 hover:shadow-sm transition duration-150 flex justify-between items-center cursor-pointer">
@@ -47,7 +47,12 @@ const RideItem = ({ ride }) => {
       <div className="flex flex-col space-y-2 w-4/5">
         <div className="flex items-center text-sm font-semibold text-gray-800">
           <Clock className="w-4 h-4 mr-2 text-gray-400" />
-          {ride.date}
+          {ride.createdAt
+    ? new Date(ride.createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+      })
+    : "No Date"}
           <span className={`ml-3 text-xs font-medium px-2 py-0.5 rounded-full ${statusColor === 'text-green-600' ? 'bg-green-50' : 'bg-red-50'} ${statusColor}`}>
             {ride.status}
           </span>
@@ -55,18 +60,18 @@ const RideItem = ({ ride }) => {
 
         <div className="flex items-center text-xs text-gray-600 truncate">
           <MapPin className="w-3.5 h-3.5 mr-1 text-blue-500" />
-          <span className="truncate">{ride.pickup}</span>
+          <span className="truncate">{ride.origin}</span>
         </div>
         
         <div className="flex items-center text-xs text-gray-600 truncate">
           <MapPin className="w-3.5 h-3.5 mr-1 text-red-500" />
-          <span className="truncate">{ride.dropoff}</span>
+          <span className="truncate">{ride.destination}</span>
         </div>
       </div>
       
       {/* Cost and Arrow (Right) */}
       <div className="flex flex-col items-end space-y-1">
-        <span className="text-lg font-bold text-gray-900">₹{ride.cost.toFixed(2)}</span>
+        <span className="text-lg font-bold text-gray-900">₹{ride.fare}</span>
         <ArrowRight className="w-5 h-5 text-gray-400 hover:text-blue-500 transition" />
       </div>
     </div>
@@ -78,6 +83,7 @@ const RideItem = ({ ride }) => {
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
+  const [rides, setrides] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,16 +92,58 @@ const ProfilePage = () => {
     
     // For this example, we always set the mock user
     setUser(mockUser); 
+    console.log(user)
 
     // If you need real redirection logic:
     // if (!localStorage.getItem("authToken")) { navigate("/"); }
   }, []);
+  useEffect(() => {
+  
+  if (!user?._id) return; // Wait until user is available
+
+  const fetchRides = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Fetching rides for user:", user._id);
+      console.log("Token:", token);
+      console.log("Request URL:", `${import.meta.env.VITE_BACKEND_URL}rides/find-rides`);
+      console.log("Payload:", { user_id: user._id });
+
+      if (!token) {
+        console.error("No token found in localStorage!");
+        return;
+      }
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}rides/find-rides`,
+        { user_id: user._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Rides fetched:", res.data.rides);
+      setrides(res.data.rides);
+    } catch (error) {
+      // More detailed logging
+      console.error("Error fetching rides:", error.response?.data || error.message);
+    }
+  };
+
+  fetchRides();
+}, [user]);
+
+
 
   // Derived state for display
   const userInitial = useMemo(() => {
     return user?.fullname?.firstname?.charAt(0).toUpperCase() || "U";
   }, [user]);
 
+  
   const memberSince = useMemo(() => {
     return user?.createdAt 
       ? new Date(user.createdAt).toLocaleDateString('en-US', { 
@@ -195,12 +243,12 @@ const ProfilePage = () => {
         <div className="p-6 sm:p-8 pt-0">
           <h2 className="text-xl font-bold text-gray-800 border-b pb-2 flex items-center">
             <Car className="w-5 h-5 mr-2 text-gray-700" />
-            Previous Rides ({mockRides.length})
+            Previous Rides ({rides.length})
           </h2>
 
           {/* Ride List Container (Scrollable on overflow) */}
           <div className="mt-4 space-y-3 max-h-80 overflow-y-auto pr-2">
-            {mockRides.map((ride) => (
+            {rides.map((ride) => (
               <RideItem key={ride.id} ride={ride} />
             ))}
           </div>

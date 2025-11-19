@@ -17,12 +17,15 @@ import LiveTracking from "../components/LiveTracking";
 import WheelzyLogo from "../assets/wheelzy.svg";
 import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
+import NoDriverFound from "../components/NoDriverFound";
+
 
 
 
 
 
 const Home = () => {
+  const [rides,setrides]=useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [origin, setorigin] = useState("");
   const [destination, setdestination] = useState("");
@@ -46,6 +49,7 @@ const Home = () => {
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket();
   const navigate = useNavigate();
+const noDriverRef = useRef(null);
   
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
@@ -55,7 +59,9 @@ useEffect(() => {
   console.log("No user data in localStorage");
   navigate('/login');
 }
+
 }, []);
+
 
   useEffect(() => {
     if (!user._id) return;
@@ -107,6 +113,44 @@ useEffect(() => {
 
 }, [receiveMessage]);
 
+  
+useEffect(() => {
+  if (!user?._id) return; // Wait until user is available
+
+  const fetchRides = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Fetching rides for user:", user._id);
+      console.log("Token:", token);
+      console.log("Request URL:", `${import.meta.env.VITE_BACKEND_URL}rides/find-rides`);
+      console.log("Payload:", { user_id: user._id });
+
+      if (!token) {
+        console.error("No token found in localStorage!");
+        return;
+      }
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}rides/find-rides`,
+        { user_id: user._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Rides fetched:", res.data.rides);
+      setrides(res.data.rides);
+    } catch (error) {
+      // More detailed logging
+      console.error("Error fetching rides:", error.response?.data || error.message);
+    }
+  };
+
+  fetchRides();
+}, [user?._id]);
 
 
   useGSAP(
@@ -231,7 +275,9 @@ useEffect(() => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     });
+setvehiclepanel(true);
     setfare(response.data.final_fare);
+
 }
 const create_ride=async (selectedVehicleType)=>{
   const ride_details={
@@ -268,7 +314,7 @@ console.log(response.data);
           className="w-40 sm:w-28 md:w-32"
         />
       
-  <Link to="/profile">
+  <Link to="/profile" state={{ rides: rides }}>
   <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-black font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200 overflow-hidden">
     
     {/* Optional light reflection */}
@@ -402,6 +448,7 @@ console.log(response.data);
           create_ride={create_ride}
         />
       </div>
+
       
       {/* Looking For Driver Panel - Use max-w-lg mx-auto for centering */}
       <div
@@ -413,9 +460,14 @@ console.log(response.data);
           setlookingForVehicle={setlookingForVehicle}
           ride={ride}
         />
+
       </div>
       
       {/* Waiting For Driver Panel - Use max-w-lg mx-auto for centering */}
+
+
+    
+      
       {/* Note: I kept translate-y-0 for this one as it seems it's intended to be visible on ride confirmation */}
       <div
         ref={WaitingForDriverRef}

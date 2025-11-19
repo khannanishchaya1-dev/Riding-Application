@@ -131,7 +131,7 @@ async function confirmRide() {
  
   return (
     <div className="h-screen w-full">
-      <div className="fixed p-6 top-0 flex items-center justify-between w-screen">
+      <div className="fixed p-6 top-0 flex items-center justify-between w-screen z-20">
         <img
           className="w-60"
           src={wheelzyCaptainLogo}

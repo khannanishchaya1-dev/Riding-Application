@@ -49,5 +49,5 @@ const rideSchema = new mongoose.Schema({
     type:String,
     select:false
   }
-});
+},{timestamps:true});
 module.exports = mongoose.model('RIDE',rideSchema);
