@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios";
 import {useNavigate} from 'react-router-dom'
+import toast from "react-hot-toast";
 
 const FinishRide = (props) => {
   const navigate=useNavigate();
@@ -19,10 +20,11 @@ const FinishRide = (props) => {
       
     }
   })
-  console.log("response bhej diya")
+  toast.success("Hurray! You've successfully completed your ride!");
   
 
   if(response.status==200){
+    toast.success("Hurray! You've successfully completed your ride!");
    navigate('/captain-home');
     
   }

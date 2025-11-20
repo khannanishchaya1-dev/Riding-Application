@@ -6,13 +6,14 @@ import { useState,useRef } from 'react';
 import FinishRide from '../components/FinishRide'
 import LiveTracking from '../components/LiveTracking';
 import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import toast from "react-hot-toast";
 
 const CaptainRiding = () => {
   const [FinishRidepanel, setFinishRidepanel] = useState(false);
   const FinishRideRef = useRef(null);
   const location=useLocation();
   const {ride} = location.state || {};
-  
+  toast.success("Hurray! The ride has begun—have a safe journey!");
 
   useGSAP(() => {
   if (FinishRidepanel) {

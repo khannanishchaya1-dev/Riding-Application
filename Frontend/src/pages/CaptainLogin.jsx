@@ -29,7 +29,7 @@ const [email,setEmail]=useState('');
         }
       }catch(error){
         toast.error("Oops! Something seems wrong with the details you entered.");
-        alert("Oops! Something seems wrong with the details you entered.")
+        
       }
       setEmail('');
       setPassword('');

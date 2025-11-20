@@ -18,6 +18,7 @@ import WheelzyLogo from "../assets/wheelzy.svg";
 import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
 import NoDriverFound from "../components/NoDriverFound";
+import toast from "react-hot-toast";
 
 
 
@@ -96,6 +97,7 @@ useEffect(() => {
     setride(data);
     setvehiclepanel(false);
     setlookingForVehicle(false);
+toast.success("Hurray! Your captain is ready!");
     setWaitingForDriver(true);
     
   };

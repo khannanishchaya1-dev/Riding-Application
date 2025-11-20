@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSocket } from "../UserContext/SocketContext";
 import LiveTracking from "../components/LiveTracking";
 import WheelzyLogo from "../assets/wheelzy.svg";
+import toast from "react-hot-toast";
 
 const Riding = () => {
   const location = useLocation();
@@ -10,10 +11,12 @@ const Riding = () => {
   const { receiveMessage } = useSocket();
   const navigate = useNavigate();
   console.log(ride);
+  toast.success("Hurray! The ride has begun—enjoy the journey!");
 
   // Navigate home when ride ends
   React.useEffect(() => {
     receiveMessage("end-ride", () => {
+      toast.success("Hurray! Ride completed. Thanks for riding with us!");
       navigate("/home");
     });
   }, [receiveMessage, navigate]);

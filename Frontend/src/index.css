@@ -28,3 +28,25 @@
     box-shadow: none;
   }
 }
+.car-animation {
+  position: relative;
+}
+
+.car {
+  width: 60px;
+  height: 30px;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/743/743131.png');
+  background-size: cover;
+  position: absolute;
+  bottom: 0;
+  animation: drive 3s linear infinite;
+}
+
+@keyframes drive {
+  from {
+    left: -80px;
+  }
+  to {
+    left: 100%;
+  }
+}
