@@ -12,6 +12,8 @@ import axios from 'axios'
 import LiveTracking from "../components/LiveTracking";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import toast from "react-hot-toast";
+
 
 
 const CaptainHome = () => {
