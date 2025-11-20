@@ -69,6 +69,7 @@ const CaptainHome = () => {
       receiveMessage('new-ride',(data)=>{
         console.log(data);
         setride(data);
+        toast.success("Hurray! You have a new ride request!");
         setridePopUppanel(true);
       })
       useEffect(() => {
