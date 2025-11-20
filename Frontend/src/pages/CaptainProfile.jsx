@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Assuming the context provides [captainData, setCaptainData]
-import { LogOut, Car, TrendingUp, DollarSign, MapPin, Calendar, Clock, ArrowRight, ShieldCheck, Phone,IndianRupee } from 'lucide-react';
+import { LogOut, Car, TrendingUp, DollarSign, MapPin, Calendar, Clock, ArrowRight, ShieldCheck, Phone,IndianRupee,Eye,EyeOff } from 'lucide-react';
 
 // --- Helper Components ---
 
@@ -57,6 +57,7 @@ const CaptainProfile = () => {
   const [captainData, setCaptainData] = useContext(CaptainDataContext); 
   const [trips, setTrips] = useState([]);
   const [stats, setStats] = useState({ totalTrips: 0, totalEarnings: '0.00', rating: '5.0' });
+  const [showId, setShowId] = useState(false);
   const navigate = useNavigate();
   console.log(captainData)
 
@@ -238,8 +239,14 @@ setStats(
                   <span className="text-sm text-gray-600">Captain ID</span>
                 </div>
                 <span className="font-semibold text-gray-800 text-sm sm:text-base">
-                  {captainData?._id?.slice(-8) || "N/A"} {/* Changed 'user' to 'captainData' */}
+                  {showId ? captainData._id : "••••••••••••••••••••••••"} {/* Changed 'user' to 'captainData' */}
                 </span>
+                 <button
+        onClick={() => setShowId(!showId)}
+        className="text-gray-700 hover:text-black"
+      >
+        {showId ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
               </div>
               
               {/* Phone Number */}
