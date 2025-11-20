@@ -82,6 +82,12 @@ const ProfilePage = () => {
   const [rides, setrides] = useState([]);
   const navigate = useNavigate();
 
+   useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+      }, []);
   
   useEffect(() => {
   
