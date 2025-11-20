@@ -72,7 +72,7 @@ const Riding = () => {
           <div className="flex items-center gap-3 p-3">
             <i className="text-xl ri-money-rupee-circle-fill"></i>
             <div className="flex flex-col">
-              <h3 className="text-md sm:text-lg font-medium">{ride?.fare}</h3>
+              <h3 className="text-md sm:text-lg font-medium">₹{ride?.fare}</h3>
               <p className="text-sm sm:text-md text-gray-500">Estimated Fare</p>
             </div>
           </div>
