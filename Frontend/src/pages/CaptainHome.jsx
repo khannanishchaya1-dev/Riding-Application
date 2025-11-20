@@ -162,7 +162,7 @@ async function confirmRide() {
         
         
       </div>
-      <div className="h-2/5 p-6 bg-yellow-300">
+      <div className="h-2/5 p-4 bg-gradient-to-br from-yellow-200 to-yellow-400">
        <CaptainDetails captain={captainData}/>
       </div>
       <div ref={ridePopUppanelRef} className=" fixed z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">

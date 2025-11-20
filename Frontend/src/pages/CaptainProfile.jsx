@@ -161,7 +161,7 @@ setStats(
       <div className="w-full max-w-2xl bg-white shadow-xl overflow-hidden">
         
         {/* --- 1. HEADER & GREETING (Yellow Theme) --- */}
-        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 sm:p-8 text-white">
+        <div className="bg-gradient-to-br from-yellow-300 to-yellow-500 p-6 sm:p-8 text-white">
           <div className="flex justify-between items-center">
             {/* Captain Initial Avatar (Yellow and prominent) */}
             <div 

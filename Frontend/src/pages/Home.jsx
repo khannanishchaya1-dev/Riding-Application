@@ -321,39 +321,42 @@ console.log(response.data);
             Find a trip
           </h4>
           <form
-            onSubmit={(e) => {
-              submitHandler(e);
-            }}
-            className="flex flex-col gap-3 sm:gap-4 mt-3 relative" // Removed max-w-md mx-auto, let the parent handle width
-          >
-            {/* Line element position adjusted for smaller screens: top-[38%] left-3 and made left dynamic */}
-            <div className="line h-13 w-0.5 bg-black absolute top-[39%] left-3 sm:left-4 rounded-full"></div>
-            <input
-              onClick={() => {
-                setPanelOpen(true);
-                setActiveField("origin");
-              }}
-              value={origin}
-              className="bg-[#eee] text-base rounded-lg pl-8 pr-4 py-2 sm:py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
-              type="text"
-              onChange={(e) => {
-                setorigin(e.target.value);
-              }}
-              placeholder="Enter origin location"
-            />
-            <input
-              onClick={() => {
-                setPanelOpen(true);
-                setActiveField("destination");
-              }}
-              value={destination}
-              className="bg-[#eee] text-base rounded-lg pl-8 pr-4 py-2 sm:py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
-              type="text"
-              onChange={(e) => setdestination(e.target.value)}
-              placeholder="Enter destination location"
-            />
-          </form>
-          
+  onSubmit={(e) => submitHandler(e)}
+  className="flex flex-col gap-4 mt-3 relative"
+>
+  {/* ORIGIN DOT */}
+  <div className="absolute left-4 top-[18px] w-3 h-3 bg-black rounded-full"></div>
+
+  {/* CONNECTING LINE */}
+  <div className="absolute left-[18px] top-[32px] h-[52px] w-[2px] bg-gray-700 rounded-full"></div>
+
+  {/* DESTINATION RING */}
+  <div className="absolute left-[14px] top-[88px] w-3 h-3 bg-black rounded-full"></div>
+
+  <input
+    onClick={() => {
+      setPanelOpen(true);
+      setActiveField("origin");
+    }}
+    value={origin}
+    className="bg-[#eee] text-base rounded-lg pl-10 pr-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
+    type="text"
+    onChange={(e) => setorigin(e.target.value)}
+    placeholder="Enter origin location"
+  />
+
+  <input
+    onClick={() => {
+      setPanelOpen(true);
+      setActiveField("destination");
+    }}
+    value={destination}
+    className="bg-[#eee] text-base rounded-lg pl-10 pr-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
+    type="text"
+    onChange={(e) => setdestination(e.target.value)}
+    placeholder="Enter destination location"
+  />
+</form>
           <button 
             onClick={()=>{find_trip()}} 
             disabled={!origin || !destination} // Disable button if locations are empty
