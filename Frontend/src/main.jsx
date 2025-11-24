@@ -10,7 +10,7 @@ import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
    <BrowserRouter>
    <SocketProvider>
       <CaptainContext>
@@ -25,5 +25,5 @@ createRoot(document.getElementById('root')).render(
       </CaptainContext>
       </SocketProvider>
       </BrowserRouter>
-  </StrictMode>
+  // </StrictMode>
 )

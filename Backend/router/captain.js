@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {body} = require('express-validator');
-const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain }=require('../controllers/captain');
+const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus }=require('../controllers/captain');
 const { authCaptain } = require('../middlewares/auth');
+
 router.post('/register',
 [
     // Personal Details Validation
@@ -51,6 +52,10 @@ loginCaptain
 );
 router.get("/profile",authCaptain,getCaptainProfile);
 router.get("/logout",authCaptain,logoutCaptain);
+router.post("/status",[body("status")
+  .isBoolean()
+  .withMessage("Status must be true or false")]
+        ,authCaptain,changeStatus)
 
 
 

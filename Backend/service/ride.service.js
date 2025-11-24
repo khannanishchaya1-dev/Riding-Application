@@ -3,6 +3,7 @@ const RIDE = require('../models/ride');
 const mapService = require('./maps.service');
 const crypto = require('crypto');
 const rideModel = require('../models/ride')
+const captainModel = require('../models/captain')
 
 
 module.exports.calculateFare=async (origin,destination)=>{
@@ -183,4 +184,17 @@ module.exports.findRidesByCaptain = async (captain_id) => {
 };
 
 
+module.exports.setStatus = async (captain, status) => {
+  if (!captain) {
+    throw new Error("Captain is required");
+  }
 
+
+  const updatedCaptain = await captainModel.findByIdAndUpdate(
+    captain._id, 
+    { status: status }, 
+    { new: true }  // returns updated doc
+  );
+
+  return updatedCaptain;
+};

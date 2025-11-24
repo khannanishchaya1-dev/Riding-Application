@@ -129,6 +129,7 @@ module.exports.getCaptainsInRadius = async (lat, lon, radius) => {
     console.log("🔍 Finding captains near:", { lat, lon, radius });
 
     const captains = await captainModel.find({
+        status: true,
       location: {
         $geoWithin: {
           $centerSphere: [[lon, lat], radius / 6371], // convert km to radians

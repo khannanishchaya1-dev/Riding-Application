@@ -1,6 +1,8 @@
 const Captain = require('../models/captain');
 const { validationResult }=require('express-validator');
 const BlacklistedToken = require('../models/blacklist.token')
+const {setStatus} = require('../service/ride.service');
+
 const handleCaptainRegister = async (req, res) => {
     // 1. Check for validation errors from express-validator
     const errors = validationResult(req);
@@ -39,8 +41,7 @@ const handleCaptainRegister = async (req, res) => {
         },
         email: email,
         phone: phone, // ⭐ Added phone
-        password: password,
-        status: "inactive", 
+        password: password, 
         vehicle: {
             color: vehicle.color,
             capacity: vehicle.capacity,
@@ -97,7 +98,20 @@ const logoutCaptain = async (req,res,next)=>{
 
   res.status(200).json({message:"logout Success"})
 }
-
+const changeStatus= async (req,res,next)=>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+     return res.status(400).json({ errors: errors.array() });
+  }
+  if(!req.captain){
+     return res.status(400).json({ message:"no captain available" });
+  }
+ const {status} = req.body;
+  console.log(status)
+  const result = await setStatus(req.captain,status);
+  return res.status(200).json({"message": `Captain status changed to ${result.status}`,"captain": result
+})
+}
 
 
 
@@ -108,4 +122,5 @@ module.exports={
   loginCaptain,
   getCaptainProfile,
   logoutCaptain,
+  changeStatus,
 }

@@ -1,14 +1,41 @@
 import React, { useContext, useState } from "react";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+import axios from 'axios';
 
 const CaptainDetails = () => {
-  const [captainData] = useContext(CaptainDataContext);
-  const [active, setActive] = useState(true);
+  const [captainData,setCaptainData] = useContext(CaptainDataContext);
+  const [active, setActive] = useState(captainData.status);
+  useEffect(()=>{
+    console.log(captainData)
+  },[captainData])
+  const setStatus = async (updated)=>{
+    console.log(updated)
+const res =  await axios.post(`${import.meta.env.VITE_BACKEND_URL}captains/status`,
+      {status:updated},
+{
+       headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+    }
+)
+if(res.status==200){
+  console.log("nice");
+  setCaptainData(res.data.captain);
+if (!res.data.captain.status) {
+    toast.error("User is Inactive!");
+  } else {
+   toast.success("User is Active!");
+  }
+}
+  }
 
   if (!captainData || !captainData.fullname) {
     return <div>Loading captain details...</div>;
   }
+  
 
   return (
     <div className="p-4">
@@ -41,7 +68,9 @@ const CaptainDetails = () => {
 
         {/* Toggle Button */}
         <button
-          onClick={() => setActive(!active)}
+          onClick={() => {const updated = !active;
+            setActive(updated);
+            setStatus(updated)}}
           className={`px-4 py-2 rounded-lg font-medium text-white ${
             active ? "bg-red-500" : "bg-green-500"
           }`}

@@ -21,8 +21,9 @@ module.exports.createRide = async (req, res) => {
      res.status(201).json(newRide);
       const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
     console.log(originCoordinates);
-    const getCaptainsInRadius = await mapService.getCaptainsInRadius (originCoordinates.lat,originCoordinates.lon,200); 
-    const distanceMatrix = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,28.2066944, 76.6050304);
+    const getCaptainsInRadius = await mapService.getCaptainsInRadius (originCoordinates.lat,originCoordinates.lon,10); 
+    const distanceMatrix = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,30.514251, 
+76.6605446);
     console.log(distanceMatrix);
      newRide.otp=" "// 10 km
     console.log("Captains in radius:", getCaptainsInRadius);

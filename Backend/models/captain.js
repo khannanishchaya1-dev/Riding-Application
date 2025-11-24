@@ -33,10 +33,9 @@ const captainSchema = new mongoose.Schema(
       type: String,
     },
     status: {
-      type: String,
-      enum: ["active", "inactive"],
-      default: "inactive",
-    },
+  type: Boolean,
+  default: false,
+},
     vehicle: {
       color: {
         type: String,
