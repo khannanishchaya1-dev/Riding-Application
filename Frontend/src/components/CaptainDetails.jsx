@@ -6,8 +6,11 @@ import toast from "react-hot-toast";
 import axios from 'axios';
 
 const CaptainDetails = () => {
+  const local = JSON.parse(localStorage.getItem("captain"));
+  
+  
   const [captainData,setCaptainData] = useContext(CaptainDataContext);
-  const [active, setActive] = useState(captainData.status);
+  const [active, setActive] = useState(local.status);
   useEffect(()=>{
     console.log(captainData)
   },[captainData])
@@ -24,6 +27,7 @@ const res =  await axios.post(`${import.meta.env.VITE_BACKEND_URL}captains/statu
 if(res.status==200){
   console.log("nice");
   setCaptainData(res.data.captain);
+  localStorage.setItem("captain", JSON.stringify(res.data.captain));
 if (!res.data.captain.status) {
     toast.error("User is Inactive!");
   } else {
