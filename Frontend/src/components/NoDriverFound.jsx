@@ -1,13 +1,22 @@
 import React from "react";
 import Cancelled from "../assets/Cancelled.svg";
+import {Link,useNavigate} from "react-router-dom"
 
-const NoDriverFound = ({ onRetry, onClose }) => {
+const NoDriverFound = (props) => {
+ const navigate = useNavigate();
+
+  const onClose = () => {
+    console.log("Clicked");
+    props.setnoDriverFound(false);
+    props.setride?.({});
+    navigate("/home");   // ✅ Navigate to /home
+  };
   return (
     <div className="p-6 text-center animate-fadeIn relative">
 
       {/* Close Icon */}
       <button
-        onClick={onClose}
+        onClick={()=>onClose()}
         className="absolute top-2 right-3 text-gray-400 text-2xl hover:text-black transition"
       >
         <i className="ri-close-line"></i>
@@ -30,13 +39,19 @@ const NoDriverFound = ({ onRetry, onClose }) => {
       </p>
 
       {/* Retry Button Icon Style */}
-      <button
-        onClick={onRetry}
-        className="w-full flex items-center justify-center gap-2 border border-green-600 text-green-700 font-semibold rounded-lg py-2 hover:bg-green-600 hover:text-white transition-all active:scale-95"
-      >
-        <i className="ri-refresh-line text-xl animate-spin-slow"></i>
-        Find Again
-      </button>
+      <Link
+  to="/home"
+  onClick={() => {
+    props.setride({});
+    props.setnoDriverFound(false);
+    
+  }}
+  className="w-full flex items-center justify-center gap-2 border border-green-600 text-green-700 font-semibold rounded-lg py-2 hover:bg-green-600 hover:text-white transition-all active:scale-95"
+>
+  <i className="ri-refresh-line text-xl animate-spin-slow"></i>
+  Find Again
+</Link>
+
     </div>
   );
 };

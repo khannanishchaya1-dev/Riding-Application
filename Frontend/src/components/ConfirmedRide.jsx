@@ -3,6 +3,9 @@ import React from 'react'
 const ConfirmedRide = (props) => {
   const handleConfirmRide=()=>{
     props.create_ride(props.vehicleType);
+    props.setvehiclepanel(false);
+    console.log("ride is confirmed")
+    
   }
   const vehicleImages = {
     car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n", // Car

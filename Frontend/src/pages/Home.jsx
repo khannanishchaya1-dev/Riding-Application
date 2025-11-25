@@ -46,10 +46,11 @@ const Home = () => {
   const [ride,setride]=useState({});
   const { user, setUser } = useContext(UserDataContext); // Get user data from context
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
+const[noDriverFound,setnoDriverFound] = useState(false);
   const { sendMessage } = useSocket();
   const {receiveMessage}=useSocket();
   const navigate = useNavigate();
-const noDriverRef = useRef(null);
+const noDriverFoundRef = useRef(null);
   
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
@@ -89,30 +90,74 @@ useEffect(() => {
   console.log("Updated ride:", ride);
 }, [ride]); // This will run whenever `ride` changes
 
+
+ useEffect(() => {
+  if (!lookingForVehicle) return;
+
+  // Show loading toast
+  const toastId = toast.loading("⏳ Searching for driver...");
+
+  let seconds = 40;
+
+
+  const timer = setTimeout(() => {
+
+    toast.dismiss(toastId);  // remove loading toast
+    toast.error("❌ No driver found");
+
+    setlookingForVehicle(false);
+    setnoDriverFound(true);
+  }, 10000);
+
+  return () => {
+    clearTimeout(timer);
+    toast.dismiss(toastId); // cleanup toast on cancel/confirm
+  };
+}, [lookingForVehicle]);
+
+
+useGSAP(
+  () => {
+    if (noDriverFound) {
+      gsap.to(noDriverFoundRef.current, {
+        transform: "translateY(0)",
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    } else {
+      gsap.to(noDriverFoundRef.current, {
+        transform: "translateY(100%)",
+        duration: 0.5,
+        ease: "power2.inOut",
+      });
+    }
+  },
+  { dependencies: [noDriverFound] }
+);
+
 useEffect(() => {
-  if (!receiveMessage) return; // ensure socket exists
+  if (!receiveMessage) return;
 
-  const handler = (data) => {
-    console.log("near, very close");
-    setride(data);
-    setvehiclepanel(false);
-    setlookingForVehicle(false);
-toast.success("Hurray! Your captain is ready!");
-    setWaitingForDriver(true);
-    
-  };
-  const startRide=(data)=>{
-    console.log('ride-started',data);
-    setride(data);
-    setWaitingForDriver(false);
-    navigate('/riding',{state:{ride:data}});
+  const handler = (data) => {
+    console.log("Driver confirmed");
+    
+    setnoDriverFound(false);
+    setlookingForVehicle(false);
+    setWaitingForDriver(true);
+    setride(data);
 
-  }
+    toast.success("Hurray! Your captain is ready!");
+  };
 
-  receiveMessage('ride-confirmed', handler);
-  receiveMessage('ride-started', startRide);
+  const startRide = (data) => {
+    setWaitingForDriver(false);
+    navigate("/riding", { state: { ride: data } });
+  };
 
+  receiveMessage("ride-confirmed", handler);
+  receiveMessage("ride-started", startRide);
 }, [receiveMessage]);
+
 
   
 
@@ -409,6 +454,7 @@ console.log(response.data);
           confirmRidepanel={confirmRidepanel}
           setconfirmRidepanel={setconfirmRidepanel}
           setlookingForVehicle={setlookingForVehicle}
+setvehiclepanel={setvehiclepanel}
           origin={origin}
           destination={destination}
           fare={fare}
@@ -432,7 +478,18 @@ console.log(response.data);
       </div>
       
       {/* Waiting For Driver Panel - Use max-w-lg mx-auto for centering */}
+ <div
+        ref={noDriverFoundRef}
+        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+      >
+        <NoDriverFound
+          
+setnoDriverFound={setnoDriverFound}
+          ride={ride}
+setride={setride}
+        />
 
+      </div>
 
     
       
