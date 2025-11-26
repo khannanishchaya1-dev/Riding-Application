@@ -97,7 +97,7 @@ useEffect(() => {
   // Show loading toast
   const toastId = toast.loading("⏳ Searching for driver...");
 
-  let seconds = 40;
+  
 
 
   const timer = setTimeout(() => {
@@ -107,7 +107,7 @@ useEffect(() => {
 
     setlookingForVehicle(false);
     setnoDriverFound(true);
-  }, 10000);
+  }, 30000);
 
   return () => {
     clearTimeout(timer);

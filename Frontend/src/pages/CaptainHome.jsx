@@ -1,19 +1,16 @@
-import React,{useContext,useEffect} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
-import { useState,useRef } from "react";
-import {useGSAP} from "@gsap/react";
-import {gsap} from "gsap";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import { useSocket } from "../UserContext/SocketContext"; // Import the socket contextxt
-import axios from 'axios'
+import { useSocket } from "../UserContext/SocketContext";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import axios from "axios";
 import LiveTracking from "../components/LiveTracking";
-import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
 import toast from "react-hot-toast";
-
 
 
 const CaptainHome = () => {
@@ -21,157 +18,233 @@ const CaptainHome = () => {
   const ridePopUppanelRef = useRef(null);
   const [confirmridePopUppanel, setconfirmridePopUppanel] = useState(false);
   const confirmridePopUppanelRef = useRef(null);
-  const [captainData, setCaptainData] = useContext(CaptainDataContext); // Get captain data from context
-  const { sendMessage } = useSocket();
-  const {receiveMessage}=useSocket(); // Use sendMessage function from socket context
-  const [ride,setride]=useState({});
+  const [captainData, setCaptainData] = useContext(CaptainDataContext);
+  const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
+  const incomingSound = useRef(new Audio("/src/assets/sounds/incoming_new.mp3"));
+const acceptedSound = useRef(new Audio("/src/assets/sounds/accepted.mp3"));
+const expiredSound = useRef(new Audio("/src/assets/sounds/ignored.mp3"));
+  const timerRef = useRef(null);
+ // adjust if different
+  const [ride, setride] = useState({});
+useEffect(() => {
+  if (!socket || !captainData?._id) return;
+
+  sendMessage("join", {
+    userId: captainData._id,
+    userType: "captain",
+  });
+
+  console.log("📡 Join request sent for captain:", captainData._id);
+
+}, [socket, captainData?._id]);
+
+  // Load captain from localStorage
   useEffect(() => {
-    const storedCaptain = localStorage.getItem('captain');
+    const storedCaptain = localStorage.getItem("captain");
     if (storedCaptain) {
       setCaptainData(JSON.parse(storedCaptain));
     }
-  }, []);
+  }, [setCaptainData]);
 
-   useEffect(() => {
-      // Emit the "join" event when the component mounts
-       if (captainData && captainData._id) {
-        sendMessage("join", { userId: captainData._id, userType: "captain" });
-      }else{
-        console.log("Captain data not available yet.");
-      }
+  // Join room + location updates
+  useEffect(() => {
+  if (!captainData?._id || !socket) return;
 
-      const locationUpdateInterval = () => {
-  if (navigator.geolocation) {
+  let intervalId = null;
+
+  const sendLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
-
-        const data = {
+        sendMessage("updateCaptainLocation", {
           captainId: captainData._id,
-          location: { ltd: latitude, lng: longitude },
-        };
-
-        console.log("📍 Sending updated location:", data);
-
-        sendMessage("updateCaptainLocation", data); // or socket.emit()
+          location: {
+            ltd: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+        });
       },
-      (error) => {
-        console.error("❌ Error getting location:", error);
-      }
+      (err) => console.error("❌ Location error:", err)
     );
-  } else {
-    console.error("❌ Geolocation not supported by browser");
+  };
+
+  // Run immediately once
+  sendLocation();
+
+  // Start continuous updates ONLY if popup is not open
+  if (!ridePopUppanel) {
+    intervalId = setInterval(sendLocation, 5000);
   }
-};
 
-    const intervalId = setInterval(locationUpdateInterval, 5000); // Update location every 5 seconds
-    locationUpdateInterval(); // Initial location update on mount
-        }, [captainData, sendMessage]);
+  return () => {
+    if (intervalId) clearInterval(intervalId);
+  };
 
-      receiveMessage('new-ride',(data)=>{
-        console.log(data);
-        setride(data);
-        toast.success("Hurray! You have a new ride request!");
-        setridePopUppanel(true);
-      })
-      useEffect(() => {
-        console.log("Updated ride:", ride);
-      }, [ride]);
+}, [captainData?._id, socket, ridePopUppanel]);
+
+  // Listen for new rides (socket)
+  useEffect(() => {
+  if (!socket) return;
+  console.log("🔥 Socket connected:", socket.id);
+}, [socket]);
+  
+useEffect(() => {
+  if (!socket) return; // <-- important safeguard
+
+  const handler = (data) => {
+    console.log("📦 New ride received:", data);
+    setride(data);
+    toast.success("🚖 New ride request received!");
+    incomingSound.current.currentTime = 0;
+  incomingSound.current.play().catch(()=>{});
+    setridePopUppanel(true);
+  };
+
+  console.log("📡 Subscribed to event: new-ride");
+  receiveMessage("new-ride", handler);
+
+  return () => {
+    console.log("🧹 Unsubscribed from: new-ride");
+    offMessage("new-ride", handler);
+  };
+}, [socket]); // <-- ONLY depend on socket
 
 
+  // Log ride updates (just for debug)
+  useEffect(() => {
+    console.log("Updated ride:", ride);
+  }, [ride]);
 
-  useGSAP(() => {
-  if (ridePopUppanel) {
-    gsap.to(ridePopUppanelRef.current, {
-      transform: "translateY(0)",
-      duration: 0.5,
-      ease: "power2.out",
-    });
-  } else {
-    gsap.to(ridePopUppanelRef.current, {
-      transform: "translateY(100%)",
-      duration: 0.5,
-      ease: "power2.inOut",
-    });
+  // Auto close ride popup + toast countdown instead of console "waiting"
+  useEffect(() => {
+
+  // 🚫 If popup closed → stop immediately & do nothing
+  if (!ridePopUppanel || confirmridePopUppanel) {
+    toast.dismiss("ride-timer");
+    console.log("🛑 Ride popup closed, timer prevented.");
+    return;
   }
-}, { dependencies: [ridePopUppanel] });
-useGSAP(() => {
-  if (confirmridePopUppanel) {
-    gsap.to(confirmridePopUppanelRef.current, {
-      transform: "translateY(0)",
-      duration: 0.5,
-      ease: "power2.out",
-    });
-  } else {
-    gsap.to(confirmridePopUppanelRef.current, {
-      transform: "translateY(100%)",
-      duration: 0.5,
-      ease: "power2.inOut",
-    });
-  }
-}, { dependencies: [confirmridePopUppanel] });
-async function confirmRide() {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
-      {
-        rideId: ride._id, // request body
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // config object
+
+  // ✅ If popup opened → start timer
+  let seconds = 29;
+
+  toast.loading(`⏳ Waiting for your response... ${seconds}s`, { id: "ride-timer" });
+
+  const intervalId = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      toast.loading(`⏳ Waiting for your response... ${seconds}s`, { id: "ride-timer" });
+    }
+  }, 1000);
+
+  const timeoutId = setTimeout(() => {
+    setridePopUppanel(false);
+    toast.dismiss("ride-timer");
+    console.log("⌛ Ride auto-dismissed after timeout");
+  }, 29000);
+
+  return () => {
+    clearInterval(intervalId);
+    clearTimeout(timeoutId);
+  };
+
+}, [ridePopUppanel,confirmridePopUppanel, ride]);
+
+  // GSAP animations
+  useGSAP(
+    () => {
+      gsap.to(ridePopUppanelRef.current, {
+        transform: ridePopUppanel ? "translateY(0%)" : "translateY(100%)",
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    },
+    { dependencies: [ridePopUppanel] }
+  );
+
+  useGSAP(
+    () => {
+      gsap.to(confirmridePopUppanelRef.current, {
+        transform: confirmridePopUppanel ? "translateY(0%)" : "translateY(100%)",
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    },
+    { dependencies: [confirmridePopUppanel] }
+  );
+
+  async function confirmRide() {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
+        {
+          rideId: ride._id,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-    console.log('✅ Ride confirmed:', response.data);
-  } catch (error) {
-    console.log(error);
-    console.error('❌ Error confirming ride:', error.response?.data || error.message);
+      console.log("✅ Ride confirmed:", response.data);
+    } catch (error) {
+      console.error(
+        "❌ Error confirming ride:",
+        error.response?.data || error.message
+      );
+    }
   }
-}
 
- 
   return (
     <div className="h-screen w-full">
       <div className="fixed p-6 top-0 flex items-center justify-between w-full z-10">
-        {/* Logo */}
-               <img 
-                 src={wheelzyCaptainLogo}
-                 alt="Logo"
-                 className="w-40 sm:w-28 md:w-32"
-               />
-             
-         <Link to="/captain-profile">
+        <img
+          src={wheelzyCaptainLogo}
+          alt="Logo"
+          className="w-40 sm:w-28 md:w-32"
+        />
+
+        <Link to="/captain-profile">
           <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-black font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200 overflow-hidden">
-            
-            {/* Optional light reflection */}
-            <div className="absolute inset-0 bg-white/20 rounded-full pointer-events-none"></div>
-        
-            {/* Letter */}
+            <div className="absolute inset-0 bg-white/20 rounded-full pointer-events-none" />
             <span className="relative z-10">
               {captainData?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
             </span>
           </div>
         </Link>
-        
       </div>
+
       <div className="h-3/5">
-        
-          <LiveTracking />
-        
-        
+        <LiveTracking />
       </div>
+
       <div className="h-2/5 p-4 bg-gradient-to-br from-yellow-200 to-yellow-400">
-       <CaptainDetails captain={captainData}/>
+        <CaptainDetails captain={captainData} />
       </div>
-      <div ref={ridePopUppanelRef} className=" fixed z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
-        <RidePopUp setridePopUppanel={setridePopUppanel} setconfirmridePopUppanel={setconfirmridePopUppanel} ride={ride}
-        confirmRide={confirmRide}
+
+      {/* Ride popup */}
+      <div
+        ref={ridePopUppanelRef}
+        className="fixed z-10 bottom-0 bg-white p-3 w-full py-10 translate-y-full"
+      >
+        <RidePopUp
+          setridePopUppanel={setridePopUppanel}
+          setconfirmridePopUppanel={setconfirmridePopUppanel}
+          ride={ride}
+          confirmRide={confirmRide}
         />
       </div>
-      <div ref={confirmridePopUppanelRef} className=" fixed h-screen z-30 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
-        <ConfirmRidePopUp setconfirmridePopUppanel={setconfirmridePopUppanel}  setridePopUppanel={setridePopUppanel} ride={ride}/>
+
+      {/* Confirm ride popup */}
+      <div
+        ref={confirmridePopUppanelRef}
+        className="fixed h-screen z-30 bottom-0 bg-white p-3 w-full py-10 translate-y-full"
+      >
+        <ConfirmRidePopUp
+          setconfirmridePopUppanel={setconfirmridePopUppanel}
+          setridePopUppanel={setridePopUppanel}
+          ride={ride}
+        />
       </div>
     </div>
   );

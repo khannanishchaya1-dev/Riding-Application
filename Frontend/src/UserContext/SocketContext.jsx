@@ -1,46 +1,42 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-// Create the Socket.IO context
 export const SocketContext = createContext();
 
-// Provide the Socket.IO context
 const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Initialize the socket connection
-    const newSocket = io(`${import.meta.env.VITE_BACKEND_URL}`); // Replace with your server URL
+    const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+      transports: ["websocket"],
+    });
+
+    newSocket.on("connect", () => {
+      console.log("🔥 Socket connected:", newSocket.id);
+    });
+
     setSocket(newSocket);
 
-    // Cleanup on unmount
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => newSocket.disconnect();
   }, []);
 
-  // Function to send a message to the server
-  const sendMessage = (eventName, message) => {
-    if (socket) {
-      socket.emit(eventName, message);
-    }
+  const sendMessage = (eventName, message) => socket?.emit(eventName, message);
+
+  const receiveMessage = (eventName, callback) => {
+    if (!socket) return;
+    socket.off(eventName);
+    socket.on(eventName, callback);
   };
 
-  // Function to listen for messages from a specific event
-  const receiveMessage = (eventName, callback) => {
-    if (socket) {
-      socket.on(eventName, callback);
-    }
-  };
+  const offMessage = (eventName, callback) => socket?.off(eventName, callback);
 
   return (
-    <SocketContext.Provider value={{socket, sendMessage, receiveMessage }}>
+    <SocketContext.Provider value={{ socket, sendMessage, receiveMessage, offMessage }}>
       {children}
     </SocketContext.Provider>
   );
 };
 
-// Custom hook to use the Socket.IO context
 export const useSocket = () => useContext(SocketContext);
 
 export default SocketProvider;
