@@ -251,25 +251,7 @@ useEffect(() => {
     },
     { dependencies: [lookingForVehicle] }
   );
-  useGSAP(
-    () => {
-      if (waitingForDriver) {
-        gsap.to(WaitingForDriverRef.current, {
-          transform: "translateY(0)",
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      } else {
-        gsap.to(WaitingForDriverRef.current, {
-          transform: "translateY(100%)",
-          duration: 0.5,
-          ease: "power2.inOut",
-        });
-      }
-    },
-    { dependencies: [waitingForDriver] }
-  );
-
+ 
   const submitHandler = (e) => {
     e.preventDefault();
   };
@@ -496,7 +478,9 @@ setride={setride}
       {/* Note: I kept translate-y-0 for this one as it seems it's intended to be visible on ride confirmation */}
       <div
         ref={WaitingForDriverRef}
-        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+        className={`fixed z-10 bottom-0 bg-white p-3 w-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto transition-all duration-300 ${
+    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+  }`}
       >
         <WaitingForDriver
           waitingForDriver={waitingForDriver}
