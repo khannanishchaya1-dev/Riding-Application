@@ -19,13 +19,15 @@ import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import ProfilePage from './pages/UserProfile';
 import CaptainProfile from './pages/CaptainProfile';
 import { Toaster } from "react-hot-toast";
+import SplashScreen from './pages/SplashScreen';
 
 const App = () => {
   return (
     <>
     <Toaster position="top-center" reverseOrder={false} />
      <Routes>
-      <Route path='/' element={<Start/>}/>
+      <Route path='/' element={<SplashScreen/>}/>
+      <Route path='/start' element={<Start/>}/>
       <Route path='/login' element={<UserLogin />}/>
       <Route path='/signup' element={<UserSignup />}/>
       <Route path='/captain-login' element={<CaptainLogin/>}/>

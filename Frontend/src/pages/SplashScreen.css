@@ -1,0 +1,165 @@
+/* MAIN CONTAINER */
+.splash-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: black;
+  font-family: "Montserrat", sans-serif;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-out;
+}
+
+/* EXIT TRANSITION */
+.fade-out {
+  opacity: 0;
+  transform: translateY(-50px);
+  filter: blur(4px);
+}
+
+/* TEXT BOX */
+.text-box {
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* BASE TEXT STATE */
+.welcome,
+.wheelzy,
+.proud {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+/* SHOWN TEXT STATE */
+.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* WELCOME TEXT */
+.welcome {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  color: #c7c7c7;
+}
+
+/* TYPEWRITER TARGET */
+.wheelzy {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 0.35rem;
+  color: #4caf50;
+  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  text-shadow: 0 0 12px rgba(76,175,80,0.3);
+}
+
+/* TYPEWRITER ANIMATION */
+.wheelzy.typing {
+  width: 12ch;
+  animation: typing 1.6s steps(12) forwards, blink 0.6s step-end infinite;
+}
+
+/* CURSOR */
+.wheelzy span {
+  border-right: 4px solid #4caf50;
+  padding-right: 10px;
+}
+
+/* REMOVE CURSOR + BOUNCE END */
+.wheelzy.done span {
+  border-right: none;
+}
+.wheelzy.done {
+  animation: bounce 0.4s ease-out both;
+}
+
+/* SUBTEXT */
+.proud {
+  font-size: 1rem;
+  margin-top: 18px;
+  color: #9e9e9e;
+  letter-spacing: 0.15rem;
+}
+
+/* -----------------------------
+   WHEEL ANIMATION (FINAL)
+------------------------------*/
+
+/* Base wheel styling — starts centered */
+.wheel {
+  width: 40px;
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.4);
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Step 1: appear in center and bounce */
+.enter {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  animation:
+    popIn 0.5s ease-out forwards,
+    roll 2.5s cubic-bezier(.36,.07,.19,.97) forwards 0.7s;
+}
+
+/* Wheel pop/bounce entry */
+@keyframes popIn {
+  0%   { transform: translateX(-50%) scale(0.3); opacity: 0; }
+  60%  { transform: translateX(-50%) scale(1.2); opacity: 1; }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Rolling animation starting from center */
+@keyframes roll {
+  0%   { transform: translateX(-50%) rotate(0deg); }
+  50%  { transform: translateX(120px) rotate(260deg); }
+  100% { transform: translateX(500px) rotate(600deg); }
+}
+
+/* -----------------------------
+   SKID TRAIL
+------------------------------*/
+
+.skid {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 4px;
+  width: 0;
+  opacity: 0;
+  background: linear-gradient(to right, rgba(255,255,255,0.7), rgba(255,255,255,0));
+  border-radius: 4px;
+  animation: skidTrail 2.5s ease-in-out forwards 0.7s;
+}
+
+@keyframes skidTrail {
+  0%   { width: 0; opacity: 0; }
+  40%  { width: 80px; opacity: 1; }
+  80%  { width: 300px; opacity: 0.6; }
+  100% { width: 450px; opacity: 0.15; }
+}
+
+/* -----------------------------
+   CORE EFFECTS
+------------------------------*/
+
+@keyframes typing { from { width: 0; } to { width: 12ch; } }
+
+@keyframes blink { 50% { border-color: transparent; } }
+
+@keyframes bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
