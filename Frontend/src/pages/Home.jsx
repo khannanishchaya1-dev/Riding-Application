@@ -294,7 +294,7 @@ console.log(response.data);
 }
 
   return (
-    <div className="h-full w-full overflow-hidden relative">
+    <div className="h-[100dvh] w-full overflow-hidden relative">
 
       {/* 🔹 NAVBAR */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between p-4 bg-transparent z-10">
@@ -325,12 +325,12 @@ console.log(response.data);
 
       </div>
       {/* Background Animation (LiveTracking) */}
-      <div className="h-screen w-screen z-10">
+      <div className="h-[100dvh] w-screen z-10">
         <LiveTracking />
       </div>
 
       {/* Bottom Sheet - Container for the main interaction area */}
-      <div className="h-screen absolute top-0 w-full flex flex-col justify-end z-10 pointer-events-none">
+      <div className="h-[100dvh] absolute top-0 w-full flex flex-col justify-end z-10 pointer-events-none">
         
         {/* Main Input Panel (Always visible at the bottom) */}
         <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-2xl rounded-t-2xl relative w-full max-w-lg mx-auto pointer-events-auto">
@@ -431,7 +431,7 @@ console.log(response.data);
       <div
         ref={confirmRideRef}
         className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto" ${
-    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+    confirmRidepanel ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}
       >
         <ConfirmedRide
@@ -452,7 +452,7 @@ setvehiclepanel={setvehiclepanel}
       <div
         ref={lookingForVehicleRef}
         className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
-    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+   lookingForVehicle ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}
       >
         <LookingForDriver
@@ -467,7 +467,7 @@ setvehiclepanel={setvehiclepanel}
  <div
         ref={noDriverFoundRef}
         className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
-    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+    noDriverFound ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   } `}
       >
         <NoDriverFound
