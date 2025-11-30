@@ -1,10 +1,20 @@
 @import "tailwindcss";
 /* This targets the container holding your <App /> component */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
 /* DESKTOP → Fake Phone Frame */
 .glass-phone {
   width: 420px;
   max-width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh; /* FIXED: smoother on mobile & desktop */
   margin: 20px auto;
   padding: 0;
   overflow: hidden;
@@ -15,12 +25,12 @@
   border-radius: 26px;
 }
 
-/* MOBILE → Remove Frame */
+/* MOBILE → Remove Frame (Full immersive UI) */
 @media (max-width: 768px) {
   .glass-phone {
     width: 100%;
     max-width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh; /* IMPORTANT */
     margin: 0;
     border-radius: 0;
     backdrop-filter: none;
@@ -29,6 +39,7 @@
     box-shadow: none;
   }
 }
+
 
 .car-animation {
   position: relative;

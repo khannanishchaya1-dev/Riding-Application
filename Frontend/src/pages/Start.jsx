@@ -4,10 +4,10 @@ import wheelzyLogo from "../assets/wheelzy.svg";
 
 const Start = () => {
   return (
-    <div className="min-h-screen w-full relative">
+    <div className="h-[100dvh] w-full relative">
       {/* Background Image */}
       <div
-        className="h-screen w-full bg-cover bg-center flex flex-col justify-between"
+        className="h-full w-full bg-cover bg-center flex flex-col justify-between"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1619059558110-c45be64b73ae?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dHJhZmZpYyUyMGxpZ2h0fGVufDB8fDB8fHww')",
