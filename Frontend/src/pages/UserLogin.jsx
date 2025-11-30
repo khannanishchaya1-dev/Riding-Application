@@ -35,7 +35,7 @@ const UserLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gray-50 px-4 sm:px-6">
+    <div className="h-[100dvh] flex flex-col justify-between bg-gray-50 px-4 sm:px-6">
       {/* Logo and Form */}
       <div className="pt-8">
         <img src={WheelzyLogo} alt="Wheelzy Logo" className="w-40 sm:w-32 mb-6" />

@@ -22,7 +22,7 @@ const Riding = () => {
   }, [receiveMessage, navigate]);
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gray-50">
+    <div className="h-[100dvh] w-full flex flex-col bg-gray-50">
       {/* Home Button */}
       <Link
         to="/home"
