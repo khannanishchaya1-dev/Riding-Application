@@ -430,7 +430,9 @@ console.log(response.data);
       {/* Confirmed Ride Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={confirmRideRef}
-        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto" ${
+    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+  }`}
       >
         <ConfirmedRide
           confirmRidepanel={confirmRidepanel}
@@ -449,7 +451,9 @@ setvehiclepanel={setvehiclepanel}
       {/* Looking For Driver Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={lookingForVehicleRef}
-        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
+    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+  }`}
       >
         <LookingForDriver
           lookingForVehicle={lookingForVehicle}
@@ -462,7 +466,9 @@ setvehiclepanel={setvehiclepanel}
       {/* Waiting For Driver Panel - Use max-w-lg mx-auto for centering */}
  <div
         ref={noDriverFoundRef}
-        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
+    waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
+  } `}
       >
         <NoDriverFound
           
