@@ -238,7 +238,7 @@ useEffect(() => {
       {/* Confirm ride popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="fixed h-screen z-30 bottom-0 bg-white p-3 w-full py-10 translate-y-full"
+        className="fixed h-[100dvh] z-30 bottom-0 bg-white p-3 w-full py-10 translate-y-full"
       >
         <ConfirmRidePopUp
           setconfirmridePopUppanel={setconfirmridePopUppanel}

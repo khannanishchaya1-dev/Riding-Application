@@ -55,7 +55,7 @@ const CaptainRiding = () => {
         <button onClick={() => {setFinishRidepanel(true)}} className=" bg-green-600 text-white font-semibold rounded-lg p-3 px-8 mt-5">Complete Ride</button>
       
       </div>
-      <div ref={FinishRideRef} className=" fixed h-screen z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
+      <div ref={FinishRideRef} className=" fixed h-[100dvh] z-10 bottom-0 bg-white p-3 w-full  py-10 translate-y-0">
         <FinishRide setFinishRidepanel={setFinishRidepanel}
         ride={ride}
          />
