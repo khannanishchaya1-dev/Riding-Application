@@ -196,7 +196,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="h-screen w-full">
+    <div className="h-[100dvh] w-full">
       <div className="fixed p-6 top-0 flex items-center justify-between w-full z-10">
         <img
           src={wheelzyCaptainLogo}

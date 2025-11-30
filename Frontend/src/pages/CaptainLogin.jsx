@@ -36,7 +36,7 @@ const [email,setEmail]=useState('');
 
   }
   return (
-    <div className="h-screen flex flex-col justify-between">
+    <div className="h-[100dvh] flex flex-col justify-between">
       <div className="p-7">
         <img className="w-40 mb-5" src={wheelzyCaptainLogo} alt="Wheelzy Captain Logo"/>
         <form onSubmit={submitHandler}>
