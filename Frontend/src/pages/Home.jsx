@@ -95,13 +95,14 @@ useEffect(() => {
   if (!lookingForVehicle) return;
 
   // Show loading toast
+  
 
   
 
 
   const timer = setTimeout(() => {
 
-    toast.dismiss(toastId);  // remove loading toast
+      // remove loading toast
     toast.error("❌ No driver found");
 
     setlookingForVehicle(false);
@@ -110,7 +111,7 @@ useEffect(() => {
 
   return () => {
     clearTimeout(timer);
-    
+     // cleanup toast on cancel/confirm
   };
 }, [lookingForVehicle]);
 
