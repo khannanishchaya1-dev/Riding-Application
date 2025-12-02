@@ -63,3 +63,68 @@ body {
     left: 100%;
   }
 }
+.input {
+  width: 100%;
+  background: #0f0f0f;
+  border: 1px solid #333;
+  padding: 12px 14px;
+  border-radius: 10px;
+  transition: 0.3s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #10b461;
+}
+
+.input.valid {
+  border-color: #10b461;
+}
+
+.check-icon {
+  position: absolute;
+  right: 12px;
+  top: 52%;
+  transform: translateY(-50%);
+  color: #10b461;
+  font-size: 20px;
+}
+
+.icon-btn {
+  position: absolute;
+  right: 40px;
+  top: 52%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: gray;
+}
+
+.btn {
+  width: 100%;
+  background: #363636;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn.active {
+  background: #10b461;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.shake {
+  animation: shakeAnim .3s;
+}
+
+@keyframes shakeAnim {
+  20% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  80% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+

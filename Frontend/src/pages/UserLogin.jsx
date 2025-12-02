@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
 import toast from "react-hot-toast";
 
 const UserLogin = () => {
@@ -10,80 +10,115 @@ const UserLogin = () => {
   const [password, setPassword] = useState("");
   const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
+  const [showPass, setShowPass] = useState(false);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const userData = { email, password };
+
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/login`, userData);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}users/login`,
+        { email, password }
+      );
+
       if (response.status === 200) {
+        toast.success("Welcome back! 🚗🔥");
+
         const data = response.data;
         setUser(data.user);
+
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+
         navigate("/home");
       }
     } catch (error) {
-     
-     toast.error("Oops! Something seems wrong with the details you entered.");
-      console.error(error?.response?.data || error.message);
+      toast.error("Invalid email or password ❌");
     }
-
-    // Reset form
-    setEmail("");
-    setPassword("");
   };
 
   return (
-    <div className="h-[100dvh] flex flex-col justify-between bg-gray-50 px-4 sm:px-6">
-      {/* Logo and Form */}
-      <div className="pt-8">
-        <img src={WheelzyLogo} alt="Wheelzy Logo" className="w-40 sm:w-32 mb-6" />
+    <div className="h-[100dvh] w-full bg-[#F5F5F5] flex flex-col">
 
-        <form onSubmit={submitHandler} className="w-full max-w-md">
-          {/* Email */}
-          <h3 className="text-base sm:text-lg mb-2 font-medium">What's your email</h3>
-          <input
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:text-lg mb-6"
-            type="email"
-            placeholder="example@gmail.com"
-          />
+      {/* Centered Login Card */}
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md bg-white mx-4 p-8 rounded-2xl shadow-md">
 
-          {/* Password */}
-          <h3 className="text-base sm:text-lg mb-2 font-medium">Enter Password</h3>
-          <input
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="bg-gray-200 px-3 py-2 rounded w-full text-base sm:text-lg mb-6"
-            type="password"
-            placeholder="Password"
-          />
+          <img src={WheelzyLogo} alt="Wheelzy" className="w-48 mb-8 mx-auto" />
 
-          <button className="bg-black text-white font-semibold px-3 py-2 rounded w-full text-base sm:text-lg mb-4 hover:bg-gray-900 transition">
-            Login
-          </button>
-        </form>
+          <h2 className="text-3xl font-bold text-[#E23744] text-center">
+            Welcome Back 👋
+          </h2>
 
-        {/* Signup Link */}
-        <p className="text-center text-sm sm:text-base">
-          New here?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">
-            Create new Account
-          </Link>
-        </p>
+          <p className="text-gray-600 text-center mb-6">
+            Login to continue your ride experience.
+          </p>
+
+          {/* Form */}
+          <form onSubmit={submitHandler} className="space-y-6">
+
+            {/* Email */}
+            <div>
+              <label className="text-sm font-semibold">Email Address</label>
+              <input
+                required
+                value={email}
+                type="email"
+                placeholder="example@email.com"
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
+              />
+            </div>
+
+            {/* Password */}
+           <div>
+              <label className="text-sm font-semibold flex justify-between">
+                Password
+                <span
+                  className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? "Hide" : "Show"}
+                </span>
+              </label>
+
+              <input
+                required
+                type={showPass ? "text" : "password"}
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-3 text-lg font-semibold bg-[#E23744] hover:bg-[#FF4F5A] text-white rounded-lg transition-transform active:scale-[0.97]"
+            >
+              Login
+            </button>
+          </form>
+
+          {/* Signup Redirect */}
+          <p className="text-center text-gray-600 mt-6">
+            New user?{" "}
+            <Link to="/signup" className="text-[#E23744] font-medium hover:underline">
+              Create Account →
+            </Link>
+          </p>
+
+        </div>
       </div>
 
-      {/* Captain Login */}
-      <div className="pt-6 pb-8 w-full max-w-md mx-auto">
+      {/* Bottom Switch */}
+      <div className="p-4">
         <Link
           to="/captain-login"
-          className="bg-green-600 flex justify-center text-white font-semibold px-3 py-2 rounded w-full text-base sm:text-lg hover:bg-green-700 transition"
+          className="block text-center w-full py-3 bg-white border border-gray-300 hover:bg-gray-100 rounded-lg text-lg font-medium transition"
         >
-          Sign in as Captain
+          Sign in as Captain 🚖
         </Link>
       </div>
     </div>

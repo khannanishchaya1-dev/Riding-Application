@@ -1,260 +1,225 @@
-import React from "react";
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import wheelzyCaptainLogo from "../assets/wheelzy-captain-dark.svg";
 import toast from "react-hot-toast";
 
 const CaptainSignup = () => {
-  // Existing State
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [color, setColor] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
-  const [numberPlate, setNumberPlate] = useState("");
-
-  // ⭐ NEW STATE FOR PHONE AND MODEL
-  const [phone, setPhone] = useState(""); 
-  const [vehicleModel, setVehicleModel] = useState(""); 
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    password: "",
+    vehicleModel: "",
+    color: "",
+    capacity: "",
+    vehicleType: "",
+    numberPlate: "",
+  });
 
   const [captainData, setCaptainData] = useContext(CaptainDataContext);
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    
-    // ⭐ INCLUDE NEW FIELDS IN THE API PAYLOAD
-    const newCaptain = {
-      email: email,
-      password: password,
-      phone: phone, // Added phone
+    setLoading(true);
+
+    const payload = {
       fullname: {
-        firstname: firstName,
-        lastname: lastName,
+        firstname: form.firstName,
+        lastname: form.lastName,
       },
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
       vehicle: {
-        color: color,
-        capacity: capacity,
-        vehicleType: vehicleType,
-        numberPlate: numberPlate,
-        vehicleModel: vehicleModel, // Added vehicleModel
+        vehicleModel: form.vehicleModel,
+        vehicleType: form.vehicleType,
+        color: form.color,
+        capacity: form.capacity,
+        numberPlate: form.numberPlate,
       },
     };
-    
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}captains/register`,
-        newCaptain
+        payload
       );
-      if (response.status === 201) {
-        const data = response.data;
-        setCaptainData(data.captain);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("captain", JSON.stringify(data.captain));
+
+      if (response.data?.token) {
+        toast.success("Captain account created 🚖🔥");
+        setCaptainData(response.data.captain);
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("captain", JSON.stringify(response.data.captain));
+
         navigate("/captain-home");
       }
-      
-      // Clear all fields
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
-      setCapacity("");
-      setColor("");
-      setNumberPlate("");
-      setVehicleType("");
-      setPhone(""); 
-      setVehicleModel(""); 
-      
-    } catch (err) {
-      console.error("Signup failed:", err.response?.data || err.message);
-      // Replaced alert with console error and message
-      toast.error("Oops! Something seems wrong with the details you entered.");
+    } catch (error) {
+      toast.error(error.response?.data?.errors?.[0]?.msg || "Signup failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="h-full bg-gray-50 flex flex-col items-center justify-center font-sans">
-      
-      {/* Centered Card Container */}
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl space-y-8 p-6">
-        
-        {/* Logo and Title */}
-        <div className="flex flex-col items-center mb-6">
-          <img className="w-40" src={wheelzyCaptainLogo} alt="Wheelzy Captain Logo" />
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">Captain Registration</h1>
-          <p className="text-sm text-gray-500 mt-1">Join the fleet and start earning!</p>
-        </div>
+    <div className="h-full w-full  flex flex-col">
 
-        <form onSubmit={submitHandler} className="space-y-6">
-          
-          {/* --- PERSONAL DETAILS SECTION --- */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Personal Details</h3>
-            
-            {/* Name Fields */}
-            <div className="flex gap-4 mb-6">
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">First Name</label>
-                <input
-                  required
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                  type="text"
-                  placeholder="First Name"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">Last Name</label>
-                <input
-                  required
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                  type="text"
-                  placeholder="Last Name"
-                />
-              </div>
-            </div>
+      {/* Fullscreen Form Card (No padding outside) */}
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-none sm:rounded-2xl shadow-lg  p-8">
 
-            {/* Email Field */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-600 mb-1 block">Email Address</label>
-              <input
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                type="email"
-                placeholder="example@gmail.com"
-              />
-            </div>
-            
-            {/* Phone Number Field */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-600 mb-1 block">Phone Number</label>
-              <input
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                type="tel"
-                placeholder="e.g., +91 98765 43210"
-              />
-            </div>
+          <img src={wheelzyCaptainLogo} className="w-48 mb-6 mx-auto" alt="logo" />
 
-            {/* Password Field */}
-            <div>
-              <label className="text-sm font-medium text-gray-600 mb-1 block">Password</label>
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                required
-                type="password"
-                placeholder="password"
-              />
-            </div>
-          </div>
-          
-          {/* --- VEHICLE DETAILS SECTION --- */}
-          <div className="pt-4">
-            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Vehicle Details</h3>
-            
-            {/* Vehicle Model Field */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-600 mb-1 block">Car Name / Model</label>
-              <input
-                required
-                value={vehicleModel}
-                onChange={(e) => setVehicleModel(e.target.value)}
-                className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                type="text"
-                placeholder="e.g., Maruti Swift"
-              />
-            </div>
+          <h2 className="text-3xl font-bold text-[#E23744] text-center">
+            Captain Signup 🚖
+          </h2>
 
-            {/* Color and Capacity Fields */}
-            <div className="flex gap-4 mb-6">
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">Color</label>
-                <input
-                  required
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                  type="text"
-                  placeholder="Color"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">Capacity</label>
-                <input
-                  required
-                  value={capacity}
-                  onChange={(e) => setCapacity(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                  type="number" // Changed to number type
-                  placeholder="Capacity (e.g., 4)"
-                />
-              </div>
-            </div>
-            
-            {/* Number Plate and Vehicle Type Fields */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">Vehicle Number</label>
-                <input
-                  required
-                  value={numberPlate}
-                  onChange={(e) => setNumberPlate(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                  type="text"
-                  placeholder="e.g., KA01AB1234"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="text-sm font-medium text-gray-600 mb-1 block">Vehicle Type</label>
-                <select
-                  required
-                  value={vehicleType}
-                  onChange={(e) => setVehicleType(e.target.value)}
-                  className="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg w-full text-base focus:ring-2 focus:ring-[#10b461] focus:border-transparent transition duration-200"
-                >
-                  <option value="" disabled>
-                    Select Type
-                  </option>
-                  <option value="car">Car</option>
-                  <option value="motorcycle">Motorcycle</option>
-                  <option value="truck">Truck</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          {/* Submit Button */}
-          <button 
-            type="submit" 
-            className="bg-gray-900 hover:bg-black text-white font-bold px-4 py-3 rounded-xl w-full text-lg transition duration-200 shadow-lg mt-8"
-          >
-            Create Captain Account
-          </button>
-          
-          <p className="text-center text-sm text-gray-600 mt-4">
-            Already have an account?{" "}
-            <Link to="/captain-login" className="text-blue-600 hover:text-blue-800 font-medium transition">
-              Login here
-            </Link>
+          <p className="text-gray-600 text-center mb-6">
+            Join Wheelzy and start earning.
           </p>
 
-        </form>
+          <form onSubmit={submitHandler} className="space-y-6">
+
+            {/* Full Name */}
+            <div>
+              <label className="text-sm font-semibold">Full Name</label>
+              <div className="flex gap-3 flex-col sm:flex-row">
+                <input
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={(e) => handleChange("firstName", e.target.value)}
+                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+                />
+                <input
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={(e) => handleChange("lastName", e.target.value)}
+                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="text-sm font-semibold">Phone Number</label>
+              <input
+                type="tel"
+                placeholder="9876543210"
+                value={form.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="text-sm font-semibold">Email Address</label>
+              <input
+                type="email"
+                placeholder="example@mail.com"
+                value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="text-sm font-semibold flex justify-between">
+                Password
+                <span
+                  className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? "Hide" : "Show"}
+                </span>
+              </label>
+
+              <input
+                required
+                type={showPass ? "text" : "password"}
+                placeholder="password"
+                value={form.password}
+                onChange={(e) => handleChange("password",e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
+              />
+            </div>
+
+            {/* Vehicle Fields */}
+            <input
+              placeholder="Vehicle Model"
+              value={form.vehicleModel}
+              onChange={(e) => handleChange("vehicleModel", e.target.value)}
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+            />
+
+            <input
+              placeholder="Number Plate"
+              value={form.numberPlate}
+              onChange={(e) => handleChange("numberPlate", e.target.value)}
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+            />
+
+            <div className="flex gap-3 flex-col sm:flex-row">
+              <input
+                placeholder="Color"
+                value={form.color}
+                onChange={(e) => handleChange("color", e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              />
+
+              <input
+                type="number"
+                placeholder="Capacity (Seats)"
+                value={form.capacity}
+                onChange={(e) => handleChange("capacity", e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              />
+            </div>
+
+            {/* Vehicle Type */}
+            <select
+              value={form.vehicleType}
+              onChange={(e) => handleChange("vehicleType", e.target.value)}
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+            >
+              <option value="">Select Vehicle Type</option>
+              <option value="Car">Car</option>
+              <option value="Motorcycle">Motorcycle</option>
+              <option value="Auto">Auto Rickshaw</option>
+            </select>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 text-lg font-semibold text-white rounded-xl transition 
+                ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#E23744] hover:bg-[#FF4F5A]"}`}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          {/* Redirect */}
+          <p className="text-center text-gray-600 mt-6 mb-4">
+            Already registered?{" "}
+            <Link to="/captain-login" className="text-[#E23744] font-medium hover:underline">
+              Login →
+            </Link>
+          </p>
+        </div>
       </div>
-      
     </div>
   );
 };

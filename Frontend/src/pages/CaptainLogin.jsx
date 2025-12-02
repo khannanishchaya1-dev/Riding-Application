@@ -1,79 +1,139 @@
-import React,{useContext} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios';
-import { CaptainDataContext } from '../UserContext/CaptainContext';
-import wheelzyCaptainLogo from "../assets/wheelzy-captain.svg";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { CaptainDataContext } from "../UserContext/CaptainContext";
+import wheelzyCaptainLogo from "../assets/wheelzy-captain-dark.svg";
 import toast from "react-hot-toast";
 
 const CaptainLogin = () => {
-const [email,setEmail]=useState('');
-  const [password,setPassword]=useState('');
-  const[captainData,setCaptainData]=useContext(CaptainDataContext);
-  const navigate=useNavigate();
-  const submitHandler = async (e)=>{
-    e.preventDefault();
-    const captain={
-      email:email,
-      password:password
-    }
-    try{
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}captains/login`,captain);
-      if(response.status===200){
-        const data = response.data;
-        setCaptainData(data.captain);
-        console.log(data.captain);
-        localStorage.setItem('token',data.token);
-        localStorage.setItem('captain',JSON.stringify(data.captain));
-        navigate('/captain-home');
-        }
-      }catch(error){
-        toast.error("Oops! Something seems wrong with the details you entered.");
-        
-      }
-      setEmail('');
-      setPassword('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [captainData, setCaptainData] = useContext(CaptainDataContext);
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
-  }
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}captains/login`,
+        { email, password }
+      );
+
+      if (response.data?.token) {
+        setCaptainData(response.data.captain);
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("captain", JSON.stringify(response.data.captain));
+
+        toast.success("Welcome Captain 🚖🔥");
+        navigate("/captain-home");
+      } else {
+        toast.error("Unexpected server response");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Invalid Credentials ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="h-[100dvh] flex flex-col justify-between">
-      <div className="p-7">
-        <img className="w-40 mb-5" src={wheelzyCaptainLogo} alt="Wheelzy Captain Logo"/>
-        <form onSubmit={submitHandler}>
-          <h3 className="text-lg mb-2 font-medium">What's your email</h3>
-          <input
-          required
-            value={email}
-            onChange={(e)=>setEmail(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded  w-full text-lg mb-7"
-            type="email"
-            placeholder="example@gmail.com"
-          ></input>
-          <h3 className="text-lg mb-2 font-medium">Enter Password</h3>
-          <input
-           value={password}
-            onChange={(e)=>setPassword(e.target.value)}
-            className="bg-[#eeeeee] px-2 py-2 rounded w-full text-lg mb-7"
-            required
-            type="password"
-            placeholder="password"
-          ></input>
-          <button className="bg-[#10b461] text-white font-semibold px-2 py-2 rounded w-full text-lg mb-4">
-            Login
-          </button>
-        </form>
-        <p className="text-center">
-            Join a fleet? <Link to='/captain-signup' className="text-blue-600">Register as a Captain</Link>
+    <div className="h-[100dvh] w-full bg-[#F5F5F5] flex flex-col">
+
+      {/* Main Centered Form Card */}
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md bg-white mx-4 p-8 rounded-xl shadow-md">
+
+          <img src={wheelzyCaptainLogo} className="w-48 mb-6 mx-auto" alt="logo" />
+
+          <h2 className="text-3xl font-bold text-[#E23744] text-center mb-2">
+            Captain Login 🚖
+          </h2>
+
+          <p className="text-gray-600 text-center mb-6">
+            Drive, Earn, Repeat.
           </p>
+
+          {/* Form */}
+          <form onSubmit={submitHandler} className="space-y-6">
+
+            {/* Email */}
+            <div>
+              <label className="text-sm font-semibold">Email</label>
+              <input
+                required
+                type="email"
+                placeholder="example@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="text-sm font-semibold flex justify-between">
+                Password
+                <span
+                  className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? "Hide" : "Show"}
+                </span>
+              </label>
+
+              <input
+                required
+                type={showPass ? "text" : "password"}
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg text-white text-lg font-semibold transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#E23744] hover:bg-[#FF4F5A]"
+              }`}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
+
+          <p className="text-center text-gray-600 mt-5">
+            New captain?{" "}
+            <Link
+              to="/captain-signup"
+              className="text-[#E23744] font-medium hover:underline"
+            >
+              Register →
+            </Link>
+          </p>
+        </div>
       </div>
-      <div className="p-7">
-        <Link to='/login' className="bg-[#111] flex justify-center text-white font-semibold px-2 py-2 rounded w-full text-lg">
-          Sign in as User
+
+      {/* Bottom CTA */}
+      <div className="p-4">
+        <Link
+          to="/login"
+          className="block text-center w-full py-3 bg-white border border-gray-300 hover:bg-gray-100 rounded-lg text-lg font-medium transition"
+        >
+          Sign in as User 👤
         </Link>
       </div>
     </div>
   );
 };
 
-
-export default CaptainLogin
+export default CaptainLogin;

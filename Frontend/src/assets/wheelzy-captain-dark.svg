@@ -1,0 +1,22 @@
+<svg width="330" height="60" viewBox="0 0 330 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Location Pin Icon -->
+  <path d="M20 5C11 5 4 12 4 21C4 32 20 53 20 53C20 53 36 32 36 21C36 12 29 5 20 5ZM20 28C16.7 28 14 25.3 14 22C14 18.7 16.7 16 20 16C23.3 16 26 18.7 26 22C26 25.3 23.3 28 20 28Z" fill="white"/>
+
+  <!-- Wheelzy text -->
+  <text x="55" y="24" fill="white" font-family="Inter, sans-serif" font-weight="700" font-size="26">
+    Wheelzy
+  </text>
+
+  <!-- Tagline -->
+  <text x="55" y="45" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="12" opacity="0.8">
+    Drive. Earn. Connect.
+  </text>
+
+  <!-- Green Crosshair -->
+  <circle cx="300" cy="25" r="14" stroke="#22C55E" stroke-width="3"/>
+  <line x1="300" y1="16" x2="300" y2="34" stroke="#22C55E" stroke-width="3"/>
+  <line x1="291" y1="25" x2="309" y2="25" stroke="#22C55E" stroke-width="3"/>
+  
+</svg>
+ 

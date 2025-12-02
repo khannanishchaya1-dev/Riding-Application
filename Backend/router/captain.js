@@ -34,9 +34,10 @@ router.post('/register',
         .isInt({ min: 1 })
         .withMessage("Capacity must be at least 1"),
         
-    body("vehicle.vehicleType") // ⭐ UPDATED: Added 'truck'
-        .isIn(["car", "motorcycle", "truck"])
-        .withMessage("Vehicle type must be car, motorcycle, or truck"),
+    body("vehicle.vehicleType")
+  .isIn(["Car", "Motorcycle","Auto Rickshaw"])
+  .withMessage("Vehicle type must be car, motorcycle, or Auto Rickshaw"),
+
         
     body("vehicle.numberPlate")
         .notEmpty()

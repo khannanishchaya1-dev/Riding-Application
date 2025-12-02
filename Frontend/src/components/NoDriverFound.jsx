@@ -1,57 +1,58 @@
 import React from "react";
 import Cancelled from "../assets/Cancelled.svg";
-import {Link,useNavigate} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 
-const NoDriverFound = (props) => {
- const navigate = useNavigate();
+const NoDriverFound = ({ setnoDriverFound, setride }) => {
+  const navigate = useNavigate();
 
-  const onClose = () => {
-    console.log("Clicked");
-    props.setnoDriverFound(false);
-    props.setride?.({});
-    navigate("/home");   // ✅ Navigate to /home
+  const reset = () => {
+    setnoDriverFound(false);
+    setride({});
+    navigate("/home");
   };
+
   return (
-    <div className="p-6 text-center animate-fadeIn relative">
+    <div className="p-6 pb-10 text-center relative animate-fadeIn bg-white rounded-3xl border-t-4 border-[#E23744]">
 
       {/* Close Icon */}
       <button
-        onClick={()=>onClose()}
-        className="absolute top-2 right-3 text-gray-400 text-2xl hover:text-black transition"
+        onClick={reset}
+        className="absolute top-2 right-3 bg-[#FFE5E5] h-9 w-9 rounded-full flex items-center justify-center text-[#E23744] hover:bg-[#ffcccc] transition"
       >
-        <i className="ri-close-line"></i>
+        <i className="ri-close-line text-xl"></i>
       </button>
 
-      {/* Heading */}
-      <h2 className="text-2xl font-semibold mb-4">No Driver Found</h2>
+      {/* Title */}
+      <h2 className="text-2xl font-bold text-[#E23744] mt-4">
+        No Drivers Available
+      </h2>
 
       {/* Illustration */}
       <img
-        className="w-10 mx-auto mb-4 drop-shadow-lg rounded-lg"
+        className="w-20 mx-auto mt-5 drop-shadow-md"
         src={Cancelled}
-        alt="No Driver Found"
+        alt="No Driver Illustration"
       />
 
       {/* Subtitle */}
-      <p className="text-gray-600 text-sm mb-6 px-4">
-        Sorry, no nearby driver accepted your request.  
-        You can try again — someone might be available now!
+      <p className="text-gray-600 text-sm mt-4 px-3">
+        We couldn't find a driver nearby right now.  
+        Demand might be high — try again in a moment!
       </p>
 
-      {/* Retry Button Icon Style */}
-      <Link
-  to="/home"
-  onClick={() => {
-    props.setride({});
-    props.setnoDriverFound(false);
-    
-  }}
-  className="w-full flex items-center justify-center gap-2 border border-green-600 text-green-700 font-semibold rounded-lg py-2 hover:bg-green-600 hover:text-white transition-all active:scale-95"
->
-  <i className="ri-refresh-line text-xl animate-spin-slow"></i>
-  Find Again
-</Link>
+      {/* Retry Button */}
+      <button
+        onClick={reset}
+        className="w-full mt-7 py-3 bg-[#E23744] text-white font-semibold rounded-xl flex justify-center items-center gap-2 shadow-md hover:bg-[#c72b36] active:scale-[0.98] transition-all"
+      >
+        <i className="ri-refresh-line text-lg animate-spin-slow"></i>
+        Try Again
+      </button>
 
+      {/* Passive message */}
+      <p className="mt-4 text-xs text-gray-400">
+        🚗 Checking new drivers nearby...
+      </p>
     </div>
   );
 };

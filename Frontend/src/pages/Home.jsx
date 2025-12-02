@@ -14,7 +14,7 @@ import { UserDataContext } from "../UserContext/UserContext"; // Import user con
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
 import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
 import NoDriverFound from "../components/NoDriverFound";
@@ -297,7 +297,7 @@ console.log(response.data);
     <div className="h-[100dvh] w-full overflow-hidden relative">
 
       {/* 🔹 NAVBAR */}
-      <div className="absolute top-0 left-0 w-full flex items-center justify-between p-4 bg-transparent z-10">
+      <div className="absolute top-0 left-0 w-full flex items-center justify-between p-8 bg-transparent z-10">
         
         {/* Logo */}
         <img 
@@ -306,20 +306,14 @@ console.log(response.data);
           className="w-40 sm:w-28 md:w-32"
         />
       
-  <Link to="/profile">
-  <div className="relative w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-black font-bold text-lg sm:text-xl shadow-md hover:scale-105 transition-transform duration-200 overflow-hidden">
-    
-    {/* Optional light reflection */}
-    <div className="absolute inset-0 bg-white/20 rounded-full pointer-events-none"></div>
-
-    {/* Letter */}
-    <span className="relative z-10">
-      {user?.fullname?.firstname?.charAt(0).toUpperCase() || "U"}
-    </span>
-  </div>
-</Link>
-
-
+  
+  
+<Link to="/profile">
+    <div className="h-11 w-11 rounded-full bg-[#E23744] text-white flex items-center justify-center 
+                    font-semibold text-lg shadow-lg hover:scale-105 transition-all active:scale-95">
+      {user?.fullname?.firstname?.charAt(0)?.toUpperCase() || "C"}
+    </div>
+  </Link>
 
 
 
@@ -333,66 +327,69 @@ console.log(response.data);
       <div className="h-[100dvh] absolute top-0 w-full flex flex-col justify-end z-10 pointer-events-none">
         
         {/* Main Input Panel (Always visible at the bottom) */}
-        <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-2xl rounded-t-2xl relative w-full max-w-lg mx-auto pointer-events-auto">
-            {/* Added max-w-lg mx-auto to center the panel on larger screens */}
-          <h1 className="absolute top-5 right-6">
-            <i
-              ref={panelCloseRef}
-              onClick={() => {
-                setPanelOpen(false);
-              }}
-              className="ri-arrow-down-s-line text-3xl opacity-0 cursor-pointer" // Added cursor-pointer
-            ></i>
-          </h1>
-          <h4 className="text-xl sm:text-2xl font-semibold mt-1">
-            Find a trip
-          </h4>
-          <form
-  onSubmit={(e) => submitHandler(e)}
-  className="flex flex-col gap-4 mt-3 relative"
->
-  {/* ORIGIN DOT */}
-  <div className="absolute left-4 top-[18px] w-3 h-3 bg-black rounded-full"></div>
+       {/* Main Input Panel (Zomato Style) */}
+<div className="bg-white p-6 shadow-xl rounded-t-3xl w-full max-w-lg mx-auto border-t-4 border-[#E23744] pointer-events-auto">
 
-  {/* CONNECTING LINE */}
-  <div className="absolute left-[18px] top-[32px] h-[52px] w-[2px] bg-gray-700 rounded-full"></div>
-
-  {/* DESTINATION RING */}
-  <div className="absolute left-[14px] top-[88px] w-3 h-3 bg-black rounded-full"></div>
-
-  <input
-    onClick={() => {
-      setPanelOpen(true);
-      setActiveField("origin");
-    }}
-    value={origin}
-    className="bg-[#eee] text-base rounded-lg pl-10 pr-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
-    type="text"
-    onChange={(e) => setorigin(e.target.value)}
-    placeholder="Enter origin location"
+  {/* Close Icon */}
+  <i
+    ref={panelCloseRef}
+    onClick={() => setPanelOpen(false)}
+    className="ri-arrow-down-s-line absolute right-6 top-5 text-3xl text-gray-400 hover:text-black cursor-pointer opacity-0 transition"
   />
 
-  <input
-    onClick={() => {
-      setPanelOpen(true);
-      setActiveField("destination");
-    }}
-    value={destination}
-    className="bg-[#eee] text-base rounded-lg pl-10 pr-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-black"
-    type="text"
-    onChange={(e) => setdestination(e.target.value)}
-    placeholder="Enter destination location"
-  />
-</form>
-          <button 
-            onClick={()=>{find_trip()}} 
-            disabled={!origin || !destination} // Disable button if locations are empty
-            className="bg-black text-white px-4 py-3 rounded-xl w-full mt-4 transition duration-300 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-base font-medium"
-          >
-            Find Trip
-          </button>
-        
-        </div>
+  {/* Title */}
+  <h4 className="text-[26px] font-bold text-[#E23744] mb-2 tracking-tight">
+    Where are you going?
+  </h4>
+
+  {/* Search Box Card */}
+  <div className="bg-[#F8F8F8] rounded-3xl p-4 space-y-4 mt-4 border border-gray-100">
+    
+    {/* Origin */}
+    <div
+      className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+      onClick={() => {
+        setPanelOpen(true);
+        setActiveField("origin");
+      }}
+    >
+      <i className="ri-navigation-fill text-[#E23744] text-xl"></i>
+      <input
+        value={origin}
+        placeholder="Pickup location"
+        className="w-full bg-transparent outline-none text-[16px] font-medium"
+        onChange={(e)=>setorigin(e.target.value)}
+      />
+    </div>
+
+    {/* Destination */}
+    <div
+      className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+      onClick={() => {
+        setPanelOpen(true);
+        setActiveField("destination");
+      }}
+    >
+      <i className="ri-map-pin-2-fill text-[#E23744] text-xl"></i>
+      <input
+        value={destination}
+        placeholder="Destination"
+        className="w-full bg-transparent outline-none text-[16px] font-medium"
+        onChange={(e)=>setdestination(e.target.value)}
+      />
+    </div>
+  </div>
+
+  {/* CTA Button */}
+  <button
+    onClick={find_trip}
+    disabled={!origin || !destination}
+    className="mt-5 w-full bg-[#E23744] hover:bg-[#c82c35] disabled:bg-gray-300 text-white font-semibold rounded-2xl py-4 text-lg tracking-wide transition"
+  >
+    Search Ride
+  </button>
+</div>
+
 
         {/* Location Search Panel (Animated) - Use max-w-lg mx-auto for centering */}
         <div ref={panelRef} className=" bg-white h-0 overflow-y-auto w-full max-w-lg mx-auto pointer-events-auto">
@@ -498,4 +495,4 @@ setride={setride}
   );
 };
 
-export default Home;
+export default Home

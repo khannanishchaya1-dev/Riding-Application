@@ -47,7 +47,7 @@ const captainSchema = new mongoose.Schema(
       },
       vehicleType: {
         type: String,
-        enum: ["car", "motorcycle", "auto", "truck"], // ⭐ UPDATED: Added "auto" and kept "truck" (from route validation)
+        enum: ["Car", "Motorcycle","Auto Rickshaw"], // ⭐ UPDATED: Added "auto" and kept "truck" (from route validation)
         required: true,
       },
       vehicleModel: { // ⭐ NEW FIELD: Car Name/Model
