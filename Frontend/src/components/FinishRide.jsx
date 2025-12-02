@@ -27,7 +27,7 @@ const FinishRide = (props) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-xl border-t-4 border-[#E23744] animate-fadeIn">
+    <div className="h-[100dvh] bg-white rounded-3xl  shadow-xl border-t-4 border-[#E23744] animate-fadeIn">
 
       {/* Close Button */}
       <div className="text-center">

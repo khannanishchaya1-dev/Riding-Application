@@ -28,7 +28,7 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel })
   };
 
   return (
-    <div className="px-6 py-10 relative bg-white rounded-t-3xl shadow-xl border-t-4 border-[#E23744]">
+    <div className=" h-[100dvh] px-6 py-10 relative bg-white rounded-t-3xl shadow-xl border-t-4 border-[#E23744]">
 
       {/* Pull Handle */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2">
@@ -111,7 +111,7 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel })
           maxLength="4"
           onChange={(e) => setOTP(e.target.value)}
           className="w-full text-center text-2xl tracking-[0.45em] font-bold bg-[#F8F8F8] border border-gray-300 rounded-xl py-4 outline-none focus:ring-2 focus:ring-[#E23744]"
-          placeholder="----"
+          placeholder="------"
         />
 
         {/* Start Ride Button */}

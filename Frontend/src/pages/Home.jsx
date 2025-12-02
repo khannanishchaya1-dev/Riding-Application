@@ -268,6 +268,7 @@ useEffect(() => {
       }
     });
 setvehiclepanel(true);
+
     setfare(response.data.final_fare);
 
 }

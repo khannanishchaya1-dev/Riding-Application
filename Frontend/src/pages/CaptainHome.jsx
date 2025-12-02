@@ -136,7 +136,7 @@ const CaptainHome = () => {
       {/* Confirm OTP Popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="fixed bottom-0 w-full bg-white rounded-t-3xl z-[999] shadow-2xl p-5 translate-y-[200%]"
+        className="fixed bottom-0 w-full bg-white rounded-t-3xl z-[999] shadow-2xl translate-y-[200%]"
       >
         <ConfirmRidePopUp
           ride={ride}
