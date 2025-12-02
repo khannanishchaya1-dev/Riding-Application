@@ -95,7 +95,6 @@ useEffect(() => {
   if (!lookingForVehicle) return;
 
   // Show loading toast
-  const toastId = toast.loading("⏳ Searching for driver...");
 
   
 
@@ -111,7 +110,7 @@ useEffect(() => {
 
   return () => {
     clearTimeout(timer);
-    toast.dismiss(toastId); // cleanup toast on cancel/confirm
+    
   };
 }, [lookingForVehicle]);
 
