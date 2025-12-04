@@ -107,28 +107,29 @@ useEffect(() => {
 
 
 
-  // Hide popup if another captain accepted the ride
-useEffect(() => {
-  if (!socket) return;
+  useEffect(() => {
+  if (!socket || !ride?._id) return;
 
   const handler = (data) => {
-    if (data.rideId === ride._id) {
+    console.log("📩 ride-confirmed event received", data);
+
+    if (data._id === ride._id) {
       toast.error("❌ Ride taken by another captain");
 
-      // Close incoming and confirm popups
       setridePopUppanel(false);
 
-      // stop sound if playing
-      incomingSound.current.pause();
-      incomingSound.current.currentTime = 0;
+      incomingSound.current?.pause();
+      if (incomingSound.current) incomingSound.current.currentTime = 0;
 
       setride({});
     }
   };
 
-  receiveMessage("ride-accepted", handler);
-  return () => offMessage("ride-accepted", handler);
-}, [socket, ride]);
+  socket.on("ride-confirmed", handler);
+
+  return () => socket.off("ride-confirmed", handler);
+}, [socket, ride?._id]);
+
 
 
   // Popup animations
