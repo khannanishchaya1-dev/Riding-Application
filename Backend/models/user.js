@@ -2,41 +2,54 @@ const mongoose = require('mongoose');
 const { randomBytes, createHmac }=require("crypto");
 const jwt = require('jsonwebtoken');
 const {rideSchema} = require('./ride');
-const userSchema = new mongoose.Schema({
-  fullname:{
-    firstname:{
-      type:String,
-      required:true,
-      minlength:[3,'First name is of atleast 3 charchters']
-    },
-    lastname:{
-      type:String,
-      required:true,
-      minlength:[3,'First name is of atleast 3 charchters']
-    },
-    
 
-  },
-  email:{
-    type:String,
-    unique:true,
-    required:true,
-     minlength:[5,'email is of atleast 3 charchters']
-
-  },
-  password:{
-    type:String,
-    required:true,
-  },
-  socketId:{
-    type:String,
-  },
-  salt:{
-        type:String,
-
+const userSchema = new mongoose.Schema(
+  {
+    fullname: {
+      firstname: {
+        type: String,
+        required: true,
+        minlength: [3, "First name must be at least 3 characters"],
+      },
+      lastname: {
+        type: String,
+        required: true,
+        minlength: [3, "Last name must be at least 3 characters"],
+      },
     },
-    
-},{ timestamps: true });
+
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      minlength: [5, "Email must be at least 5 characters"],
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    // 🔐 OTP fields
+    otp: String,
+    otpExpires: Date,
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    socketId: {
+      type: String,
+    },
+
+    salt: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("User", userSchema);
 
 userSchema.pre("save",function(next){
    const user=this;

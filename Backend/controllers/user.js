@@ -2,32 +2,41 @@ const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
+const sendOTP = require("./emailService");
+const crypto = require("crypto");
 
-const handleUserRegister = async (req, res, next) => {
-  const { email, password, fullname } = req.body;
-  console.log(req.body);
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+const handleUserRegister = async (req, res) => {
+  try {
+    const { fullname, email, password } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (user) return res.status(400).json({ message: "User already exists" });
+
+    const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
+
+    user = await User.create({
+      fullname,
+      email,
+      password,
+      otp,
+      otpExpires: Date.now() + 5 * 60 * 1000, // 5 mins
+    });
+
+    // 🔥 send OTP
+    await sendOTP(email, otp);
+
+    res.status(201).json({
+      message: "OTP sent to email",
+      email,
+    });
+
+  } catch (err) {
+    console.log("❌ OTP send error:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
-  const isUserAlreadyExist = await User.findOne({ email });
-
-if (isUserAlreadyExist) {
-  return res.status(400).json({ message: "User already exists" });
-}
-  const user = await User.create({
-    fullname: {
-      firstname: fullname.firstname,
-      lastname: fullname.lastname,
-    },
-    email:email,
-    password:password,
-  });
-
-  const token = user.generateAuthToken();
-  res.cookie("token",token);
-  res.status(201).json({ token, user });
 };
+
 const handleUserLogin =async  (req,res,next)=>{
 
   const errors = validationResult(req);
@@ -82,6 +91,58 @@ const logoutUser = async (req, res) => {
 
   return res.status(200).json({ message: "User logged out" });
 };
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) return res.status(400).json({ message: "User not found" });
+
+  if (user.otp !== otp || user.otpExpires < Date.now()) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  user.otp = null;
+  user.otpExpires = null;
+  user.isVerified = true;
+  await user.save();
+
+  return res.status(200).json({
+    message: "OTP verified successfully",
+    user,
+    token: "JWT_LATER", // replace with real JWT
+  });
+};
+exports.resendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: "User not found" });
+
+  const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
+  user.otp = otp;
+  user.otpExpires = Date.now() + 5 * 60 * 1000;
+  await user.save();
+
+  await sendOTP(email, otp);
+
+  res.json({ message: "New OTP sent!" });
+};
+const resendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: "User not found" });
+
+  const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
+  user.otp = otp;
+  user.otpExpires = Date.now() + 5 * 60 * 1000;
+  await user.save();
+
+  await sendOTP(email, otp);
+
+  res.json({ message: "New OTP sent!" });
+};
 
 
 module.exports = {
@@ -89,4 +150,7 @@ module.exports = {
   handleUserLogin,
   getUserProfile,
   logoutUser,
+  verifyOTP,
+  resendOtp,
+
 }

@@ -307,11 +307,11 @@ console.log(response.data);
   />
 
   <Link to="/profile">
-    <div className="h-11 w-11 rounded-full bg-[#E23744] text-white flex items-center justify-center 
-                    font-semibold text-lg active:scale-95 transition-all">
-      {user?.fullname?.firstname?.charAt(0)?.toUpperCase() || "C"}
-    </div>
-  </Link>
+          <div className="h-12 w-12 rounded-full bg-white/90 backdrop-blur-xl shadow-md border border-gray-200 
+                          flex items-center justify-center text-[#E23744] text-xl font-bold transition hover:scale-105">
+            {user?.fullname?.firstname?.charAt(0)?.toUpperCase() || "U"}
+          </div>
+        </Link>
 </div>
 
       {/* Background Animation (LiveTracking) */}

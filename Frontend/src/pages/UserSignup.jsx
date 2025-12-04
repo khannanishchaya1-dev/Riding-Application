@@ -20,10 +20,7 @@ const UserSignup = () => {
     const newUser = {
       email,
       password,
-      fullname: {
-        firstname: firstName,
-        lastname: lastName,
-      },
+      fullname: { firstname: firstName, lastname: lastName },
     };
 
     try {
@@ -33,31 +30,26 @@ const UserSignup = () => {
       );
 
       if (response.status === 201) {
-        toast.success("Account created 🚀");
+        toast.success("✔ Account created — Check your email for OTP!");
 
-        const data = response.data;
-        setUser(data.user);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // Store temporarily for OTP validation
+        localStorage.setItem("pendingEmail", email);
 
-        navigate("/home");
+        navigate("/verify-email"); // redirect to OTP page
       }
-    } catch {
-      toast.error("Signup failed ⚠️ Try again.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Signup failed ⚠️ Try again.");
     }
   };
 
   return (
     <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col justify-center py-6">
-
       {/* Logo */}
       <div className="text-center">
         <img src={WheelzyLogo} className="w-28 mx-auto opacity-90" />
       </div>
 
-      {/* Card Container */}
       <div className="w-full max-w-md mx-auto mt-6 px-5">
-
         <h2 className="text-3xl font-semibold text-[#E23744] text-center tracking-tight">
           Create Account
         </h2>
@@ -66,15 +58,11 @@ const UserSignup = () => {
           Join Wheelzy and start your journey
         </p>
 
-        {/* Signup Form */}
+        {/* Form */}
         <form onSubmit={submitHandler} className="mt-8 space-y-5">
-
-          {/* Full Name */}
+          {/* Name */}
           <div>
-            <label className="text-sm text-gray-600 font-medium">
-              Full Name
-            </label>
-
+            <label className="text-sm text-gray-600 font-medium">Full Name</label>
             <div className="flex gap-3 mt-1 flex-col sm:flex-row">
               <input
                 required
@@ -82,7 +70,7 @@ const UserSignup = () => {
                 placeholder="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
               />
 
               <input
@@ -91,24 +79,21 @@ const UserSignup = () => {
                 placeholder="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="text-sm text-gray-600 font-medium">
-              Email Address
-            </label>
-
+            <label className="text-sm text-gray-600 font-medium">Email</label>
             <input
               required
               type="email"
               placeholder="example@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
             />
           </div>
 
@@ -117,33 +102,31 @@ const UserSignup = () => {
             <label className="text-sm text-gray-600 font-medium flex justify-between">
               Password
               <span
-                className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                className="text-[#E23744] text-xs cursor-pointer"
                 onClick={() => setShowPass(!showPass)}
               >
                 {showPass ? "Hide" : "Show"}
               </span>
             </label>
-
             <input
               required
               type={showPass ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
             />
           </div>
 
-          {/* Create Account Button */}
+          {/* Button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-[#E23744] text-white font-semibold text-lg active:scale-95 transition duration-150"
+            className="w-full py-3 rounded-xl bg-[#E23744] text-white font-semibold text-lg active:scale-95"
           >
             Continue
           </button>
         </form>
 
-        {/* Login Redirect */}
         <p className="text-center text-gray-500 mt-6 text-sm">
           Already have an account?{" "}
           <Link to="/login" className="text-[#E23744] font-medium hover:underline">
@@ -151,19 +134,6 @@ const UserSignup = () => {
           </Link>
         </p>
       </div>
-
-      {/* Terms Footer */}
-      <p className="text-xs text-gray-500 text-center mt-5 px-6">
-        By signing up, you agree to our{" "}
-        <span className="text-[#E23744] underline cursor-pointer">
-          Terms
-        </span>{" "}
-        &{" "}
-        <span className="text-[#E23744] underline cursor-pointer">
-          Privacy Policy
-        </span>
-        .
-      </p>
     </div>
   );
 };

@@ -20,6 +20,8 @@ import ProfilePage from './pages/UserProfile';
 import CaptainProfile from './pages/CaptainProfile';
 import { Toaster } from "react-hot-toast";
 import SplashScreen from './pages/SplashScreen';
+import VerifyEmail from "./pages/VerifyEmail";
+import VerifyCaptainEmail from "./pages/VerifyCaptainEmail";
 
 const App = () => {
   return (
@@ -61,6 +63,8 @@ const App = () => {
         <CaptainProtectWrapper> <CaptainRiding/></CaptainProtectWrapper>
 
       }/>
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/verify-captain-email" element={<VerifyCaptainEmail />} />
 
     </Routes>
     </>

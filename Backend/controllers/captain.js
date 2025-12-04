@@ -2,62 +2,88 @@ const Captain = require('../models/captain');
 const { validationResult }=require('express-validator');
 const BlacklistedToken = require('../models/blacklist.token')
 const {setStatus} = require('../service/ride.service');
+const  sendOTP  = require("./emailService");
+const jwt = require('jsonwebtoken');
 
 const handleCaptainRegister = async (req, res) => {
-    // 1. Check for validation errors from express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+  try {
+    const { fullname, email, phone, password, vehicle } = req.body;
 
-    // Destructure all required fields, including the newly added 'phone'
-    const { email, fullname, vehicle, password, phone } = req.body;
+    const exists = await Captain.findOne({ email });
+    if (exists) return res.status(400).json({ message: "Email already exists" });
 
-    // 2. Check if Captain already exists based on unique fields (email, phone, numberPlate)
-    const isCaptainAlreadyExist = await Captain.findOne({
-        $or: [{ email }, { phone }, { 'vehicle.numberPlate': vehicle.numberPlate }]
-    });
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    if (isCaptainAlreadyExist) {
-        let message = "Captain account already exists.";
-        
-        // Provide a specific message based on which field caused the conflict
-        if (isCaptainAlreadyExist.email === email) {
-            message = "A captain with this email already exists. Please login or use a different email.";
-        } else if (isCaptainAlreadyExist.phone === phone) {
-            message = "A captain with this phone number already exists.";
-        } else if (isCaptainAlreadyExist.vehicle.numberPlate === vehicle.numberPlate) {
-            message = "A captain with this vehicle number plate already exists.";
-        }
-        
-        return res.status(400).json({ message });
-    }
-
-    // 3. Create the new captain document
     const captain = await Captain.create({
-        fullname: {
-            firstname: fullname.firstname,
-            lastname: fullname.lastname,
-        },
-        email: email,
-        phone: phone, // ⭐ Added phone
-        password: password, 
-        vehicle: {
-            color: vehicle.color,
-            capacity: vehicle.capacity,
-            vehicleType: vehicle.vehicleType,
-            vehicleModel: vehicle.vehicleModel, // ⭐ Added vehicleModel
-            numberPlate: vehicle.numberPlate,
-        },
+      fullname,
+      email,
+      phone,
+      password,
+      vehicle,
+      otp,
+      otpExpires: Date.now() + 10 * 60 * 1000 // 10 minutes
     });
 
-    // 4. Generate token and send response
-    const token = captain.generateAuthToken();
+    // Send OTP email
+   
+    await sendOTP(email, otp);
+    
 
-    // Assuming you have 'res.cookie' implementation available
-    res.cookie("token", token);
-    res.status(201).json({ token, captain });
+    return res.status(201).json({
+      message: "Captain account created. Enter OTP to verify.",
+    });
+
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
+const verifyOtp = async (req, res) => {
+  
+  const { email, otp } = req.body;
+
+  const captain = await Captain.findOne({ email });
+  if (!captain) return res.status(404).json({ message: "Captain not found" });
+  console.log(captain.otp, otp, captain.otpExpires, Date.now());
+
+  if (captain.otp !== otp || Date.now() > captain.otpExpires) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  captain.isVerified = true;
+  captain.otp = null;
+  captain.otpExpires = null;
+  await captain.save();
+
+  const token = jwt.sign(
+    { _id: captain._id, role: "captain" },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  return res.status(200).json({
+    message: "Verification successful!",
+    token,
+    captain
+  });
+};
+const resendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  const captain = await Captain.findOne({ email });
+  if (!captain) return res.status(404).json({ message: "Captain not found" });
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  captain.otp = otp;
+  captain.otpExpires = Date.now() + 10 * 60 * 1000;
+  await captain.save();
+
+  await sendOTP(email, otp);
+
+  return res.status(200).json({ message: "OTP resent successfully" });
+};
+
 
 const loginCaptain = async (req,res,next)=>{
   const errors = validationResult(req);
@@ -135,4 +161,6 @@ module.exports={
   getCaptainProfile,
   logoutCaptain,
   changeStatus,
+  verifyOtp,
+  resendOtp
 }

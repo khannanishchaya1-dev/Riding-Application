@@ -55,16 +55,16 @@ const CaptainSignup = () => {
         `${import.meta.env.VITE_BACKEND_URL}captains/register`,
         payload
       );
+console.log(response.status===201);
+      if (response.data) {
+  toast.success("✔ Captain account created — Check your email for OTP!");
 
-      if (response.data?.token) {
-        toast.success("Captain account created 🚖");
-        setCaptainData(response.data.captain);
+  // Temporarily store email to validate OTP
+  localStorage.setItem("pendingCaptainEmail", form.email);
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("captain", JSON.stringify(response.data.captain));
+  navigate("/verify-captain-email"); // redirect to captain OTP page
+}
 
-        navigate("/captain-home");
-      }
     } catch (error) {
       toast.error(error.response?.data?.errors?.[0]?.msg || "Signup failed ❌");
     } finally {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {body} = require('express-validator');
-const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus }=require('../controllers/captain');
+const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus,verifyOtp,resendOtp }=require('../controllers/captain');
 const { authCaptain } = require('../middlewares/auth');
 
 router.post('/register',
@@ -58,7 +58,8 @@ router.post("/status",[body("status")
   .withMessage("Status must be true or false")]
         ,authCaptain,changeStatus)
 
-
+router.post("/verify-otp", verifyOtp);
+router.post("/resend-otp", resendOtp);
 
 
 module.exports=router;

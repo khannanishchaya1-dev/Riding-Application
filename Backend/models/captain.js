@@ -60,6 +60,9 @@ const captainSchema = new mongoose.Schema(
         unique: true,
       },
     },
+    otp: { type: String },
+otpExpires: { type: Date },
+isVerified: { type: Boolean, default: false },
     location: {
       type: {
         type: String,
