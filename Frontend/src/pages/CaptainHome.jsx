@@ -35,6 +35,38 @@ const CaptainHome = () => {
     if (!socket || !captainData?._id) return;
     sendMessage("join", { userId: captainData._id, userType: "captain" });
   }, [socket, captainData?._id]);
+// Auto GPS tracking + emit to backend every 5 seconds
+useEffect(() => {
+  if (!socket || !captainData?._id) return;
+
+  let watchId = null;
+
+  const sendLocation = (lat, lng) => {
+    sendMessage("updateCaptainLocation", {
+      captainId: captainData._id,
+      location: { ltd: lat, lng: lng },
+    });
+  };
+
+  // Start GPS watcher
+  watchId = navigator.geolocation.watchPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      console.log(" 📡 captain location ")
+      sendLocation(latitude, longitude);
+    },
+    (err) => {
+      console.error("GPS Error:", err);
+      toast.error("⚠ Unable to get live location");
+    },
+    { enableHighAccuracy: true, maximumAge: 0 }
+  );
+
+  // Cleanup when component unmounts or socket disconnects
+  return () => {
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+  };
+}, [socket, captainData?._id]);
 
   // Listen for ride request
   useEffect(() => {
