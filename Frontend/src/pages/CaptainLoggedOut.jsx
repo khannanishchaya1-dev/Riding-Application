@@ -1,29 +1,37 @@
-import React, { useEffect } from "react";
+
+
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { CaptainDataContext } from "../UserContext/CaptainContext";
 
-const UserLoggedOut = () => {
+const CaptainLoggedOut = () => {
   const navigate = useNavigate();
+  const [, setCaptainData] = useContext(CaptainDataContext);
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}users/logout`, { withCredentials: true })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("Captain logged out successfully (server)");
-        }
-      })
-      .catch((err) => console.error("Logout error:", err))
+    const token = localStorage.getItem("token"); // capture before clearing
+
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}captains/logout`, {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`,  // now valid token goes to server
+      }
+    }).catch(() => {})
       .finally(() => {
-        // ✅ Always clear client-side token and headers
+        // Now safely remove everything
         localStorage.removeItem("token");
         localStorage.removeItem("captain");
+        setCaptainData(null);
         delete axios.defaults.headers.common["Authorization"];
+
+        // Navigate after cleanup
         navigate("/login");
       });
-  }, [navigate]);
+
+  }, [navigate, setCaptainData]);
 
   return <div>Logging you out...</div>;
 };
 
-export default UserLoggedOut;
+export default CaptainLoggedOut;

@@ -85,19 +85,31 @@ const getCaptainProfile =(req,res,next)=>{
 return res.status(200).json(req.captain);
 }
 
-const logoutCaptain = async (req,res,next)=>{
-  const token = req.cookies.token;
-   if (!token) {
-      return res.status(400).json({ message: "No token provided" });
-    }
+const logoutCaptain = async (req, res) => {
+  let token = req.cookies?.token;
 
-  await BlacklistedToken.create({token});
-  res.clearCookie('token');
-  
+  // Support Authorization header too
+  if (!token && req.headers.authorization) {
+    token = req.headers.authorization.split(" ")[1];
+  }
 
+  if (!token) {
+    return res.status(400).json({ message: "No token provided" });
+  }
 
-  res.status(200).json({message:"logout Success"})
-}
+  // Blacklist token
+  await BlacklistedToken.create({ token });
+
+  // Remove cookie if it exists
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  return res.status(200).json({ message: "Logout Success" });
+};
+
 const changeStatus= async (req,res,next)=>{
   const errors = validationResult(req);
   if(!errors.isEmpty()){

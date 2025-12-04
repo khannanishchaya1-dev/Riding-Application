@@ -128,7 +128,7 @@ const CaptainProfile = () => {
           </div>
 
           <button
-            onClick={() => navigate("/logout")}
+            onClick={() => navigate("/captain-logout")}
             className="flex items-center text-sm font-semibold px-4 py-2 rounded-full border border-white/60 hover:bg-white hover:text-[#E23744] transition"
           >
             <LogOut className="w-4 h-4 mr-2" /> Logout

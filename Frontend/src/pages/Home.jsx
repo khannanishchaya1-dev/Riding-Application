@@ -324,7 +324,7 @@ console.log(response.data);
         
         {/* Main Input Panel (Always visible at the bottom) */}
        {/* Main Input Panel (Zomato Style) */}
-<div className=" backdrop-blur-xl bg-white/10 border border-white/10 p-6 rounded-3xl w-full max-w-lg mx-auto pointer-events-auto">
+<div className=" backdrop-blur-xl bg-white/15 border border-white/10 p-6 rounded-3xl w-full max-w-lg mx-auto pointer-events-auto">
 <i
   ref={panelCloseRef}
   onClick={() => setPanelOpen(false)}
@@ -408,7 +408,7 @@ console.log(response.data);
       {/* Vehicle Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={vehiclepanelref}
-        className="fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
+        className=" fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto"
       >
         <VehiclePanel
           vehiclepanel={vehiclepanel}
@@ -423,7 +423,7 @@ console.log(response.data);
       {/* Confirmed Ride Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={confirmRideRef}
-        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto" ${
+        className={`fixed z-10 bottom-0 bg-white w-full translate-y-full max-w-lg mx-auto  pointer-events-auto" ${
     confirmRidepanel ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}
       >
@@ -444,7 +444,7 @@ setvehiclepanel={setvehiclepanel}
       {/* Looking For Driver Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={lookingForVehicleRef}
-        className={`fixed z-10 bottom-0 left-0 right-0 max-w-lg mx-auto backdrop-blur-xl bg-white/12 border-t border-white/10 p-8 
+        className={`fixed z-10 bottom-0 left-0 right-0 max-w-lg mx-auto backdrop-blur-xl  bg-white/12 border-t border-white/10 p-8 
 rounded-t-3xl transition-all duration-300 pointer-events-auto ${
    lookingForVehicle ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}

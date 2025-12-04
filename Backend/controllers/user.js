@@ -54,17 +54,33 @@ const handleUserLogin =async  (req,res,next)=>{
 const getUserProfile = (req,res,next)=>{
 return res.status(200).json(req.user)
 }
-const logoutUser = async (req,res,next)=>{
-  const token = req.cookies.token;
+const logoutUser = async (req, res) => {
+  // First check cookie
+  let token = req.cookies?.token;
+
+  // If no cookie, check Authorization header
+  if (!token && req.headers.authorization) {
+    const parts = req.headers.authorization.split(" ");
+    if (parts.length === 2 && parts[0] === "Bearer") {
+      token = parts[1];
+    }
+  }
 
   if (!token) {
-      return res.status(400).json({ message: "No token provided" });
-    }
+    return res.status(400).json({ message: "No token provided" });
+  }
 
-  await BlacklistedToken.create({token});
-  res.clearCookie('token',{httpOnly: true});
+  // Add token to blacklist so it can't be reused
+  await BlacklistedToken.create({ token });
 
-   res.status(200).json({message:"user logged out"})
+  // Clear cookie if exists
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  return res.status(200).json({ message: "User logged out" });
 };
 
 

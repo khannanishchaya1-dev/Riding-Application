@@ -56,17 +56,48 @@ const CaptainHome = () => {
 
   // Confirm ride function
   const confirmRide = async () => {
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
-        { rideId: ride._id },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-      );
-      toast.success("✔ Ride Accepted");
-    } catch {
-      toast.error("⚠ Error confirming ride");
+  try {
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
+      { rideId: ride._id },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+
+    sendMessage("ride-accepted", { rideId: ride._id }); // 👈 broadcast event
+
+    toast.success("✔ Ride Accepted");
+    setridePopUppanel(false);
+    setconfirmridePopUppanel(true);
+  } catch {
+    toast.error("⚠ Error confirming ride");
+  }
+};
+
+
+
+  // Hide popup if another captain accepted the ride
+useEffect(() => {
+  if (!socket) return;
+
+  const handler = (data) => {
+    if (data.rideId === ride._id) {
+      toast.error("❌ Ride taken by another captain");
+
+      // Close incoming and confirm popups
+      setridePopUppanel(false);
+
+      // stop sound if playing
+      incomingSound.current.pause();
+      incomingSound.current.currentTime = 0;
+
+      setride({});
     }
   };
+
+  receiveMessage("ride-accepted", handler);
+  return () => offMessage("ride-accepted", handler);
+}, [socket, ride]);
+
 
   // Popup animations
   useGSAP(() => {
@@ -130,8 +161,8 @@ const CaptainHome = () => {
       {/* Confirm Ride Popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="fixed bottom-0 w-full z-[999] translate-y-[200%] backdrop-blur-xl bg-white/90 
-                border-t border-gray-200 shadow-xl rounded-t-3xl ">
+        className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%] backdrop-blur-xl bg-white/90 
+                border-t border-gray-200 shadow-xl rounded-t-3xl">
         <ConfirmRidePopUp
           ride={ride}
           setridePopUppanel={setridePopUppanel}
