@@ -4,42 +4,44 @@ import wheelzyLogo from "../assets/wheelzy.svg";
 
 const Start = () => {
   return (
-    <div className="h-[100dvh] w-full relative overflow-hidden">
-      {/* Background Overlay */}
+    <div className="h-[100dvh] w-full relative overflow-hidden bg-black">
+
+      {/* Background (premium dark traffic blur) */}
       <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-500"
+        className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop')", // Slight urban red tone like Zomato
+            "url('https://images.unsplash.com/photo-1673986928683-4e9f232d6f9f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
         }}
       />
 
-      {/* Zomato Red Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#E23744]/80 via-[#E23744]/30 to-black/80"></div>
+      {/* Dark overlay for contrast */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]" />
 
       {/* Logo */}
       <img
         src={wheelzyLogo}
         alt="Wheelzy Logo"
-        className="absolute top-6 left-6 w-36 sm:w-48 animate-fadeIn drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+        className="absolute top-8 left-1/2 -translate-x-1/2 w-40 sm:w-48 opacity-95 animate-fadeIn"
       />
 
-      {/* Bottom Panel */}
-      <div className="absolute bottom-0 w-full p-6 animate-slideUp">
-        <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#f6d4d4]">
-          <h2 className="text-3xl font-extrabold text-center text-[#E23744] tracking-wide">
-            Welcome
+      {/* Bottom Glass Panel */}
+      <div className="absolute bottom-0 w-full px-6 pb-10 animate-slideUp">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 p-7 rounded-3xl text-center">
+
+          <h2 className="text-3xl font-bold tracking-wide text-white">
+            Ready to ride?
           </h2>
 
-          <p className="text-gray-500 text-center text-sm sm:text-base mt-1 mb-6">
-            Hungry for a smooth ride? Let's go.
+          <p className="text-gray-300 text-sm sm:text-base mt-1 mb-6">
+            Your journey starts with a tap.
           </p>
 
           <Link
             to="/home"
-            className="w-full block text-center py-3 bg-[#E23744] text-white font-semibold rounded-xl text-lg hover:bg-[#c62f39] active:scale-[0.96] transition-all duration-200"
+            className="w-full block text-center py-3 text-white text-lg font-semibold bg-[#E23744] hover:bg-[#FF4F5A] active:scale-[0.97] transition rounded-xl"
           >
-            Continue
+            Get Started
           </Link>
         </div>
       </div>

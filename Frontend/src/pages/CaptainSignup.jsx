@@ -19,9 +19,9 @@ const CaptainSignup = () => {
     numberPlate: "",
   });
 
-  const [captainData, setCaptainData] = useContext(CaptainDataContext);
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [, setCaptainData] = useContext(CaptainDataContext);
 
   const navigate = useNavigate();
 
@@ -57,7 +57,7 @@ const CaptainSignup = () => {
       );
 
       if (response.data?.token) {
-        toast.success("Captain account created 🚖🔥");
+        toast.success("Captain account created 🚖");
         setCaptainData(response.data.captain);
 
         localStorage.setItem("token", response.data.token);
@@ -73,152 +73,154 @@ const CaptainSignup = () => {
   };
 
   return (
-    <div className="h-full w-full  flex flex-col">
+    <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col overflow-y-auto py-6">
 
-      {/* Fullscreen Form Card (No padding outside) */}
-      <div className="flex-grow flex items-center justify-center">
-        <div className="w-full max-w-md bg-white rounded-none sm:rounded-2xl shadow-lg  p-8">
+      {/* Branding */}
+      <div className="text-center">
+        <img src={wheelzyCaptainLogo} alt="logo" className="w-28 mx-auto opacity-90" />
+      </div>
 
-          <img src={wheelzyCaptainLogo} className="w-48 mb-6 mx-auto" alt="logo" />
+      {/* Main Form Container */}
+      <div className="w-full max-w-md mx-auto mt-6 px-5">
 
-          <h2 className="text-3xl font-bold text-[#E23744] text-center">
-            Captain Signup 🚖
-          </h2>
+        <h2 className="text-3xl font-semibold text-[#E23744] text-center tracking-tight">
+          Captain Signup
+        </h2>
 
-          <p className="text-gray-600 text-center mb-6">
-            Join Wheelzy and start earning.
-          </p>
+        <p className="text-gray-500 text-center text-sm mt-1">
+          Join Wheelzy and start earning
+        </p>
 
-          <form onSubmit={submitHandler} className="space-y-6">
+        {/* Form */}
+        <form onSubmit={submitHandler} className="mt-8 space-y-5">
 
-            {/* Full Name */}
-            <div>
-              <label className="text-sm font-semibold">Full Name</label>
-              <div className="flex gap-3 flex-col sm:flex-row">
-                <input
-                  placeholder="First name"
-                  value={form.firstName}
-                  onChange={(e) => handleChange("firstName", e.target.value)}
-                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-                />
-                <input
-                  placeholder="Last name"
-                  value={form.lastName}
-                  onChange={(e) => handleChange("lastName", e.target.value)}
-                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="text-sm font-semibold">Phone Number</label>
+          {/* Name */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium">Full Name</label>
+            <div className="flex gap-3 mt-1 flex-col sm:flex-row">
               <input
-                type="tel"
-                placeholder="9876543210"
-                value={form.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+                placeholder="First name"
+                value={form.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              />
+              <input
+                placeholder="Last name"
+                value={form.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
               />
             </div>
+          </div>
 
-            {/* Email */}
-            <div>
-              <label className="text-sm font-semibold">Email Address</label>
-              <input
-                type="email"
-                placeholder="example@mail.com"
-                value={form.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-sm font-semibold flex justify-between">
-                Password
-                <span
-                  className="text-[#E23744] text-xs cursor-pointer hover:underline"
-                  onClick={() => setShowPass(!showPass)}
-                >
-                  {showPass ? "Hide" : "Show"}
-                </span>
-              </label>
-
-              <input
-                required
-                type={showPass ? "text" : "password"}
-                placeholder="password"
-                value={form.password}
-                onChange={(e) => handleChange("password",e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
-              />
-            </div>
-
-            {/* Vehicle Fields */}
+          {/* Phone */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium">Phone Number</label>
             <input
-              placeholder="Vehicle Model"
-              value={form.vehicleModel}
-              onChange={(e) => handleChange("vehicleModel", e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              type="tel"
+              placeholder="9876543210"
+              value={form.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
             />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium">Email Address</label>
+            <input
+              type="email"
+              placeholder="example@mail.com"
+              value={form.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium flex justify-between">
+              Password
+              <span
+                className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                onClick={() => setShowPass(!showPass)}
+              >
+                {showPass ? "Hide" : "Show"}
+              </span>
+            </label>
 
             <input
-              placeholder="Number Plate"
-              value={form.numberPlate}
-              onChange={(e) => handleChange("numberPlate", e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
+              type={showPass ? "text" : "password"}
+              placeholder="••••••••"
+              value={form.password}
+              onChange={(e) => handleChange("password", e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
             />
+          </div>
 
-            <div className="flex gap-3 flex-col sm:flex-row">
-              <input
-                placeholder="Color"
-                value={form.color}
-                onChange={(e) => handleChange("color", e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-              />
+          {/* Vehicle Model */}
+          <input
+            placeholder="Vehicle Model"
+            value={form.vehicleModel}
+            onChange={(e) => handleChange("vehicleModel", e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+          />
 
-              <input
-                type="number"
-                placeholder="Capacity (Seats)"
-                value={form.capacity}
-                onChange={(e) => handleChange("capacity", e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-              />
-            </div>
+          {/* Number Plate */}
+          <input
+            placeholder="Number Plate"
+            value={form.numberPlate}
+            onChange={(e) => handleChange("numberPlate", e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+          />
 
-            {/* Vehicle Type */}
-            <select
-              value={form.vehicleType}
-              onChange={(e) => handleChange("vehicleType", e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] outline-none"
-            >
-              <option value="">Select Vehicle Type</option>
-              <option value="Car">Car</option>
-              <option value="Motorcycle">Motorcycle</option>
-              <option value="Auto">Auto Rickshaw</option>
-            </select>
+          {/* Color + Seats */}
+          <div className="flex gap-3 flex-col sm:flex-row">
+            <input
+              placeholder="Color"
+              value={form.color}
+              onChange={(e) => handleChange("color", e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
+            <input
+              placeholder="Capacity (Seats)"
+              value={form.capacity}
+              onChange={(e) => handleChange("capacity", e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
+          </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 text-lg font-semibold text-white rounded-xl transition 
-                ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#E23744] hover:bg-[#FF4F5A]"}`}
-            >
-              {loading ? "Creating Account..." : "Create Account"}
-            </button>
-          </form>
+          {/* Vehicle Type */}
+          <select
+            value={form.vehicleType}
+            onChange={(e) => handleChange("vehicleType", e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
+          >
+            <option value="">Select Vehicle Type</option>
+            <option value="Car">Car</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Auto">Auto Rickshaw</option>
+          </select>
 
-          {/* Redirect */}
-          <p className="text-center text-gray-600 mt-6 mb-4">
-            Already registered?{" "}
-            <Link to="/captain-login" className="text-[#E23744] font-medium hover:underline">
-              Login →
-            </Link>
-          </p>
-        </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-xl text-white font-semibold text-lg active:scale-95 transition duration-150 ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#E23744]"
+            }`}
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+        </form>
+
+        {/* Redirect */}
+        <p className="text-center text-gray-500 mt-6">
+          Already registered?{" "}
+          <Link to="/captain-login" className="text-[#E23744] font-medium hover:underline">
+            Login →
+          </Link>
+        </p>
       </div>
     </div>
   );

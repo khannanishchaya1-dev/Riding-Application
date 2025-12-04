@@ -14,29 +14,32 @@ export default function SplashScreen() {
     timers.push(setTimeout(() => setStage(1), 400));
     timers.push(setTimeout(() => setStage(2), 1200));
     timers.push(setTimeout(() => setStage(3), 2000));
-    timers.push(setTimeout(() => setFadeOut(true), 3800));
+    timers.push(setTimeout(() => setFadeOut(true), 3500));
+
     timers.push(
       setTimeout(() => {
         const token = localStorage.getItem("token");
         navigate(token ? "/home" : "/start");
-      }, 4600)
+      }, 4300)
     );
 
     return () => timers.forEach(clearTimeout);
   }, [navigate]);
 
   return (
-    <div className={`zomato-splash ${fadeOut ? "fade-out" : ""}`}>
+    <div className={`splash-screen ${fadeOut ? "fade-out" : ""}`}>
+      <div className="light-glow"></div>
+
       <img
         src={Wheel}
         alt="Wheel"
-        className={`wheel-icon ${stage >= 1 ? "show" : ""}`}
+        className={`wheel ${stage >= 1 ? "show" : ""}`}
       />
 
-      <h1 className={`brand ${stage >= 2 ? "show" : ""}`}>WHEELZY</h1>
+      <h1 className={`brand-text ${stage >= 2 ? "show" : ""}`}>WHEELZY</h1>
 
-      <p className={`tagline ${stage >= 3 ? "show" : ""}`}>
-        Everyday rides, simplified.
+      <p className={`subtitle ${stage >= 3 ? "show" : ""}`}>
+        Move smarter. Ride faster.
       </p>
     </div>
   );

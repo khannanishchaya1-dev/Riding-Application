@@ -1,9 +1,10 @@
 import React from "react";
 
-const VehiclePanel = (props) => {
+const VehiclePanel = ({ fare, setvehiclepanel, setvehicleType, setconfirmRidepanel }) => {
+  
   const handleVehicleSelection = (type) => {
-    props.setvehicleType(type);
-    props.setconfirmRidepanel(true);
+    setvehicleType(type);
+    setconfirmRidepanel(true);
   };
 
   const vehicles = [
@@ -12,65 +13,78 @@ const VehiclePanel = (props) => {
       name: "WheelzyGo",
       seats: 4,
       img: "https://www.svgrepo.com/show/408292/car-white.svg",
-      desc: "Affordable, Compact rides",
+      desc: "Affordable, compact rides",
     },
     {
       id: "moto",
       name: "Moto",
       seats: 1,
       img: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
-      desc: "Quick, cost-effective ride",
+      desc: "Fast and budget friendly",
     },
     {
       id: "auto",
       name: "Wheelzy Auto",
       seats: 2,
       img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
-      desc: "Affordable, Desi style",
+      desc: "Easy and iconic local rides",
     },
   ];
 
   return (
-    <>
-      {/* Close button */}
-      <h5 className="text-center absolute w-[90%] top-0">
-        <i
-          onClick={() => props.setvehiclepanel(false)}
-          className="ri-arrow-down-s-line text-3xl text-gray-400 cursor-pointer hover:text-black transition"
-        ></i>
-      </h5>
+    <div className="px-2">
 
-      {/* Heading */}
-      <h3 className="text-2xl font-bold mb-5 text-[#E23744] tracking-tight">Select Your Ride</h3>
+      {/* Handle Bar */}
+      <div className="w-14 h-[5px] rounded-full bg-gray-300 mx-auto mb-4" />
 
-      {/* Cards */}
-      {vehicles.map((v) => (
-        <div
-          key={v.id}
-          onClick={() => handleVehicleSelection(v.id)}
-          className="flex items-center justify-between w-full p-4 mb-3 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl active:scale-[0.97] transition-all cursor-pointer"
-        >
-          {/* Image */}
-          <div className="rounded-2xl bg-[#FFF5F5] p-2 w-[60px] h-[60px] flex items-center justify-center">
-            <img className="h-10" src={v.img} alt={v.name} />
+      {/* Title */}
+      <h3 className="text-xl font-semibold text-black text-center mb-5">
+        Choose Your Ride
+      </h3>
+
+      {/* Ride Options */}
+      <div className="space-y-4">
+        {vehicles.map((v) => (
+          <div
+            key={v.id}
+            onClick={() => handleVehicleSelection(v.id)}
+            className="flex items-center justify-between bg-white/90 border border-gray-200 
+            p-4 rounded-2xl backdrop-blur-lg cursor-pointer active:scale-[0.96] 
+            hover:bg-gray-100 transition-all"
+          >
+            {/* Image */}
+            <div className="rounded-xl bg-gray-100 p-2 flex items-center justify-center w-14 h-14">
+              <img className="h-9" src={v.img} alt={v.name} />
+            </div>
+
+            {/* Details */}
+            <div className="flex flex-col w-[55%]">
+              <p className="font-medium text-[17px] text-black flex items-center gap-2">
+                {v.name}
+                <span className="text-[#E23744] text-sm flex items-center gap-1">
+                  <i className="ri-user-fill"></i>{v.seats}
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">{v.desc}</p>
+              <p className="text-[12px] text-gray-400">2 min away</p>
+            </div>
+
+            {/* Price */}
+            <p className="text-lg font-bold text-[#E23744]">
+              ₹{fare?.[v.id] ?? "--"}
+            </p>
           </div>
+        ))}
+      </div>
 
-          {/* Content */}
-          <div className="w-1/2 px-3">
-            <h4 className="font-semibold text-lg text-gray-800">
-              {v.name} <span className="text-[#E23744] text-sm"><i className="ri-user-fill"></i>{v.seats}</span>
-            </h4>
-            <p className="text-sm text-gray-600">🚀 {v.desc}</p>
-            <p className="text-[12px] text-gray-400">⏱ 2 mins away</p>
-          </div>
-
-          {/* Price */}
-          <div className="text-xl font-bold text-[#E23744]">
-            ₹{props?.fare?.[v.id] ?? "--"}
-          </div>
-        </div>
-      ))}
-    </>
+      {/* Close Button */}
+      <button
+        onClick={() => setvehiclepanel(false)}
+        className="mt-6 w-full text-center py-3 text-gray-600 hover:text-black transition font-medium"
+      >
+        Cancel
+      </button>
+    </div>
   );
 };
 

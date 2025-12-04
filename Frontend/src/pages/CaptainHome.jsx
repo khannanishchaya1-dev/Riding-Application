@@ -24,16 +24,15 @@ const CaptainHome = () => {
   const incomingSound = useRef(new Audio("/src/assets/sounds/incoming_new.mp3"));
   const [ride, setride] = useState({});
 
-  // Load stored captain
+  // Load captain from local storage
   useEffect(() => {
-    const storedCaptain = localStorage.getItem("captain");
-    if (storedCaptain) setCaptainData(JSON.parse(storedCaptain));
+    const stored = localStorage.getItem("captain");
+    if (stored) setCaptainData(JSON.parse(stored));
   }, []);
 
   // Join socket room
   useEffect(() => {
     if (!socket || !captainData?._id) return;
-
     sendMessage("join", { userId: captainData._id, userType: "captain" });
   }, [socket, captainData?._id]);
 
@@ -43,7 +42,7 @@ const CaptainHome = () => {
 
     const handler = (data) => {
       setride(data);
-      toast.success("📍 New Ride Request!");
+      toast.success("🚗 New Ride Request");
 
       incomingSound.current.currentTime = 0;
       incomingSound.current.play().catch(() => {});
@@ -52,10 +51,10 @@ const CaptainHome = () => {
     };
 
     receiveMessage("new-ride", handler);
-
     return () => offMessage("new-ride", handler);
   }, [socket]);
 
+  // Confirm ride function
   const confirmRide = async () => {
     try {
       await axios.post(
@@ -63,16 +62,13 @@ const CaptainHome = () => {
         { rideId: ride._id },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-
-      toast.success("🚗 Ride Accepted!");
+      toast.success("✔ Ride Accepted");
     } catch {
       toast.error("⚠ Error confirming ride");
     }
   };
 
-  // ---------- POPUP ANIMATIONS ----------
-
-  // Incoming Ride Sheet
+  // Popup animations
   useGSAP(() => {
     gsap.to(ridePopUppanelRef.current, {
       transform: ridePopUppanel ? "translateY(0%)" : "translateY(120%)",
@@ -81,7 +77,6 @@ const CaptainHome = () => {
     });
   }, [ridePopUppanel]);
 
-  // Confirm Ride Sheet (Fix Overlap: move farther when hidden)
   useGSAP(() => {
     gsap.to(confirmridePopUppanelRef.current, {
       transform: confirmridePopUppanel ? "translateY(0%)" : "translateY(200%)",
@@ -91,33 +86,33 @@ const CaptainHome = () => {
   }, [confirmridePopUppanel]);
 
   return (
-    <div className="h-[100dvh] w-full bg-[#FCEDEE] relative">
+    <div className="h-[100dvh] w-full overflow-hidden relative">
 
-      {/* Transparent Header */}
-      <div className="fixed top-0 w-full z-40 flex items-center justify-end px-5 py-4 bg-transparent">
+      {/* Top Avatar Button */}
+      <div className="absolute top-5 right-5 z-30">
         <Link to="/captain-profile">
-          <div className="h-11 w-11 rounded-full bg-[#E23744] text-white flex items-center justify-center 
-                          font-semibold text-lg shadow-lg hover:scale-105 transition-all active:scale-95">
+          <div className="h-12 w-12 rounded-full bg-white/90 backdrop-blur-xl shadow-md border border-gray-200 
+                          flex items-center justify-center text-[#E23744] text-xl font-bold transition hover:scale-105">
             {captainData?.fullname?.firstname?.charAt(0)?.toUpperCase() || "C"}
           </div>
         </Link>
       </div>
 
-      {/* Map */}
-      <div className="h-[58%] w-full">
+      {/* Full Map */}
+      <div className="h-[100dvh]">
         <LiveTracking />
       </div>
 
-      {/* Driver Status Section */}
-      <div className="h-[42%] w-full p-5 bg-white rounded-t-3xl shadow-[0_-6px_25px_rgba(0,0,0,0.10)] border-t-4 border-[#E23744]">
+      {/* Bottom Card Glass UI */}
+      <div className="absolute bottom-0 w-full backdrop-blur-xl bg-white/70 rounded-t-3xl p-6 border-t border-gray-300 shadow-lg z-20">
         <CaptainDetails captain={captainData} />
       </div>
 
-      {/* Incoming Ride Popup */}
+      {/* Incoming Popup */}
       <div
         ref={ridePopUppanelRef}
-        className="fixed bottom-0 w-full bg-white rounded-t-3xl z-40 shadow-2xl p-5 translate-y-[120%]"
-      >
+        className="fixed bottom-0 w-full z-40 translate-y-[120%] backdrop-blur-xl bg-white/85 
+                border-t border-gray-200 shadow-xl rounded-t-3xl p-6">
         <RidePopUp
           ride={ride}
           setridePopUppanel={(v) => {
@@ -125,19 +120,18 @@ const CaptainHome = () => {
             setridePopUppanel(v);
           }}
           setconfirmridePopUppanel={(v) => {
-            // smooth transition: close first sheet then open OTP panel
             setridePopUppanel(false);
-            setTimeout(() => setconfirmridePopUppanel(v), 320);
+            setTimeout(() => setconfirmridePopUppanel(v), 250);
           }}
           confirmRide={confirmRide}
         />
       </div>
 
-      {/* Confirm OTP Popup */}
+      {/* Confirm Ride Popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="fixed bottom-0 w-full bg-white rounded-t-3xl z-[999] shadow-2xl translate-y-[200%]"
-      >
+        className="fixed bottom-0 w-full z-[999] translate-y-[200%] backdrop-blur-xl bg-white/90 
+                border-t border-gray-200 shadow-xl rounded-t-3xl ">
         <ConfirmRidePopUp
           ride={ride}
           setridePopUppanel={setridePopUppanel}

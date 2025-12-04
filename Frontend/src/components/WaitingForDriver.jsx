@@ -1,90 +1,95 @@
 import React from "react";
 
-const WaitingForDriver = (props) => {
+const WaitingForDriver = ({ ride, setWaitingForDriver }) => {
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-lg border-t-4 border-[#E23744] animate-fadeIn">
+    <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">
 
-      {/* Close Button */}
-      <div className="text-center">
-        <i
-          onClick={() => props.setWaitingForDriver(false)}
-          className="ri-arrow-down-s-line text-3xl text-gray-400 hover:text-black cursor-pointer transition"
-        ></i>
-      </div>
+      {/* Drag Handle */}
+      <div className="w-16 h-[5px] bg-gray-300 rounded-full mx-auto mb-5"></div>
 
       {/* Title */}
-      <h3 className="text-2xl font-bold text-center text-[#E23744] mt-2 tracking-tight">
-        Your Captain is on the way 🚕
+      <h3 className="text-xl font-semibold text-center text-black">
+        Your Captain Is On The Way
       </h3>
+      <p className="text-center text-gray-500 text-sm mt-1 mb-5">
+        Please be ready at your pickup point
+      </p>
 
       {/* Driver Card */}
-      <div className="flex items-center justify-between bg-[#FFF5F5] rounded-2xl p-4 shadow-sm mt-6">
-        
-        {/* Driver Image / Vehicle */}
+      <div className="flex justify-between items-center bg-white/90 border border-gray-200 rounded-2xl p-4 mb-6">
+        {/* Vehicle Image */}
         <img
-          className="h-16 w-24 object-contain drop-shadow-md"
           src="https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n"
           alt="Vehicle"
+          className="h-16 object-contain opacity-90"
         />
 
-        {/* Driver Details */}
+        {/* Driver Info */}
         <div className="text-right">
-          <h2 className="font-semibold text-lg text-gray-900">
-            {`${props.ride?.captain?.fullname?.firstname ?? ""} ${props.ride?.captain?.fullname?.lastname ?? ""}`}
-          </h2>
-          <p className="text-md text-gray-500">{props?.ride?.captain?.vehicle?.numberPlate}</p>
-
-          {/* OTP */}
-          <p className="mt-1 text-lg font-bold text-[#E23744] tracking-widest">
-            OTP: {props.ride?.otp}
+          <p className="font-semibold text-lg text-black">
+            {ride?.captain?.fullname?.firstname} {ride?.captain?.fullname?.lastname}
+          </p>
+          <p className="text-sm text-gray-500">
+            {ride?.captain?.vehicle?.numberPlate}
+          </p>
+          <p className="mt-1 text-lg tracking-widest font-semibold text-[#E23744]">
+            OTP: {ride?.otp}
           </p>
         </div>
       </div>
 
       {/* Trip Summary */}
-      <div className="bg-[#F8F8F8] rounded-3xl p-4 border border-gray-200 mt-6 space-y-4">
+      <div className="bg-white/90 backdrop-blur-lg border border-gray-200 rounded-2xl p-5 space-y-5">
 
         {/* Pickup */}
         <div className="flex items-start gap-4">
-          <div className="bg-[#FFE7E7] rounded-xl p-2 shadow-sm">
-            <i className="ri-map-pin-user-fill text-[#E23744] text-2xl"></i>
+          <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center">
+            <i className="ri-map-pin-user-fill text-[#E23744] text-xl"></i>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900">Pickup</h4>
-            <p className="text-sm text-gray-500">{props?.ride?.origin}</p>
+            <p className="font-medium text-black">Pickup</p>
+            <p className="text-sm text-gray-600">{ride?.origin}</p>
           </div>
         </div>
 
         {/* Destination */}
         <div className="flex items-start gap-4">
-          <div className="bg-[#FFE7E7] rounded-xl p-2 shadow-sm">
-            <i className="ri-navigation-fill text-[#E23744] text-2xl"></i>
+          <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center">
+            <i className="ri-navigation-fill text-[#E23744] text-xl"></i>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900">Drop</h4>
-            <p className="text-sm text-gray-500">{props?.ride?.destination}</p>
+            <p className="font-medium text-black">Destination</p>
+            <p className="text-sm text-gray-600">{ride?.destination}</p>
           </div>
         </div>
 
         {/* Fare */}
         <div className="flex items-center gap-4">
-          <div className="bg-[#FFE7E7] rounded-xl p-2 shadow-sm">
-            <i className="ri-money-rupee-circle-fill text-[#E23744] text-2xl"></i>
+          <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center">
+            <i className="ri-money-rupee-circle-fill text-[#E23744] text-xl"></i>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 text-lg">₹{props?.ride?.fare}</h4>
-            <p className="text-sm text-gray-500">Cash Payment</p>
+            <p className="font-semibold text-lg text-black">₹{ride?.fare}</p>
+            <p className="text-sm text-gray-600">Cash Payment</p>
           </div>
         </div>
       </div>
 
-      {/* Searching Pulse Text */}
+      {/* Live Indicator */}
       <div className="flex justify-center mt-6">
-        <div className="flex items-center gap-2 text-gray-600 animate-pulse">
+        <div className="flex items-center gap-2 text-gray-500 animate-pulse">
           <div className="h-3 w-3 bg-[#E23744] rounded-full"></div>
-          <p>Waiting for captain to arrive...</p>
+          <p className="text-sm">Captain is arriving...</p>
         </div>
       </div>
+
+      {/* Cancel Button */}
+      <button
+        onClick={() => setWaitingForDriver(false)}
+        className="w-full text-center mt-6 py-3 text-gray-500 text-sm hover:text-black active:scale-95 transition"
+      >
+        Cancel Ride
+      </button>
     </div>
   );
 };

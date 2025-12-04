@@ -43,91 +43,88 @@ const CaptainLogin = () => {
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#F5F5F5] flex flex-col">
+    <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col justify-center py-6">
 
-      {/* Main Centered Form Card */}
-      <div className="flex-grow flex items-center justify-center">
-        <div className="w-full max-w-md bg-white mx-4 p-8 rounded-xl shadow-md">
-
-          <img src={wheelzyCaptainLogo} className="w-48 mb-6 mx-auto" alt="logo" />
-
-          <h2 className="text-3xl font-bold text-[#E23744] text-center mb-2">
-            Captain Login 🚖
-          </h2>
-
-          <p className="text-gray-600 text-center mb-6">
-            Drive, Earn, Repeat.
-          </p>
-
-          {/* Form */}
-          <form onSubmit={submitHandler} className="space-y-6">
-
-            {/* Email */}
-            <div>
-              <label className="text-sm font-semibold">Email</label>
-              <input
-                required
-                type="email"
-                placeholder="example@gmail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-sm font-semibold flex justify-between">
-                Password
-                <span
-                  className="text-[#E23744] text-xs cursor-pointer hover:underline"
-                  onClick={() => setShowPass(!showPass)}
-                >
-                  {showPass ? "Hide" : "Show"}
-                </span>
-              </label>
-
-              <input
-                required
-                type={showPass ? "text" : "password"}
-                placeholder="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#E23744] focus:border-[#E23744] outline-none transition"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 rounded-lg text-white text-lg font-semibold transition ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#E23744] hover:bg-[#FF4F5A]"
-              }`}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-
-          <p className="text-center text-gray-600 mt-5">
-            New captain?{" "}
-            <Link
-              to="/captain-signup"
-              className="text-[#E23744] font-medium hover:underline"
-            >
-              Register →
-            </Link>
-          </p>
-        </div>
+      {/* Logo */}
+      <div className="text-center">
+        <img src={wheelzyCaptainLogo} alt="logo" className="w-28 mx-auto opacity-90" />
       </div>
 
-      {/* Bottom CTA */}
-      <div className="p-4">
+      {/* Card */}
+      <div className="w-full max-w-md mx-auto mt-6 px-5">
+
+        <h2 className="text-3xl font-semibold text-[#E23744] text-center tracking-tight">
+          Captain Login
+        </h2>
+
+        <p className="text-gray-500 text-center text-sm mt-1">
+          Drive. Earn. Repeat.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={submitHandler} className="mt-8 space-y-5">
+
+          {/* Email */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium">Email</label>
+            <input
+              required
+              type="email"
+              placeholder="example@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="text-sm text-gray-600 font-medium flex justify-between">
+              Password
+              <span
+                className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                onClick={() => setShowPass(!showPass)}
+              >
+                {showPass ? "Hide" : "Show"}
+              </span>
+            </label>
+
+            <input
+              required
+              type={showPass ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
+          </div>
+
+          {/* Login Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-xl text-white font-semibold text-lg active:scale-95 transition duration-150 ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#E23744]"
+            }`}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* Redirect */}
+        <p className="text-center text-gray-500 mt-6 text-sm">
+          New captain?{" "}
+          <Link to="/captain-signup" className="text-[#E23744] font-medium hover:underline">
+            Register →
+          </Link>
+        </p>
+      </div>
+
+      {/* Switch Button */}
+      <div className="mt-6 px-6">
         <Link
           to="/login"
-          className="block text-center w-full py-3 bg-white border border-gray-300 hover:bg-gray-100 rounded-lg text-lg font-medium transition"
+          className="block text-center py-3 border border-gray-300 rounded-xl text-gray-700 font-medium active:scale-95 transition"
         >
           Sign in as User 👤
         </Link>

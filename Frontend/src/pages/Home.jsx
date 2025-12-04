@@ -298,27 +298,22 @@ console.log(response.data);
     <div className="h-[100dvh] w-full overflow-hidden relative">
 
       {/* 🔹 NAVBAR */}
-      <div className="absolute top-0 left-0 w-full flex items-center justify-between p-8 bg-transparent z-10">
-        
-        {/* Logo */}
-        <img 
-          src={WheelzyLogo}
-          alt="Logo"
-          className="w-40 sm:w-28 md:w-32"
-        />
-      
-  
-  
-<Link to="/profile">
+      {/* NAVBAR */}
+<div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-8 z-10">
+  <img 
+    src={WheelzyLogo}
+    alt="Logo"
+    className="w-32 opacity-90"
+  />
+
+  <Link to="/profile">
     <div className="h-11 w-11 rounded-full bg-[#E23744] text-white flex items-center justify-center 
-                    font-semibold text-lg shadow-lg hover:scale-105 transition-all active:scale-95">
+                    font-semibold text-lg active:scale-95 transition-all">
       {user?.fullname?.firstname?.charAt(0)?.toUpperCase() || "C"}
     </div>
   </Link>
+</div>
 
-
-
-      </div>
       {/* Background Animation (LiveTracking) */}
       <div className="h-[100dvh] w-screen z-10">
         <LiveTracking />
@@ -329,26 +324,24 @@ console.log(response.data);
         
         {/* Main Input Panel (Always visible at the bottom) */}
        {/* Main Input Panel (Zomato Style) */}
-<div className="bg-white p-6 shadow-xl rounded-t-3xl w-full max-w-lg mx-auto border-t-4 border-[#E23744] pointer-events-auto">
+<div className=" backdrop-blur-xl bg-white/10 border border-white/10 p-6 rounded-3xl w-full max-w-lg mx-auto pointer-events-auto">
+<i
+  ref={panelCloseRef}
+  onClick={() => setPanelOpen(false)}
+  className="ri-arrow-down-s-line absolute right-5 top-4 text-[28px] text-[#E23744] hover:text-white cursor-pointer opacity-0 transition duration-300 z-[60]"
+/>
 
-  {/* Close Icon */}
-  <i
-    ref={panelCloseRef}
-    onClick={() => setPanelOpen(false)}
-    className="ri-arrow-down-s-line absolute right-6 top-5 text-3xl text-gray-400 hover:text-black cursor-pointer opacity-0 transition"
-  />
-
-  {/* Title */}
-  <h4 className="text-[26px] font-bold text-[#E23744] mb-2 tracking-tight">
-    Where are you going?
+  <h4 className="text-[22px] font-semibold text-[#E23744] mb-3">
+    Where are you headed?
   </h4>
 
-  {/* Search Box Card */}
-  <div className="bg-[#F8F8F8] rounded-3xl p-4 space-y-4 mt-4 border border-gray-100">
-    
-    {/* Origin */}
+  {/* Search Section */}
+  <div className="bg-white/15 rounded-2xl p-4 space-y-4">
+
+    {/* Pickup */}
     <div
-      className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+      className="flex items-center gap-3 px-4 py-3 bg-white/20 border border-white/10 rounded-xl backdrop-blur-lg cursor-pointer
+      transition active:scale-[0.97]"
       onClick={() => {
         setPanelOpen(true);
         setActiveField("origin");
@@ -358,14 +351,15 @@ console.log(response.data);
       <input
         value={origin}
         placeholder="Pickup location"
-        className="w-full bg-transparent outline-none text-[16px] font-medium"
-        onChange={(e)=>setorigin(e.target.value)}
+        className="w-full bg-transparent text-black placeholder-gray-600 outline-none text-[16px]"
+        onChange={(e) => setorigin(e.target.value)}
       />
     </div>
 
     {/* Destination */}
     <div
-      className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+      className="flex items-center gap-3 px-4 py-3 bg-white/20 border border-white/10 rounded-xl backdrop-blur-lg cursor-pointer 
+      transition active:scale-[0.97]"
       onClick={() => {
         setPanelOpen(true);
         setActiveField("destination");
@@ -375,21 +369,22 @@ console.log(response.data);
       <input
         value={destination}
         placeholder="Destination"
-        className="w-full bg-transparent outline-none text-[16px] font-medium"
-        onChange={(e)=>setdestination(e.target.value)}
+        className="w-full bg-transparent text-black placeholder-gray-600 outline-none text-[16px]"
+        onChange={(e) => setdestination(e.target.value)}
       />
     </div>
   </div>
 
-  {/* CTA Button */}
   <button
     onClick={find_trip}
     disabled={!origin || !destination}
-    className="mt-5 w-full bg-[#E23744] hover:bg-[#c82c35] disabled:bg-gray-300 text-white font-semibold rounded-2xl py-4 text-lg tracking-wide transition"
+    className="mt-5 w-full bg-[#E23744] text-white font-semibold rounded-xl py-4 text-lg 
+    active:scale-95 transition opacity-90 hover:opacity-100 disabled:bg-gray-600 disabled:opacity-40"
   >
     Search Ride
   </button>
 </div>
+
 
 
         {/* Location Search Panel (Animated) - Use max-w-lg mx-auto for centering */}
@@ -449,7 +444,8 @@ setvehiclepanel={setvehiclepanel}
       {/* Looking For Driver Panel - Use max-w-lg mx-auto for centering */}
       <div
         ref={lookingForVehicleRef}
-        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
+        className={`fixed z-10 bottom-0 left-0 right-0 max-w-lg mx-auto backdrop-blur-xl bg-white/12 border-t border-white/10 p-8 
+rounded-t-3xl transition-all duration-300 pointer-events-auto ${
    lookingForVehicle ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}
       >
@@ -464,7 +460,8 @@ setvehiclepanel={setvehiclepanel}
       {/* Waiting For Driver Panel - Use max-w-lg mx-auto for centering */}
  <div
         ref={noDriverFoundRef}
-        className={`fixed z-10 bottom-0 bg-white p-3 w-full translate-y-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto ${
+        className={`fixed z-10 bottom-0 left-0 right-0 max-w-lg mx-auto backdrop-blur-xl bg-white/12 border-t border-white/10 p-8 
+rounded-t-3xl transition-all duration-300 pointer-events-auto ${
     noDriverFound ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   } `}
       >
@@ -482,7 +479,8 @@ setride={setride}
       {/* Note: I kept translate-y-0 for this one as it seems it's intended to be visible on ride confirmation */}
       <div
         ref={WaitingForDriverRef}
-        className={`fixed z-10 bottom-0 bg-white p-3 w-full py-10 max-w-lg mx-auto shadow-2xl rounded-t-2xl pointer-events-auto transition-all duration-300 ${
+        className={`fixed z-10 bottom-0 left-0 right-0 max-w-lg mx-auto backdrop-blur-xl bg-white/12 border-t border-white/10 p-8 
+rounded-t-3xl transition-all duration-300 pointer-events-auto ${
     waitingForDriver ? "opacity-100" : "opacity-0 pointer-events-none translate-y-full"
   }`}
       >

@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-const LocationSearchPanel = (props) => {
-  const { activeField, origin, destination, handleSelect } = props;
-
+const LocationSearchPanel = ({ activeField, origin, destination, handleSelect }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef(null);
@@ -32,12 +30,11 @@ const LocationSearchPanel = (props) => {
           {
             params: { input: query },
             headers: token ? { Authorization: `Bearer ${token}` } : {},
-            timeout: 5000,
           }
         );
 
         setSuggestions(Array.isArray(res.data.suggestions) ? res.data.suggestions : []);
-      } catch (err) {
+      } catch {
         setSuggestions([]);
       } finally {
         setLoading(false);
@@ -65,37 +62,39 @@ const LocationSearchPanel = (props) => {
       }));
 
   return (
-    <div className="bg-white shadow-2xl rounded-3xl max-h-[65vh] overflow-y-auto border-t-4 border-[#E23744] py-2 animate-fadeIn">
+    <div className="backdrop-blur-xl bg-white/70 border-t border-gray-300 max-h-[65vh] overflow-y-auto 
+                    pt-4 px-2 rounded-t-3xl animate-fadeIn z-[60]">
 
       {/* Loading */}
       {loading && (
-        <div className="p-4 text-gray-500 text-center italic text-base">
-          <i className="ri-loader-4-line animate-spin text-xl text-[#E23744]"></i>
+        <div className="py-4 text-gray-600 text-center">
+          <i className="ri-loader-4-line animate-spin text-2xl text-[#E23744]"></i>
         </div>
       )}
 
       {/* No results */}
       {!loading && results.length === 0 && (
-        <div className="p-5 text-gray-400 text-center italic">
+        <div className="py-5 text-gray-500 text-center italic tracking-wide">
           No suggestions found
         </div>
       )}
 
-      {/* Suggestions List */}
+      {/* List */}
       {results.map((item) => (
         <div
           key={item.key}
           onClick={() => handleSelect(item.description)}
-          className="flex items-center gap-4 p-4 cursor-pointer hover:bg-[#FFF5F5] active:scale-[0.98] transition-all duration-200 border-b border-gray-100"
+          className="flex items-center gap-4 px-4 py-4 cursor-pointer transition 
+          hover:bg-gray-100 active:scale-[0.98] border-b border-gray-200"
         >
-          {/* Icon Circle */}
-          <div className="bg-[#FFE7E7] text-[#E23744] h-10 w-10 rounded-2xl flex items-center justify-center shadow-sm">
-            <i className="ri-map-pin-2-fill text-xl"></i>
+          {/* Icon */}
+          <div className="h-11 w-11 rounded-xl bg-gray-100 border border-gray-300 flex items-center justify-center">
+            <i className="ri-map-pin-fill text-[#E23744] text-xl"></i>
           </div>
 
           {/* Text */}
-          <div className="text-gray-800 font-semibold leading-tight">
-            <p className="text-[15px]">{item.description}</p>
+          <div className="leading-tight text-black">
+            <p className="text-[15px] font-medium">{item.description}</p>
           </div>
         </div>
       ))}

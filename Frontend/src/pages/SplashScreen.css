@@ -1,8 +1,8 @@
 /* Background with smooth gradient & noise overlay */
-.zomato-splash {
+.splash-screen {
   height: 100dvh;
   width: 100%;
-  background: #E23744;
+  background: #0f0f0f;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -11,63 +11,72 @@
   color: white;
   position: relative;
   overflow: hidden;
-  transition: opacity 0.6s ease-out;
-  padding: 0 20px; 
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-/* Fade Out */
+/* Subtle fade exit */
 .fade-out {
   opacity: 0;
-  transform: translateY(-30px);
-  filter: blur(4px);
+  transform: translateY(-20px);
+  filter: blur(6px);
 }
 
-/* Wheel Icon */
-.wheel-icon {
-  width: clamp(60px, 16vw, 90px);
+/* Moving light streak background */
+.light-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 70%, rgba(255,255,255,0.08), transparent 60%),
+              linear-gradient( to right, rgba(255,255,255,0.05), rgba(0,0,0,0));
+  animation: glowMove 6s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes glowMove {
+  0% { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+
+/* Logo */
+.wheel {
+  width: clamp(64px, 16vw, 90px);
   opacity: 0;
-  transform: translateY(10px) scale(0.9);
-  transition: all 0.7s ease-out;
-  filter: drop-shadow(0px 0px 12px rgba(255,255,255,0.18));
+  transform: translateY(10px) scale(0.9) rotate(-30deg);
+  transition: all 1s cubic-bezier(.25,.8,.25,1);
+  filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.12));
 }
 
-.wheel-icon.show {
+.wheel.show {
   opacity: 1;
-  transform: translateY(0px) scale(1);
+  transform: translateY(0) scale(1) rotate(0deg);
 }
 
 /* Brand Name */
-.brand {
-  font-size: clamp(2.2rem, 6vw, 4rem);
-  font-weight: 900;
-  margin-top: 14px;
+.brand-text {
+  font-size: clamp(2.3rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: 4px;
   opacity: 0;
-  letter-spacing: 2px;
-  transform: translateY(15px);
-  text-align: center;
-  transition: all 0.7s ease-out;
-  max-width: 90%;
+  transform: translateY(14px) scale(0.98);
+  transition: all 0.7s cubic-bezier(.25,.8,.25,1);
 }
 
-.brand.show {
+.brand-text.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
-/* Tagline */
-.tagline {
-  margin-top: 8px;
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  font-weight: 400;
+/* Subtitle */
+.subtitle {
+  margin-top: 6px;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 300;
   opacity: 0;
-  transform: translateY(15px);
-  color: #ffe4e4;
-  text-align: center;
-  transition: all 0.8s ease-out;
-  max-width: 85%;
+  color: #bfbfbf;
+  transform: translateY(14px);
+  transition: all 0.9s cubic-bezier(.25,.8,.25,1);
 }
 
-.tagline.show {
+.subtitle.show {
   opacity: 1;
   transform: translateY(0);
 }
