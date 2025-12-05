@@ -4,34 +4,37 @@ const BlacklistedToken = require('../models/blacklist.token')
 const {setStatus} = require('../service/ride.service');
 const  sendOTP  = require("./emailService");
 const jwt = require('jsonwebtoken');
+const PendingCaptain = require("../models/PendingCaptain");
 
 const handleCaptainRegister = async (req, res) => {
   try {
     const { fullname, email, phone, password, vehicle } = req.body;
 
+    // Check if already signed up
     const exists = await Captain.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Email already exists" });
+    if (exists) return res.status(400).json({ message: "Email already registered." });
+
+    // Remove any previous registration attempts
+    await PendingCaptain.deleteOne({ email });
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const captain = await Captain.create({
+    // Store temporary record
+    await PendingCaptain.create({
       fullname,
       email,
       phone,
-      password,
       vehicle,
-      otp,
-      otpExpires: Date.now() + 10 * 60 * 1000 // 10 minutes
+      password,
+      otp
     });
 
-    // Send OTP email
-   
+    // Send OTP
     await sendOTP(email, otp);
-    
 
     return res.status(201).json({
-      message: "Captain account created. Enter OTP to verify.",
+      message: "OTP sent! Verify email to activate your captain account."
     });
 
   } catch (err) {
@@ -39,30 +42,38 @@ const handleCaptainRegister = async (req, res) => {
   }
 };
 const verifyOtp = async (req, res) => {
-  
   const { email, otp } = req.body;
 
-  const captain = await Captain.findOne({ email });
-  if (!captain) return res.status(404).json({ message: "Captain not found" });
-  console.log(captain.otp, otp, captain.otpExpires, Date.now());
+  const pending = await PendingCaptain.findOne({ email });
 
-  if (captain.otp !== otp || Date.now() > captain.otpExpires) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+  if (!pending) {
+    return res.status(400).json({ message: "No pending registration found. Please sign up again." });
   }
 
-  captain.isVerified = true;
-  captain.otp = null;
-  captain.otpExpires = null;
-  await captain.save();
+  if (pending.otp !== otp) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
 
-  const token = jwt.sign(
-    { _id: captain._id, role: "captain" },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
+  // Create actual captain
+  const captain = await Captain.create({
+    fullname: pending.fullname,
+    email: pending.email,
+    phone: pending.phone,
+    password: pending.password,
+    vehicle: pending.vehicle,
+    isVerified: true
+  });
+
+  // Delete temporary record
+  await PendingCaptain.deleteOne({ email });
+
+  // Generate token
+  const token = jwt.sign({ _id: captain._id, role: "captain" }, process.env.JWT_SECRET, {
+    expiresIn: "7d"
+  });
 
   return res.status(200).json({
-    message: "Verification successful!",
+    message: "Email verified — Captain account created!",
     token,
     captain
   });
@@ -70,21 +81,21 @@ const verifyOtp = async (req, res) => {
 const resendOtp = async (req, res) => {
   const { email } = req.body;
 
-  const captain = await Captain.findOne({ email });
-  if (!captain) return res.status(404).json({ message: "Captain not found" });
+  const pending = await PendingCaptain.findOne({ email });
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  
-  captain.otp = otp;
-  captain.otpExpires = Date.now() + 10 * 60 * 1000;
-  await captain.save();
+  if (!pending) {
+    return res.status(400).json({ message: "No pending registration found." });
+  }
 
-  await sendOTP(email, otp);
+  const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  pending.otp = newOtp;
+  pending.createdAt = Date.now(); // refresh timer
+  await pending.save();
 
-  return res.status(200).json({ message: "OTP resent successfully" });
+  await sendOTP(email, newOtp);
+
+  return res.status(200).json({ message: "New OTP sent!" });
 };
-
-
 const loginCaptain = async (req,res,next)=>{
   const errors = validationResult(req);
   if(!errors.isEmpty()){

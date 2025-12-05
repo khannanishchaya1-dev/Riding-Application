@@ -4,39 +4,42 @@ const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
 const sendOTP = require("./emailService");
 const crypto = require("crypto");
+const otpGenerator = require("otp-generator");
+const PendingUser = require("../models/PendingUser");
 
 const handleUserRegister = async (req, res) => {
+  const { fullname, email, password } = req.body;
+
   try {
-    const { fullname, email, password } = req.body;
+    // Check if already exists in main user table
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ message: "Email already registered." });
 
-    let user = await User.findOne({ email });
+    // Delete old pending record if exists
+    await PendingUser.deleteOne({ email });
 
-    if (user) return res.status(400).json({ message: "User already exists" });
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
-
-    user = await User.create({
-      fullname,
+    // Save temporary user
+    await PendingUser.create({
       email,
+      fullname,
       password,
       otp,
-      otpExpires: Date.now() + 5 * 60 * 1000, // 5 mins
+      createdAt: Date.now(),
     });
 
-    // 🔥 send OTP
+    // Send email
     await sendOTP(email, otp);
 
-    res.status(201).json({
-      message: "OTP sent to email",
-      email,
-    });
+    res.status(201).json({ message: "OTP sent. Verify email to continue." });
 
-  } catch (err) {
-    console.log("❌ OTP send error:", err);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong." });
   }
 };
-
 const handleUserLogin =async  (req,res,next)=>{
 
   const errors = validationResult(req);
@@ -94,55 +97,56 @@ const logoutUser = async (req, res) => {
 const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
 
-  const user = await User.findOne({ email });
+  const pending = await PendingUser.findOne({ email });
 
-  if (!user) return res.status(400).json({ message: "User not found" });
+  if (!pending) return res.status(400).json({ message: "No pending verification found." });
 
-  if (user.otp !== otp || user.otpExpires < Date.now()) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
-  }
+  if (pending.otp !== otp) return res.status(400).json({ message: "Invalid OTP." });
 
-  user.otp = null;
-  user.otpExpires = null;
-  user.isVerified = true;
-  await user.save();
-
-  return res.status(200).json({
-    message: "OTP verified successfully",
-    user,
-    token: "JWT_LATER", // replace with real JWT
+  // Create user
+  const user = await User.create({
+    fullname: pending.fullname,
+    email: pending.email,
+    password: pending.password,
   });
-};
-exports.resendOtp = async (req, res) => {
-  const { email } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "User not found" });
+  // Delete pending record
+  await PendingUser.deleteOne({ email });
 
-  const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
-  user.otp = otp;
-  user.otpExpires = Date.now() + 5 * 60 * 1000;
-  await user.save();
-
-  await sendOTP(email, otp);
-
-  res.json({ message: "New OTP sent!" });
+  res.status(200).json({ message: "Email verified. Account created!", user });
 };
 const resendOtp = async (req, res) => {
   const { email } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "User not found" });
+  try {
+    // Find user in pending DB, not main users table
+    const pending = await PendingUser.findOne({ email });
 
-  const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
-  user.otp = otp;
-  user.otpExpires = Date.now() + 5 * 60 * 1000;
-  await user.save();
+    if (!pending) {
+      return res.status(404).json({
+        message: "No pending registration found. Please sign up again."
+      });
+    }
 
-  await sendOTP(email, otp);
+    // Generate new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  res.json({ message: "New OTP sent!" });
+    // Update pending record
+    pending.otp = newOtp;
+    pending.createdAt = Date.now(); // Reset expiry timer
+    await pending.save();
+
+    // Send updated OTP
+    await sendOTP(email, newOtp);
+
+    res.json({ message: "📨 New OTP sent to your email!" });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to resend OTP." });
+  }
 };
+
 
 
 module.exports = {

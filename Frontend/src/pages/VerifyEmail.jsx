@@ -56,6 +56,7 @@ const VerifyEmail = () => {
         toast.success("🎉 Email Verified Successfully!");
 
         // Store authenticated user
+        
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 

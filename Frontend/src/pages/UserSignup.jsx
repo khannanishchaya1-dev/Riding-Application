@@ -15,32 +15,34 @@ const UserSignup = () => {
   const [showPass, setShowPass] = useState(false);
 
   const submitHandler = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const newUser = {
-      email,
-      password,
-      fullname: { firstname: firstName, lastname: lastName },
-    };
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}users/register`,
-        newUser
-      );
-
-      if (response.status === 201) {
-        toast.success("✔ Account created — Check your email for OTP!");
-
-        // Store temporarily for OTP validation
-        localStorage.setItem("pendingEmail", email);
-
-        navigate("/verify-email"); // redirect to OTP page
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Signup failed ⚠️ Try again.");
-    }
+  const newUser = {
+    email,
+    password,
+    fullname: { firstname: firstName, lastname: lastName },
   };
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}users/register`,
+      newUser
+    );
+
+    if (response.status === 201) {
+      toast.success("📩 OTP sent — Please verify your email!");
+
+      // Store email for verifying OTP later
+      localStorage.setItem("pendingEmail", email);
+
+      // Navigate to OTP screen
+      navigate("/verify-email");
+    }
+
+  } catch (error) {
+    toast.error(error.response?.data?.message || "⚠️ Signup failed. Try again.");
+  }
+};
 
   return (
     <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col justify-center py-6">
