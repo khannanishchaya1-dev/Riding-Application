@@ -107,7 +107,7 @@ const ProfilePage = () => {
     return <div className="min-h-screen flex justify-center items-center text-gray-600">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#FFF4F4] flex flex-col items-center">
+    <div className="h-[100dvh] bg-gradient-to-b from-white to-[#FFF4F4] flex flex-col items-center">
 
       {/* Header */}
       <div className="bg-gradient-to-br from-[#E23744] to-[#A81C28] w-full p-8 text-white relative rounded-b-3xl shadow-lg">
