@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import wheelzyCaptainLogo from "../assets/wheelzy-captain-dark.svg";
+import wheelzyCaptainLogo from "../assets/wheelzy.svg";
 import toast from "react-hot-toast";
 
 const CaptainLogin = () => {

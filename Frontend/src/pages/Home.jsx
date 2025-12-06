@@ -14,7 +14,7 @@ import { UserDataContext } from "../UserContext/UserContext"; // Import user con
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
-import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
+import WheelzyLogo from "../assets/wheelzy.svg";
 import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
 import NoDriverFound from "../components/NoDriverFound";

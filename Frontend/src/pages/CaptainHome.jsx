@@ -10,6 +10,7 @@ import { gsap } from "gsap";
 import axios from "axios";
 import LiveTracking from "../components/LiveTracking";
 import toast from "react-hot-toast";
+import WheelzyLogo from "../assets/wheelzy.svg";
 
 const CaptainHome = () => {
   const [ridePopUppanel, setridePopUppanel] = useState(false);
@@ -153,13 +154,19 @@ useEffect(() => {
     <div className="h-[100dvh] w-full overflow-hidden relative">
 
       {/* Top Avatar Button */}
-      <div className="absolute top-5 right-5 z-30">
+      <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-8 z-10">
+        <img 
+          src={WheelzyLogo}
+          alt="Logo"
+          className="w-32 opacity-90"
+        />
+      
         <Link to="/captain-profile">
-          <div className="h-12 w-12 rounded-full bg-white/90 backdrop-blur-xl shadow-md border border-gray-200 
-                          flex items-center justify-center text-[#E23744] text-xl font-bold transition hover:scale-105">
-            {captainData?.fullname?.firstname?.charAt(0)?.toUpperCase() || "C"}
-          </div>
-        </Link>
+                <div className="h-12 w-12 rounded-full bg-white/90 backdrop-blur-xl shadow-md border border-gray-200 
+                                flex items-center justify-center text-[#E23744] text-xl font-bold transition hover:scale-105">
+                  {captainData?.fullname?.firstname?.charAt(0)?.toUpperCase() || "U"}
+                </div>
+              </Link>
       </div>
 
       {/* Full Map */}

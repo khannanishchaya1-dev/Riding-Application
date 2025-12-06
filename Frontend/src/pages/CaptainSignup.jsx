@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import wheelzyCaptainLogo from "../assets/wheelzy-captain-dark.svg";
+import wheelzyCaptainLogo from "../assets/wheelzy.svg";
 import toast from "react-hot-toast";
 
 const CaptainSignup = () => {
@@ -183,6 +183,7 @@ console.log(response.status===201);
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
             />
             <input
+            type="number"
               placeholder="Capacity (Seats)"
               value={form.capacity}
               onChange={(e) => handleChange("capacity", e.target.value)}

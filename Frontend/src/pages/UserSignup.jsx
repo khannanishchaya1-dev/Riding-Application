@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
-import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
+import WheelzyLogo from "../assets/wheelzy.svg";
 import toast from "react-hot-toast";
 
 const UserSignup = () => {

@@ -14,14 +14,11 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 
-
 app.use(cors({
-  origin: [
-    "https://riding-application-x1x2.vercel.app", // your frontend
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, // important
+  origin: "https://riding-application-x1x2.vercel.app",
+  credentials: true,
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());

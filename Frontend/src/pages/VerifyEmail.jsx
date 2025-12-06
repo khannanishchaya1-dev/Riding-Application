@@ -51,7 +51,7 @@ const VerifyEmail = () => {
         `${import.meta.env.VITE_BACKEND_URL}users/verify-otp`,
         { email, otp: finalOtp }
       );
-
+console.log(response.data);
       if (response.status === 200) {
         toast.success("🎉 Email Verified Successfully!");
 

@@ -4,8 +4,9 @@ const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
 const sendOTP = require("./emailService");
 const crypto = require("crypto");
-const otpGenerator = require("otp-generator");
+
 const PendingUser = require("../models/PendingUser");
+const jwt = require('jsonwebtoken');
 
 const handleUserRegister = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -112,8 +113,12 @@ const verifyOTP = async (req, res) => {
 
   // Delete pending record
   await PendingUser.deleteOne({ email });
+  const token = jwt.sign({ _id: user._id, role: "user" }, process.env.JWT_SECRET, {
+      expiresIn: "7d"
+    });
+  
 
-  res.status(200).json({ message: "Email verified. Account created!", user });
+  res.status(200).json({ message: "Email verified. Account created!", user,token });
 };
 const resendOtp = async (req, res) => {
   const { email } = req.body;
@@ -129,7 +134,7 @@ const resendOtp = async (req, res) => {
     }
 
     // Generate new OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Update pending record
     pending.otp = newOtp;
