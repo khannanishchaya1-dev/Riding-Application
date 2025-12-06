@@ -1,35 +1,36 @@
-const nodemailer = require("nodemailer");
+const brevo = require("@getbrevo/brevo");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_PASS,
-  },
-});
+const client = new brevo.TransactionalEmailsApi();
+client.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
 
 async function sendOTP(email, otp) {
   try {
-    const info = await transporter.sendMail({
-      from: `"Wheelzy 🚗" <khannanishchaya1@gmail.com>`, // verified sender
-      to: email,
-      subject: "🔐 Your Wheelzy OTP",
-      html: `
+    await client.sendTransacEmail({
+      sender: {
+        name: process.env.SENDER_NAME,
+        email: process.env.SENDER_EMAIL,
+      },
+      to: [{ email }],
+      subject: "🔐 Your Wheelzy OTP Code",
+      htmlContent: `
         <div style="font-family:Arial; padding:20px;">
-          <h2>Welcome to Wheelzy 🚗</h2>
-          <p>Here is your OTP:</p>
-          <h1 style="color:#E23744; font-size:32px; letter-spacing:4px;">
-            ${otp}
-          </h1>
-          <p>This OTP expires in <strong>10 minutes</strong>.</p>
-        </div>`,
+          <h2>Welcome to <strong style="color:#E23744">Wheelzy 🚗</strong></h2>
+          <p>Your OTP code is:</p>
+          <h1 style="color:#E23744;font-size:32px;letter-spacing:4px;">${otp}</h1>
+          <p>This code expires in <strong>10 minutes.</strong></p>
+        </div>
+      `,
     });
 
-    console.log("📩 Email sent:", info.messageId);
+    console.log("📩 OTP sent successfully!");
   } catch (err) {
-    console.error("❌ Email sending failed:", err.message);
+    console.error(
+      "❌ Email sending failed:",
+      err.response?.body?.message || err.message
+    );
   }
 }
 
