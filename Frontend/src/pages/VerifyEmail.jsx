@@ -88,7 +88,7 @@ console.log(response.data);
   };
 
   return (
-    <div className="h-[100vh] bg-[#FAFAFA] flex flex-col justify-center items-center px-6">
+    <div className="h-[100dvh] bg-[#FAFAFA] flex flex-col justify-center items-center px-6">
       <img src={WheelzyLogo} className="w-28 mb-5 opacity-90" alt="" />
 
       <h2 className="text-2xl font-semibold text-[#E23744]">

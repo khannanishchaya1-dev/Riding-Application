@@ -75,7 +75,7 @@ const VerifyCaptainEmail = () => {
   };
 
   return (
-    <div className="h-[100vh] flex flex-col justify-center items-center bg-[#ffffff] px-6 text-center">
+    <div className="h-[100dvh] flex flex-col justify-center items-center bg-[#ffffff] px-6 text-center">
       <img src={WheelzyLogo} className="w-28 mb-4" />
 
       <h2 className="text-2xl font-semibold text-[#E23744]">Verify Email</h2>
