@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const{body} = require('express-validator');
+const Ride = require('../models/ride');
 const { handleUserRegister, handleUserLogin, getUserProfile, logoutUser,verifyOTP,resendOtp,forgotPassword,resetPassword } =require('../controllers/user');
 const { authUser } = require('../middlewares/auth');
 router.post('/register',[
@@ -21,5 +22,17 @@ router.post("/verify-otp", verifyOTP);
 router.post("/resend-otp", resendOtp);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
+router.get("/find-ride/:id", async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id).populate("captain");
+
+    if (!ride) return res.status(404).json({ message: "Ride not found" });
+console.log(ride);
+    res.json({ ride });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports=router;

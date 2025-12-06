@@ -11,9 +11,11 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RideItem = ({ ride }) => {
   return (
+    <Link to={`/passenger-ride-details/${ride._id}`}>
     <div className="backdrop-blur-xl bg-white/70 border border-gray-200 rounded-2xl p-4 flex justify-between items-center hover:scale-[0.99] transition-all cursor-pointer shadow-sm">
       
       {/* Left Content */}
@@ -58,11 +60,16 @@ const RideItem = ({ ride }) => {
         <ArrowRight className="w-5 h-5 text-gray-400 hover:text-[#E23744] transition" />
       </div>
     </div>
+    </Link>
   );
 };
 
 const ProfilePage = () => {
-  const { user, setUser } = useContext(UserDataContext);
+  const [user, setUser] = useState(() => {
+  const saved = localStorage.getItem("user");
+  return saved ? JSON.parse(saved) : null;
+});
+
   const [rides, setrides] = useState([]);
   const navigate = useNavigate();
 

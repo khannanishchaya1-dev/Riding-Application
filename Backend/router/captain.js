@@ -3,6 +3,7 @@ const router = express.Router();
 const {body} = require('express-validator');
 const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus,verifyOtp,resendOtp,forgotPassword ,resetPassword}=require('../controllers/captain');
 const { authCaptain } = require('../middlewares/auth');
+const Ride = require('../models/ride');
 
 router.post('/register',
 [
@@ -62,6 +63,17 @@ router.post("/verify-otp", verifyOtp);
 router.post("/resend-otp", resendOtp);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
+router.get("/find-ride/:id", async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id).populate("userId");
+
+    if (!ride) return res.status(404).json({ message: "Ride not found" });
+console.log(ride);
+    res.json({ ride });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 
 module.exports=router;

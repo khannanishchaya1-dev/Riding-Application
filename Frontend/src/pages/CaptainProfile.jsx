@@ -16,12 +16,14 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TripItem = ({ trip }) => {
   const statusColor =
     trip.status === "COMPLETED" ? "text-green-700" : "text-[#E23744]";
 
   return (
+    <Link to={`/captain-ride-details/${trip._id}`}>
     <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#FFD2D6] hover:shadow-md transition flex justify-between items-center cursor-pointer">
 
       <div className="flex flex-col space-y-2 w-4/5">
@@ -60,20 +62,20 @@ const TripItem = ({ trip }) => {
         <ArrowRight className="w-5 h-5 text-gray-400 hover:text-[#E23744] transition" />
       </div>
     </div>
+    </Link>
   );
 };
 
 const CaptainProfile = () => {
-  const [captainData, setCaptainData] = useContext(CaptainDataContext);
+  const [captainData, setCaptainData] = useState(()=>{
+    const saved = localStorage.getItem("captain");
+    return saved ? JSON.parse(saved) : null;
+  });
   const [trips, setTrips] = useState([]);
   const [stats, setStats] = useState({ totalTrips: 0, totalEarnings: "0.00", rating: "5.0" });
   const [showId, setShowId] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("captain");
-    if (stored) setCaptainData(JSON.parse(stored));
-  }, []);
 
   useEffect(() => {
     if (!captainData?._id) return;

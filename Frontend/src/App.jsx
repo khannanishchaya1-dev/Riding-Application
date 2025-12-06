@@ -26,6 +26,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ForgotPasswordCaptain from './pages/ForgotPasswordCaptain';
 import ResetPasswordCaptain from './pages/ResetPasswordCaptain';
+import RideDetails from './pages/RideDetails';
+import CaptainRideDetails from './pages/CaptainRideDetails';
 
 const App = () => {
   return (
@@ -66,6 +68,12 @@ const App = () => {
       <Route path='/captain-riding' element={
         <CaptainProtectWrapper> <CaptainRiding/></CaptainProtectWrapper>
 
+      }/>
+       <Route path='/passenger-ride-details/:id' element={
+        <UserProtectWrapper> <RideDetails/></UserProtectWrapper>
+      }/>
+      <Route path='/captain-ride-details/:id' element={
+        <CaptainProtectWrapper> <CaptainRideDetails/></CaptainProtectWrapper>
       }/>
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/verify-captain-email" element={<VerifyCaptainEmail />} />

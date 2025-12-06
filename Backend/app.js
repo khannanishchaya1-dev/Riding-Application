@@ -14,12 +14,15 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 
+// app.use(cors({
+//   origin: "https://riding-application-x1x2.vercel.app",
+//   credentials: true,
+// }));
+
 app.use(cors({
-  origin: "https://riding-application-x1x2.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true,
 }));
-
-// app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 connectMongodb(process.env.MONGODB_URL);
