@@ -120,7 +120,7 @@ const CaptainProfile = () => {
     : "N/A";
 
   return (
-    <div className="h-[100dvh] flex flex-col items-center bg-[#FFF5F6] font-sans">
+    <div className="h-screen flex flex-col items-center bg-[#FFF5F6] font-sans">
 
       {/* HEADER */}
       <div className="bg-gradient-to-br from-[#E23744] to-[#B01E2E] p-6 sm:p-8 text-white w-full shadow-md">
