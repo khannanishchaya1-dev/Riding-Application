@@ -45,6 +45,8 @@ const userSchema = new mongoose.Schema(
     salt: {
       type: String,
     },
+    resetPasswordToken: String,
+  resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

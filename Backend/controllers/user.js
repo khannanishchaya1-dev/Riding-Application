@@ -2,7 +2,7 @@ const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
-const sendOTP = require("./emailService");
+const {sendOTP,sendEmail} = require("./emailService");
 const crypto = require("crypto");
 
 const PendingUser = require("../models/PendingUser");
@@ -152,7 +152,65 @@ const resendOtp = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
 
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: "User not found." });
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  await user.save();
+
+  const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+  await sendEmail(
+    email,
+    "🔐 Reset Your Wheelzy Password",
+    `
+      <div style="font-family:sans-serif; padding:20px;">
+        <h2 style="color:#E23744;">Forgot Password? 🔄</h2>
+        <p>We received a request to reset your Wheelzy password.</p>
+        <p>Click below to reset it:</p>
+
+        <a href="${resetURL}" 
+          style="background:#E23744;color:white;padding:12px 18px;border-radius:8px;text-decoration:none;">
+          Reset Password
+        </a>
+
+        <p style="margin-top:15px;font-size:14px;">
+          If you didn't request this, you can safely ignore it.
+        </p>
+
+        <p style="font-size:12px;color:#777;">This link expires in 10 minutes.</p>
+      </div>
+    `
+  );
+
+  res.json({ message: "Reset email sent ✔ Check inbox." });
+};
+const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() }
+  });
+console.log(user);
+  if (!user) return res.status(400).json({ message: "Token expired or invalid" });
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+
+  await user.save();
+
+  res.json({ message: "Password reset successful 🎉" });
+};
 
 module.exports = {
   handleUserRegister,
@@ -161,5 +219,7 @@ module.exports = {
   logoutUser,
   verifyOTP,
   resendOtp,
+  forgotPassword,
+  resetPassword,
 
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {body} = require('express-validator');
-const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus,verifyOtp,resendOtp }=require('../controllers/captain');
+const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus,verifyOtp,resendOtp,forgotPassword ,resetPassword}=require('../controllers/captain');
 const { authCaptain } = require('../middlewares/auth');
 
 router.post('/register',
@@ -60,6 +60,8 @@ router.post("/status",[body("status")
 
 router.post("/verify-otp", verifyOtp);
 router.post("/resend-otp", resendOtp);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 
 module.exports=router;

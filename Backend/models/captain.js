@@ -77,6 +77,8 @@ isVerified: { type: Boolean, default: false },
     socketId: {
       type: String,
     },
+    resetPasswordToken: String,
+  resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

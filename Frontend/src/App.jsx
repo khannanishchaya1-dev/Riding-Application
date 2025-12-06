@@ -22,6 +22,10 @@ import { Toaster } from "react-hot-toast";
 import SplashScreen from './pages/SplashScreen';
 import VerifyEmail from "./pages/VerifyEmail";
 import VerifyCaptainEmail from "./pages/VerifyCaptainEmail";
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPasswordCaptain from './pages/ForgotPasswordCaptain';
+import ResetPasswordCaptain from './pages/ResetPasswordCaptain';
 
 const App = () => {
   return (
@@ -65,6 +69,11 @@ const App = () => {
       }/>
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/verify-captain-email" element={<VerifyCaptainEmail />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/forgot-password-captain" element={<ForgotPasswordCaptain />} />
+      <Route path="/reset-password-captain/:token" element={<ResetPasswordCaptain />} />
+
 
     </Routes>
     </>

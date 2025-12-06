@@ -64,26 +64,37 @@ const UserLogin = () => {
           </div>
 
           {/* Password */}
-          <div>
-            <label className="text-sm text-gray-600 font-medium flex justify-between">
-              Password
-              <span
-                className="text-[#E23744] text-xs cursor-pointer hover:underline"
-                onClick={() => setShowPass(!showPass)}
-              >
-                {showPass ? "Hide" : "Show"}
-              </span>
-            </label>
+          {/* Password */}
+<div>
+  <label className="text-sm text-gray-600 font-medium flex justify-between">
+    Password
+    <span
+      className="text-[#E23744] text-xs cursor-pointer hover:underline"
+      onClick={() => setShowPass(!showPass)}
+    >
+      {showPass ? "Hide" : "Show"}
+    </span>
+  </label>
 
-            <input
-              type={showPass ? "text" : "password"}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
-            />
-          </div>
+  <input
+    type={showPass ? "text" : "password"}
+    required
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    placeholder="••••••••"
+    className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+  />
+
+  {/* Forgot Password Link */}
+  <div className="text-right mt-2">
+    <Link
+      to="/forgot-password"
+      className="text-[#E23744] text-sm hover:underline cursor-pointer"
+    >
+      Forgot password?
+    </Link>
+  </div>
+</div>
 
           {/* Button */}
           <button

@@ -6,7 +6,7 @@ client.setApiKey(
   process.env.BREVO_API_KEY
 );
 
-async function sendOTP(email, otp) {
+const sendOTP=async function(email, otp) {
   try {
     await client.sendTransacEmail({
       sender: {
@@ -66,5 +66,22 @@ async function sendOTP(email, otp) {
     );
   }
 }
+const sendEmail = async function(to, subject, htmlContent) {
+  try {
+    await client.sendTransacEmail({
+      sender: {
+        name: process.env.SENDER_NAME,
+        email: process.env.SENDER_EMAIL,
+      },
+      to: [{ email: to }],
+      subject,
+      htmlContent,
+    });
 
-module.exports = sendOTP;
+    console.log("📩 Email sent");
+  } catch (error) {
+    console.error("Email Error:", error.response?.body || error.message);
+  }
+}
+
+module.exports = { sendOTP, sendEmail };

@@ -2,9 +2,10 @@ const Captain = require('../models/captain');
 const { validationResult }=require('express-validator');
 const BlacklistedToken = require('../models/blacklist.token')
 const {setStatus} = require('../service/ride.service');
-const  sendOTP  = require("./emailService");
+const  {sendOTP,sendEmail}  = require("./emailService");
 const jwt = require('jsonwebtoken');
 const PendingCaptain = require("../models/PendingCaptain");
+const crypto = require("crypto");
 
 const handleCaptainRegister = async (req, res) => {
   try {
@@ -12,6 +13,7 @@ const handleCaptainRegister = async (req, res) => {
 
     // Check if already signed up
     const exists = await Captain.findOne({ email });
+   
     if (exists) return res.status(400).json({ message: "Email already registered." });
 
     // Remove any previous registration attempts
@@ -30,9 +32,11 @@ const handleCaptainRegister = async (req, res) => {
       otp
     });
 
+console.log("pending captain created");
     // Send OTP
     await sendOTP(email, otp);
-
+    console.log("OTP sent to:", email);
+    
     return res.status(201).json({
       message: "OTP sent! Verify email to activate your captain account."
     });
@@ -162,9 +166,67 @@ const changeStatus= async (req,res,next)=>{
 })
 }
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const captain = await Captain.findOne({ email });
+  
+  if (!captain) return res.status(400).json({ message: "Captain not found." });
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  captain.resetPasswordToken = resetToken;
+  captain.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  await captain.save();
+
+  const resetURL = `${process.env.FRONTEND_URL}/reset-password-captain/${resetToken}`;
+
+  await sendEmail(
+    email,
+    "🔐 Reset Your Wheelzy Password",
+    `
+      <div style="font-family:sans-serif; padding:20px;">
+        <h2 style="color:#E23744;">Forgot Password? 🔄</h2>
+        <p>We received a request to reset your Wheelzy password.</p>
+        <p>Click below to reset it:</p>
+
+        <a href="${resetURL}" 
+          style="background:#E23744;color:white;padding:12px 18px;border-radius:8px;text-decoration:none;">
+          Reset Password
+        </a>
+
+        <p style="margin-top:15px;font-size:14px;">
+          If you didn't request this, you can safely ignore it.
+        </p>
+
+        <p style="font-size:12px;color:#777;">This link expires in 10 minutes.</p>
+      </div>
+    `
+  );
+
+  res.json({ message: "Reset email sent ✔ Check inbox." });
+};
 
 
+const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
 
+  const captain = await Captain.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() }
+  });
+console.log(token);
+  if (!captain) return res.status(400).json({ message: "Token expired or invalid" });
+
+  captain.password = password;
+  captain.resetPasswordToken = undefined;
+  captain.resetPasswordExpires = undefined;
+  await captain.save();
+
+  res.json({ message: "Password reset successful 🎉" });
+};
 
 module.exports={
   handleCaptainRegister,
@@ -173,5 +235,7 @@ module.exports={
   logoutCaptain,
   changeStatus,
   verifyOtp,
-  resendOtp
+  resendOtp,
+  forgotPassword,
+  resetPassword,
 }
