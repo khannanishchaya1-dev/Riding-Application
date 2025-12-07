@@ -27,20 +27,21 @@ const RideItem = ({ ride }) => {
         <div className="flex items-center text-xs font-semibold text-gray-700">
           <Clock className="w-4 h-4 mr-2 text-gray-500" />
           {ride.createdAt
-            ? new Date(ride.createdAt).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-              })
-            : "Unknown"}
+            ? new Date(ride.createdAt).toLocaleDateString()
+            : "No Date"}
           <span
-            className={`ml-2 px-2 py-0.5 rounded-full text-[10px] ${
-              ride.status === "COMPLETED"
-                ? "bg-green-100 text-green-600"
-                : "bg-[#FFE8E9] text-[#E23744]"
-            }`}
-          >
-            {ride.status}
-          </span>
+  className={`ml-3 text-xs font-medium px-2 py-0.5 rounded-full 
+    ${
+      ride.status === "COMPLETED"
+        ? "bg-green-100 text-green-700"
+        : ride.status === "ONGOING"
+        ? "bg-[#FFF8D1] text-[#B08900]"  // 🔥 NEW STYLE FOR ONGOING
+        : "bg-[#FFEBEC] text-[#E23744]"
+    }`}
+>
+  {ride.status}
+</span>
+
         </div>
 
         {/* Origin */}
