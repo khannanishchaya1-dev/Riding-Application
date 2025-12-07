@@ -82,7 +82,7 @@ const CaptainRideDetails = () => {
   const { bg, text, Icon } = getStatusStyle();
 
   return (
-    <div className="h-[100dvh] bg-gray-50 px-5 py-8">
+    <div className="h-full bg-gray-50 px-5 py-8">
 
       {/* Header */}
       <motion.h1
