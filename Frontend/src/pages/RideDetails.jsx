@@ -1,37 +1,55 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight, Clock, Bike, Wallet, BadgeCheck } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { MapPin, Clock, Gauge, Wallet, Mail, CheckCircle, XCircle, Timer } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Phone } from "lucide-react";
-import { Gauge,Mail } from "lucide-react";
+
 const RideDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [ride, setRide] = useState(null);
 
   useEffect(() => {
     fetchRide();
   }, []);
+useEffect(() => {
+  if (ride?.status === "ONGOING") {
+    navigate("/riding", { state: { ride } });
+  }
+}, [ride]);
 
   const fetchRide = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}users/find-ride/${id}`, {
         withCredentials: true
       });
-      console.log(res.data.ride);
       setRide(res.data.ride);
-      console.log(res.data.ride);
     } catch {
       toast.error("Unable to fetch ride detail ❌");
     }
   };
 
   if (!ride) return <p className="text-center py-10">Loading ride details...</p>;
+
+  // 🔥 Status color + icon logic
+  const getStatusStyle = () => {
+    switch (ride.status) {
+      case "COMPLETED":
+        return { bg: "bg-green-100", text: "text-green-700", Icon: CheckCircle };
+      case "ONGOING":
+        return { bg: "bg-yellow-100", text: "text-yellow-700", Icon: Timer };
+      default:
+        return { bg: "bg-red-100", text: "text-red-700", Icon: XCircle };
+    }
+  };
+
+  const { bg, text, Icon } = getStatusStyle();
+
   return (
     <div className="h-[100dvh] bg-gray-50 px-5 py-8">
-      
+
       {/* Page Title */}
       <motion.h1 
         initial={{ opacity: 0, y: -10 }} 
@@ -41,6 +59,15 @@ const RideDetails = () => {
         Ride Summary 🚗
       </motion.h1>
 
+      {/* Ride Status */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className={`mt-3 inline-flex items-center gap-2 px-4 py-1 rounded-full text-sm font-semibold ${bg} ${text}`}
+      >
+        <Icon size={16} /> {ride.status}
+      </motion.div>
+
       {/* Main Card */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }} 
@@ -49,7 +76,7 @@ const RideDetails = () => {
         className="bg-white shadow-sm rounded-2xl mt-6 overflow-hidden"
       >
         
-        {/* Captain / Vehicle Section */}
+        {/* Captain Info */}
         <div className="p-5 border-b flex items-center gap-4">
           <div className="size-14 bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold">
             {ride.captain.fullname.firstname[0]}
@@ -82,26 +109,42 @@ const RideDetails = () => {
         {/* Ride Stats */}
         <div className="grid grid-cols-3 text-center p-5 gap-4">
           
-          <div>
-            <Wallet className="mx-auto text-[#E23744]" size={22} />
-            <p className="text-sm text-gray-500">Fare</p>
-            <p className="font-semibold text-gray-800">₹{ride.fare.toFixed(2)}</p>
-          </div>
+          {/* 💰 Fare - Now Clean UI */}
+          <div className="text-center">
+  <Wallet className="mx-auto text-[#E23744]" size={22} />
+  <p className="text-sm text-gray-500">Fare</p>
 
+  {/* Fare + Payment Status in vertical layout */}
+  <p className="font-semibold text-gray-900 mt-1">₹{ride.fare.toFixed(2)}</p>
+
+  {/* Payment Status Badge */}
+  {ride.paymentStatus === "PAID" ? (
+    <span className="mt-1 inline-flex items-center gap-1 text-green-600 text-xs font-semibold">
+      <CheckCircle size={14} /> Paid
+    </span>
+  ) : ride.paymentStatus === "FAILED" ? (
+    <span className="mt-1 inline-flex items-center gap-1 text-red-600 text-xs font-semibold">
+      <XCircle size={14} /> Failed
+    </span>
+  ) : (
+    <span className="mt-1 inline-flex items-center gap-1 text-yellow-600 text-xs font-semibold animate-pulse">
+      <Timer size={14} /> Pending
+    </span>
+  )}
+</div>
+
+          {/* ⏱ Duration */}
           <div>
             <Clock className="mx-auto text-indigo-500" size={22} />
             <p className="text-sm text-gray-500">Duration</p>
-            <p className="font-semibold">
-              {(ride.duration / 60).toFixed(1)} min
-            </p>
+            <p className="font-semibold">{(ride.duration / 60).toFixed(1)} min</p>
           </div>
 
+          {/* 📍 Distance */}
           <div>
             <Gauge className="mx-auto text-yellow-600" size={22} />
             <p className="text-sm text-gray-500">Distance</p>
-            <p className="font-semibold">
-              {(ride.distance / 1000).toFixed(1)} km
-            </p>
+            <p className="font-semibold">{(ride.distance / 1000).toFixed(1)} km</p>
           </div>
         </div>
 
@@ -114,19 +157,27 @@ const RideDetails = () => {
             <p className="font-semibold text-gray-800">{ride.captain.email}</p>
           </div>
 
-         <Mail size={22} className="text-[#E23744]" />
-
+          <Mail size={22} className="text-[#E23744]" />
         </div>
       </motion.div>
+
+      {/* 🚀 Payment CTA */}
+      {(ride.paymentStatus !== "PAID" && ride.status === "ONGOING") && (
+        <button
+          onClick={() => navigate("/riding", { state: { ride } })}
+          className="w-full mt-5 py-4 bg-[#E23744] text-white rounded-xl text-lg font-semibold hover:bg-[#c02f38] transition"
+        >
+          💳 Complete Payment
+        </button>
+      )}
 
       {/* Footer */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.25 }}
         className="text-center mt-6 text-gray-400 text-sm"
       >
-        Thanks for riding with <span className="text-[#E23744] font-semibold">Wheelzy</span> ❤️
+        Thanks for riding with <span className="text-[#E23744] font-semibold">GadiGo</span> ❤️
       </motion.p>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import wheelzyCaptainLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 import toast from "react-hot-toast";
 
 const CaptainLogin = () => {
@@ -47,7 +47,7 @@ const CaptainLogin = () => {
 
       {/* Logo */}
       <div className="text-center">
-        <img src={wheelzyCaptainLogo} alt="logo" className="w-28 mx-auto opacity-90" />
+        <img src={GadiGoLogo} alt="logo" className="w-28 mx-auto opacity-90" />
       </div>
 
       {/* Card */}

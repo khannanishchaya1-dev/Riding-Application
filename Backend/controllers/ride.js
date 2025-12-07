@@ -14,36 +14,58 @@ module.exports.createRide = async (req, res) => {
   }
   
 
-  try {  
-      console.log(req.user._id, req.body.origin, req.body.destination, req.body.vehicleType);
-    const newRide = await rideService.createRideModel({userId: req.user._id, origin: req.body.origin, destination: req.body.destination, vehicleType: req.body.vehicleType});
-   console.log("Ride is",newRide);
-     res.status(201).json(newRide);
-      const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
-    console.log(originCoordinates);
-    const getCaptainsInRadius = await mapService.getCaptainsInRadius (originCoordinates.lat,originCoordinates.lon,10); 
-    const distanceMatrix = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,30.514251, 
-76.6605446);
-    console.log(distanceMatrix);
-     newRide.otp=" "// 10 km
-    console.log("Captains in radius:", getCaptainsInRadius);
-    const rideWithUser = await rideModel.findOne({_id:newRide._id}).populate('userId');
-    console.log(rideWithUser);
-    (getCaptainsInRadius.map(async(captain)=>{
-sendSocketMessageTo(captain.socketId,{
-  event:'new-ride',
-  data:rideWithUser
-})
-    }))
-    
+  try {
+  console.log(req.user._id, req.body.origin, req.body.destination, req.body.vehicleType);
 
-    
-    
-    
-  } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message });
-  }
+  const vehicleType = req.body.vehicleType;
+
+  // 1️⃣ Create ride
+  const newRide = await rideService.createRideModel({
+    userId: req.user._id,
+    origin: req.body.origin,
+    destination: req.body.destination,
+    vehicleType
+  });
+
+  console.log("🆕 Ride Created:", newRide);
+
+  // 2️⃣ Convert address → coordinates
+  const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
+  console.log("📍 Origin Coordinates:", originCoordinates);
+
+  // 3️⃣ Get captains nearby
+  const captainsNearby = await mapService.getCaptainsInRadius(
+    originCoordinates.lat,
+    originCoordinates.lon,
+    10,
+    vehicleType
+  );
+
+  console.log("🚗 Captains Found:", captainsNearby.length);
+
+  // 4️⃣ Populate ride with user details
+  const rideWithUser = await rideModel.findById(newRide._id).populate("userId");
+
+  // 5️⃣ Emit ride request to captains
+  captainsNearby.forEach(captain => {
+    sendSocketMessageTo(captain.socketId, {
+      event: "new-ride",
+      data: rideWithUser
+    });
+  });
+
+  // 6️⃣ Final response to frontend
+  return res.status(201).json({
+    success: true,
+    message: "Ride created successfully",
+    ride: rideWithUser
+  });
+
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ success: false, message: error.message });
+}
+
 }
 module.exports.calculateFare = async (req, res) => {
  const errors = validationResult(req);
@@ -56,6 +78,7 @@ module.exports.calculateFare = async (req, res) => {
   
  
  const final_fare = await rideService.calculateFare(origin,destination);
+ 
  return res.status(200).json({final_fare});
  }catch(error){
   // controllers/ride.js (add this export)
@@ -64,7 +87,6 @@ module.exports.calculateFare = async (req, res) => {
 }
 
 module.exports.confirmRide=async (req,res)=>{
- console.log("i am here1");
 const errors = validationResult(req); 
 if(!errors.isEmpty()){
   return res.status(400).json({errors:errors.array()})
@@ -76,8 +98,6 @@ try{
   const ride = await rideService.confirmRide({rideId,captain:req.captain});
   console.log("ride has been confirmed sent sucessfully")
   res.status(200).json({ride});
-  console.log(ride.userId.socketId);
-  console.log(req.captain.socketId);
    sendSocketMessageTo(ride.userId.socketId,{
      event:"ride-confirmed",
      data:ride
@@ -87,8 +107,67 @@ try{
 }catch(error){
   res.status(500).json({message:error})
 }
-
 }
+module.exports.cancelRide = async (req, res) => {
+  try {
+    const { rideId } = req.body;
+
+    if (!rideId) {
+      return res.status(400).json({ message: "rideId is required" });
+    }
+
+    const ride = await rideService.cancelRide({ rideId });
+
+    // Respond first
+    res.status(200).json({
+      message: "Ride cancelled successfully",
+      ride
+    });
+
+    // Notify user through socket
+    sendSocketMessageTo(ride.userId.socketId, {
+      event: "ride-cancelled",
+      data: ride
+    });
+    console.log(ride.userId.socketId);
+
+    console.log("🚗 Cancellation update sent to frontend!");
+    
+  } catch (error) {
+    console.error("Cancel Ride Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports.userCancelRide = async (req, res) => {
+  try {
+    const { rideId } = req.body;
+
+    if (!rideId) {
+      return res.status(400).json({ message: "rideId is required" });
+    }
+
+    const ride = await rideService.userCancelRide({ rideId });
+
+    // Respond first
+    res.status(200).json({
+      message: "Ride cancelled successfully",
+      ride
+    });
+
+    // Notify user through socket
+    sendSocketMessageTo(ride.captain.socketId, {
+      event: "ride-cancelled",
+      data: ride
+    });
+    console.log(ride.captain.socketId);
+    console.log("🚗 Cancellation update sent to frontend!");
+    
+  } catch (error) {
+    console.error("Cancel Ride Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports.startRide=async (req,res)=>{
   console.log(req.query);
   const errors = validationResult(req);
@@ -116,8 +195,6 @@ module.exports.endRide=async(req,res)=>{
   }
   const {rideId} = req.body;
   try{
-    console.log(rideId);
-    console.log("is this right",req.captain)
     const ride = await rideService.endRide({rideId,captain:req.captain});
     sendSocketMessageTo(ride.userId.socketId,{
       event:'end-ride',
@@ -171,3 +248,4 @@ if(!errors.isEmpty()){
   }
     
 }
+

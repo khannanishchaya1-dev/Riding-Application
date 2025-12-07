@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-import wheelzyCaptainLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 import toast from "react-hot-toast";
 
 const CaptainSignup = () => {
@@ -77,7 +77,7 @@ console.log(response.status===201);
 
       {/* Branding */}
       <div className="text-center">
-        <img src={wheelzyCaptainLogo} alt="logo" className="w-28 mx-auto opacity-90" />
+        <img src={GadiGoLogo} alt="logo" className="w-28 mx-auto opacity-90" />
       </div>
 
       {/* Main Form Container */}
@@ -199,7 +199,7 @@ console.log(response.status===201);
           >
             <option value="">Select Vehicle Type</option>
             <option value="Car">Car</option>
-            <option value="Motorcycle">Motorcycle</option>
+            <option value="Moto">Motorcycle</option>
             <option value="Auto">Auto Rickshaw</option>
           </select>
 

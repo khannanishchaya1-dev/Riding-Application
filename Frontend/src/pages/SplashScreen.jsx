@@ -36,10 +36,10 @@ export default function SplashScreen() {
         className={`wheel ${stage >= 1 ? "show" : ""}`}
       />
 
-      <h1 className={`brand-text ${stage >= 2 ? "show" : ""}`}>WHEELZY</h1>
+      <h1 className={`brand-text ${stage >= 2 ? "show" : ""}`}>GadiGo</h1>
 
       <p className={`subtitle ${stage >= 3 ? "show" : ""}`}>
-        Move smarter. Ride faster.
+        Trust the Journey
       </p>
     </div>
   );

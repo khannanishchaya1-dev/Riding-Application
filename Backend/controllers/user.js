@@ -4,6 +4,7 @@ const { createUser } = require("../service/user");
 const BlacklistedToken = require("../models/blacklist.token");
 const {sendOTP,sendEmail} = require("./emailService");
 const crypto = require("crypto");
+const Razorpay = require("razorpay");
 
 const PendingUser = require("../models/PendingUser");
 const jwt = require('jsonwebtoken');
@@ -169,11 +170,11 @@ const forgotPassword = async (req, res) => {
 
   await sendEmail(
     email,
-    "🔐 Reset Your Wheelzy Password",
+    "🔐 Reset Your GadiGo Password",
     `
       <div style="font-family:sans-serif; padding:20px;">
         <h2 style="color:#E23744;">Forgot Password? 🔄</h2>
-        <p>We received a request to reset your Wheelzy password.</p>
+        <p>We received a request to reset your GadiGo password.</p>
         <p>Click below to reset it:</p>
 
         <a href="${resetURL}" 

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 import toast from "react-hot-toast";
 
 const UserSignup = () => {
@@ -48,7 +48,7 @@ const UserSignup = () => {
     <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col justify-center py-6">
       {/* Logo */}
       <div className="text-center">
-        <img src={WheelzyLogo} className="w-28 mx-auto opacity-90" />
+        <img src={GadiGoLogo} className="w-28 mx-auto opacity-90" />
       </div>
 
       <div className="w-full max-w-md mx-auto mt-6 px-5">

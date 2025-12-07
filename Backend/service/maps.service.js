@@ -124,20 +124,21 @@ function degToRad(deg) {
 }
 
 
-module.exports.getCaptainsInRadius = async (lat, lon, radius) => {
+module.exports.getCaptainsInRadius = async (lat, lon, radius, vehicleType) => {
   try {
-    console.log("🔍 Finding captains near:", { lat, lon, radius });
+    console.log("🔍 Finding captains near:", { lat, lon, radius, vehicleType });
 
     const captains = await captainModel.find({
-        status: true,
+      status: true, // only active captains
+      "vehicle.vehicleType": vehicleType, // 🔥 filter based on requested vehicle type
       location: {
         $geoWithin: {
-          $centerSphere: [[lon, lat], radius / 6371], // convert km to radians
+          $centerSphere: [[lon, lat], radius / 6371], 
         },
       },
     });
 
-    console.log("✅ Found captains:", captains.length);
+    console.log(`🚕 Found ${captains.length} captains with ${vehicleType}`);
     return captains;
   } catch (error) {
     console.error("❌ Error finding captains:", error);

@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 
 const ConfirmedRide = ({
   vehicleType,
@@ -12,19 +13,33 @@ const ConfirmedRide = ({
 }) => {
 
   const vehicleImages = {
-    car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
-    moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
-    auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
+    Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
+    Moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
+    Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
   };
 
   const vehicleImg = vehicleImages[vehicleType];
 
-  const onConfirm = () => {
-    create_ride(vehicleType);
-    setvehiclepanel(false);
-    setlookingForVehicle(true);
-    setconfirmRidepanel(false);
-  };
+  const onConfirm = async () => {
+  console.log("Creating ride...");
+  
+  const rideCreated = await create_ride(vehicleType);
+  console.log("Ride creation response received :", rideCreated); // WAIT for response
+
+  if (!rideCreated) {
+    toast.error("❌ Failed to create ride");
+    return;
+  }
+
+  setvehiclepanel(false);
+
+  console.log("Ride created, looking for vehicle...");
+  setlookingForVehicle(true);
+
+  console.log("Closed confirm ride panel");
+  setconfirmRidepanel(false);
+};
+
 
   return (
     <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">

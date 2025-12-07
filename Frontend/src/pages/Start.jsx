@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import wheelzyLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 
 const Start = () => {
   return (
@@ -20,8 +20,8 @@ const Start = () => {
 
       {/* Logo */}
       <img
-        src={wheelzyLogo}
-        alt="Wheelzy Logo"
+        src={GadiGoLogo}
+        alt="GadiGo Logo"
         className="absolute top-8 left-1/2 -translate-x-1/2 w-40 sm:w-48 opacity-95 animate-fadeIn"
       />
 

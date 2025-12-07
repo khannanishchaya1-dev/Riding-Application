@@ -1,6 +1,6 @@
 import React from "react";
 
-const WaitingForDriver = ({ ride, setWaitingForDriver }) => {
+const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide }) => {
   return (
     <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">
 
@@ -85,7 +85,11 @@ const WaitingForDriver = ({ ride, setWaitingForDriver }) => {
 
       {/* Cancel Button */}
       <button
-        onClick={() => setWaitingForDriver(false)}
+        onClick={() => {
+          setWaitingForDriver(false);
+          CancelRide();
+        }
+      }
         className="w-full text-center mt-6 py-3 text-gray-500 text-sm hover:text-black active:scale-95 transition"
       >
         Cancel Ride

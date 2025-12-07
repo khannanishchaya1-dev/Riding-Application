@@ -10,7 +10,7 @@ import { gsap } from "gsap";
 import axios from "axios";
 import LiveTracking from "../components/LiveTracking";
 import toast from "react-hot-toast";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 
 const CaptainHome = () => {
   const [ridePopUppanel, setridePopUppanel] = useState(false);
@@ -84,7 +84,6 @@ useEffect(() => {
     };
 
     receiveMessage("new-ride", handler);
-    return () => offMessage("new-ride", handler);
   }, [socket]);
 
   // Confirm ride function
@@ -105,6 +104,47 @@ useEffect(() => {
     toast.error("⚠ Error confirming ride");
   }
 };
+useEffect(() => {
+  if (!receiveMessage) return;
+  const cancelHandler = (data) => {
+      console.log("Ride cancelled by captain");
+      toast.error("❌ Ride cancelled by Passenger");
+      setconfirmridePopUppanel(false);
+      setridePopUppanel(false);
+      setride(null);
+      
+    }
+    receiveMessage("ride-cancelled",cancelHandler);
+     
+},[receiveMessage]);
+const CancelRide = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}rides/cancel-ride`,
+      { rideId: ride._id },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    toast.success(response.data?.message || "✔ Ride Cancelled");
+
+    // Close modals
+    setconfirmridePopUppanel(false);
+    setridePopUppanel(false);
+
+    // Reset local ride state
+    setride(null);
+
+    
+
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "⚠ Error cancelling ride");
+  }
+};
+
 
 
 
@@ -132,7 +172,6 @@ useEffect(() => {
 }, [socket, ride?._id]);
 
 
-
   // Popup animations
   useGSAP(() => {
     gsap.to(ridePopUppanelRef.current, {
@@ -150,13 +189,14 @@ useEffect(() => {
     });
   }, [confirmridePopUppanel]);
 
+
   return (
     <div className="h-[100dvh] w-full overflow-hidden relative">
 
       {/* Top Avatar Button */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-8 z-10">
         <img 
-          src={WheelzyLogo}
+          src={GadiGoLogo}
           alt="Logo"
           className="w-32 opacity-90"
         />
@@ -207,6 +247,7 @@ useEffect(() => {
           ride={ride}
           setridePopUppanel={setridePopUppanel}
           setconfirmridePopUppanel={setconfirmridePopUppanel}
+          CancelRide={CancelRide}
         />
       </div>
     </div>

@@ -37,7 +37,7 @@ router.post('/register',
         .withMessage("Capacity must be at least 1"),
         
     body("vehicle.vehicleType")
-  .isIn(["Car", "Motorcycle","Auto Rickshaw"])
+  .isIn(["Car", "Moto","Auto"])
   .withMessage("Vehicle type must be car, motorcycle, or Auto Rickshaw"),
 
         
@@ -85,5 +85,7 @@ router.delete("/delete-account", authCaptain, async (req, res) => {
     res.status(500).json({ message: "Failed to delete account" });
   }
 });
+router.post("/cancel-ride", authCaptain, );
+
 
 module.exports=router;

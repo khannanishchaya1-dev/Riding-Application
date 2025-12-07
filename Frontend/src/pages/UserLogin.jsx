@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 import toast from "react-hot-toast";
 
 const UserLogin = () => {
@@ -37,7 +37,7 @@ const UserLogin = () => {
 
       {/* Logo */}
       <div className="text-center">
-        <img src={WheelzyLogo} className="w-28 mx-auto opacity-90" />
+        <img src={GadiGoLogo} className="w-28 mx-auto opacity-90" />
       </div>
 
       {/* Content */}

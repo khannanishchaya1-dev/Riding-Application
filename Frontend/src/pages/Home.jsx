@@ -14,7 +14,7 @@ import { UserDataContext } from "../UserContext/UserContext"; // Import user con
 import { CaptainDataContext } from "../UserContext/CaptainContext"; // Import captain context
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking";
-import WheelzyLogo from "../assets/wheelzy.svg";
+import GadiGoLogo from "../assets/GadiGo.svg";
 import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
 import NoDriverFound from "../components/NoDriverFound";
@@ -48,7 +48,7 @@ const Home = () => {
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
 const[noDriverFound,setnoDriverFound] = useState(false);
   const { sendMessage } = useSocket();
-  const {receiveMessage}=useSocket();
+  const {receiveMessage,offMessage}=useSocket();
   const navigate = useNavigate();
 const noDriverFoundRef = useRef(null);
   
@@ -153,13 +153,47 @@ useEffect(() => {
     setWaitingForDriver(false);
     navigate("/riding", { state: { ride: data } });
   };
+  const cancelHandler = (data) => {
+    console.log("Ride cancelled by captain");
+    toast.error("❌ Ride cancelled by captain");
+    setWaitingForDriver(false);
+    setnoDriverFound(true);
+    setride(null);
+    
+  }
 
   receiveMessage("ride-confirmed", handler);
   receiveMessage("ride-started", startRide);
+  receiveMessage("ride-cancelled",cancelHandler); 
+   
 }, [receiveMessage]);
 
 
-  
+  const CancelRide = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}rides/user-cancel-ride`,
+      { rideId: ride._id },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    toast.success(response.data?.message || "✔ Ride Cancelled");
+
+    // Close modals
+    setWaitingForDriver(false);
+    // Reset local ride state
+    setride(null);
+
+    
+
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "⚠ Error cancelling ride");
+  }
+};
 
 
 
@@ -272,27 +306,36 @@ setvehiclepanel(true);
     setfare(response.data.final_fare);
 
 }
-const create_ride=async (selectedVehicleType)=>{
-  const ride_details={
-    origin,destination,vehicleType:selectedVehicleType
-  }
-  try{
+const create_ride = async (selectedVehicleType) => {
 
-  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}rides/create-ride`,
-      ride_details,
-      {
-       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      },
-    }
-);
+  const ride_details = {
+    origin,
+    destination,
+    vehicleType: selectedVehicleType,
+  };
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}rides/create-ride`,
+      ride_details,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+console.log("Ride creation response:", response);
+    // Store ride properly
+    setride(response.data.ride);
 
-setride(response.data);
-console.log(response.data);
-  }catch(error){
-    console.log(response?.error?.message || error.message);
-  }
-}
+    console.log("🚗 Ride Created:", response.data.ride);
+
+    return true; // 👈 tells UI success
+
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    return false; // 👈 tells UI failure
+  }
+};
 
   return (
     <div className="h-[100dvh] w-full overflow-hidden relative">
@@ -301,7 +344,7 @@ console.log(response.data);
       {/* NAVBAR */}
 <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-8 z-10">
   <img 
-    src={WheelzyLogo}
+    src={GadiGoLogo}
     alt="Logo"
     className="w-32 opacity-90"
   />
@@ -488,6 +531,7 @@ rounded-t-3xl transition-all duration-300 pointer-events-auto ${
           waitingForDriver={waitingForDriver}
           setWaitingForDriver={setWaitingForDriver}
           ride={ride}
+CancelRide={CancelRide}
         />
       </div>
     </div>

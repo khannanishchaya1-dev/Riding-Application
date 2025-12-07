@@ -14,15 +14,14 @@ const sendOTP=async function(email, otp) {
         email: process.env.SENDER_EMAIL,
       },
       to: [{ email }],
-      subject: `🚗 Wheelzy Verification Code — You're Almost There!`,
+      subject: `🚗 GadiGo Verification Code — You're Almost There!`,
       htmlContent: `
       <div style="font-family:Arial, sans-serif; padding:25px; background:#f7f7f7; border-radius:10px;">
 
-        <h2 style="color:#E23744; text-align:center;">Welcome to Wheelzy 🚗</h2>
-
+        <h2 style="color:#E23744; text-align:center;">Welcome to GadiGo 🚗</h2>
         <p style="font-size:16px; line-height:22px;">
           Hey there 👋<br><br>
-          We're excited to have you join the <strong>Wheelzy family</strong> — where rides are fast, safe, and stress-free.
+          We're excited to have you join the <strong>GadiGo family</strong> — where rides are fast, safe, and stress-free.
         </p>
 
         <p style="font-size:17px; margin-top:10px;">
@@ -47,11 +46,11 @@ const sendOTP=async function(email, otp) {
         </p>
 
         <p style="font-size:14px; color:#777; margin-top:25px;">
-          Need support? We're here for you 👉 support@wheelzy.in
+          Need support? We're here for you 👉 support@GadiGo.in
         </p>
 
         <p style="font-size:12px; color:#aaa; margin-top:15px; text-align:center;">
-          Made with ❤️ by Wheelzy • Safe rides, happy journeys
+          Made with ❤️ by GadiGo • Safe rides, happy journeys
         </p>
 
       </div>

@@ -19,14 +19,14 @@ module.exports.calculateFare=async (origin,destination)=>{
 
   const distanceInKm = distance.distance.value / 1000;
   const rates = {
-    car: { perKm: 15, minFare: 80 },
-    auto: { perKm: 10, minFare: 60 },
-    moto: { perKm: 8, minFare: 40 }
+    Car: { perKm: 15, minFare: 80 },
+    Auto: { perKm: 10, minFare: 60 },
+    Moto: { perKm: 8, minFare: 40 }
   };
   
 
   const durationInMin = distance.duration.value / 60;
-  const timeRates = { car: 0.5, auto: 0.3, moto: 0.2 }; // rupees per minute
+  const timeRates = { Car: 0.5, Auto: 0.3, Moto: 0.2 }; // rupees per minute
   function compute(VehicleType) {
     const rate = rates[VehicleType];
     const distanceCharge = distanceInKm * rate.perKm;
@@ -36,9 +36,9 @@ module.exports.calculateFare=async (origin,destination)=>{
   }
 
   const fares={
-    car:compute('car'),
-    auto:compute('auto'),
-    moto:compute('moto')
+    Car:compute('Car'),
+    Auto:compute('Auto'),
+    Moto:compute('Moto')
   }
  
 
@@ -83,6 +83,32 @@ module.exports.generateOTP=(nums)=>{
 
 
 
+}
+module.exports.cancelRide=async({rideId})=>{
+  if(!rideId){
+    throw new Error('Ride id is required');
+  }
+  const ride = await rideModel.findOne({_id:rideId,}).populate('userId');
+  if(!ride){
+    throw new Error('Ride not found');
+  }
+  ride.status = "CANCELLED_BY_CAPTAIN";
+  await ride.save();
+  return ride;
+  
+}
+module.exports.userCancelRide=async({rideId})=>{
+  if(!rideId){
+    throw new Error('Ride id is required');
+  }
+  const ride = await rideModel.findOne({_id:rideId,}).populate('captain');
+  if(!ride){
+    throw new Error('Ride not found');
+  }
+  ride.status = "CANCELLED_BY_USER";
+  await ride.save();
+  return ride;
+  
 }
 module.exports.confirmRide = async ({
     rideId, captain

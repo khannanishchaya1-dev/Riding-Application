@@ -22,8 +22,8 @@ const rideSchema = new mongoose.Schema({
   },
   status:{
     type:String,
-    enum:['PENDING','ACCEPTED','IN_PROGRESS','COMPLETED','CANCELLED'],
-    default:'PENDING'
+    enum:['REQUESTED','ACCEPTED','ONGOING','COMPLETED','CANCELLED_BY_USER','CANCELLED_BY_CAPTAIN'],
+    default:'REQUESTED'
   },
   fare:{
     type:Number,
@@ -38,6 +38,11 @@ const rideSchema = new mongoose.Schema({
   },
   paymentId:{
     type:String
+  },
+  paymentStatus:{
+    type:String,
+    enum:['PENDING','PAID','FAILED'],
+    default:'PENDING'
   },
   OrderId:{
     type:String

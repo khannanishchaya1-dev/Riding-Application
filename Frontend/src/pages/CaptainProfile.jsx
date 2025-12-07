@@ -36,14 +36,18 @@ const TripItem = ({ trip }) => {
             : "No Date"}
 
           <span
-            className={`ml-3 text-xs font-medium px-2 py-0.5 rounded-full ${
-              trip.status === "COMPLETED"
-                ? "bg-green-100 text-green-700"
-                : "bg-[#FFEBEC] text-[#E23744]"
-            }`}
-          >
-            {trip.status}
-          </span>
+  className={`ml-3 text-xs font-medium px-2 py-0.5 rounded-full 
+    ${
+      trip.status === "COMPLETED"
+        ? "bg-green-100 text-green-700"
+        : trip.status === "ONGOING"
+        ? "bg-[#FFF8D1] text-[#B08900]"  // 🔥 NEW STYLE FOR ONGOING
+        : "bg-[#FFEBEC] text-[#E23744]"
+    }`}
+>
+  {trip.status}
+</span>
+
         </div>
 
         <div className="flex items-center text-xs text-gray-600 truncate">

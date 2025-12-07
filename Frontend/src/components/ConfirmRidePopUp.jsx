@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel }) => {
+const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, CancelRide }) => {
   const [OTP, setOTP] = useState("");
   const navigate = useNavigate();
 
@@ -132,7 +132,7 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel })
           type="button"
           onClick={() => {
             setridePopUppanel(false);
-            setconfirmridePopUppanel(false);
+            CancelRide();
           }}
           className="w-full bg-gray-100 text-gray-700 font-medium text-sm rounded-xl py-3 mt-3 
                      hover:bg-gray-200 active:scale-[0.97] transition"
