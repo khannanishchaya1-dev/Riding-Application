@@ -98,7 +98,7 @@ useEffect(() => {
 
       {/* Top Right Button (Exit / Home) */}
       <Link
-        to="/home"
+        to="/captain-home"
         className="absolute right-5 top-5 h-11 w-11 bg-white flex items-center justify-center 
                    rounded-full shadow-md z-20 hover:scale-105 transition"
       >
