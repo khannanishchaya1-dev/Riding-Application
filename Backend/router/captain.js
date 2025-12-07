@@ -4,6 +4,7 @@ const {body} = require('express-validator');
 const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,changeStatus,verifyOtp,resendOtp,forgotPassword ,resetPassword}=require('../controllers/captain');
 const { authCaptain } = require('../middlewares/auth');
 const Ride = require('../models/ride');
+const Captain = require("../models/captain");
 
 router.post('/register',
 [
@@ -74,6 +75,15 @@ console.log(ride);
     res.status(500).json({ message: err.message });
   }
 });
-
+router.delete("/delete-account", authCaptain, async (req, res) => {
+  try {
+    const captain =await Captain.findById(req.captain._id);
+    if (!captain) return res.status(404).json({ message: "Captain not found" });
+    await Captain.findByIdAndDelete(req.captain._id);
+    return res.status(200).json({ message: "Account deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete account" });
+  }
+});
 
 module.exports=router;

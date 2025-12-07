@@ -3,10 +3,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
+import { useLocation } from "react-router-dom";
 
 const VerifyEmail = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const email = localStorage.getItem("pendingEmail");
+  const email = location.state?.email || localStorage.getItem("pendingEmail");
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);

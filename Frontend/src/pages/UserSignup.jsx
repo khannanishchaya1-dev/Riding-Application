@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../UserContext/UserContext";
 import WheelzyLogo from "../assets/wheelzy.svg";
@@ -36,7 +36,7 @@ const UserSignup = () => {
       localStorage.setItem("pendingEmail", email);
 
       // Navigate to OTP screen
-      navigate("/verify-email");
+      navigate("/verify-email",{ state: { email } });
     }
 
   } catch (error) {

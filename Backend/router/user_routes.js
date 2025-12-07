@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const{body} = require('express-validator');
 const Ride = require('../models/ride');
+const User = require("../models/user");
 const { handleUserRegister, handleUserLogin, getUserProfile, logoutUser,verifyOTP,resendOtp,forgotPassword,resetPassword } =require('../controllers/user');
 const { authUser } = require('../middlewares/auth');
 router.post('/register',[
@@ -33,6 +34,18 @@ console.log(ride);
     res.status(500).json({ message: err.message });
   }
 });
+router.delete("/delete-account", authUser, async (req, res) => {
+  try {
+    const user =await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    await User.findByIdAndDelete(req.user._id);
+    console.log("User deleted");
+    return res.status(200).json({ message: "Account deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete account" });
+  }
+});
+
 
 
 module.exports=router;

@@ -12,6 +12,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const RideItem = ({ ride }) => {
   return (
@@ -71,7 +73,23 @@ const ProfilePage = () => {
 });
 
   const [rides, setrides] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const handleDelete = async () => {
+  try {
+    console.log("Deleting account...");
+    await axios.delete(`${import.meta.env.VITE_BACKEND_URL}users/delete-account`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+
+    localStorage.clear();
+    navigate("/signup");
+  } catch (err) {
+    toast.error("❌ Could not delete account. Try again.");
+  }
+};
+
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -169,8 +187,47 @@ const ProfilePage = () => {
           )}
         </div>
 
-        <button className="mt-5 w-full text-[#E23744] font-semibold hover:underline">View All →</button>
+        <button
+  onClick={() => setShowDeleteModal(true)}
+  className="mt-5 w-full text-red-600 border border-red-400 py-2 rounded-xl hover:bg-red-50 transition font-semibold"
+>
+  ❌ Delete Account Permanently
+</button>
+
       </div>
+      {showDeleteModal && (
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[999]">
+    <motion.div
+      initial={{ scale: 0.7, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.7, opacity: 0 }}
+      className="bg-white w-[90%] max-w-md rounded-2xl shadow-xl p-6 text-center"
+    >
+      <h2 className="text-xl font-bold text-[#E23744]">Delete Account?</h2>
+      <p className="text-gray-600 mt-2 text-sm">
+        This action <strong>cannot be undone</strong>. Your ride history, account,
+        and stored data will be deleted permanently.
+      </p>
+
+      <div className="flex gap-3 mt-6">
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          className="flex-1 py-2 border rounded-xl font-semibold hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleDelete}
+          className="flex-1 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </motion.div>
+  </div>
+)}
+
     </div>
   );
 };

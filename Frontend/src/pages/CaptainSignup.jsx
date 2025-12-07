@@ -62,7 +62,7 @@ console.log(response.status===201);
   // Temporarily store email to validate OTP
   localStorage.setItem("pendingCaptainEmail", form.email);
 
-  navigate("/verify-captain-email"); // redirect to captain OTP page
+  navigate("/verify-captain-email",{ state: { email: form.email } }); // redirect to captain OTP page
 }
 
     } catch (error) {
