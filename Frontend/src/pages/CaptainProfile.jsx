@@ -45,7 +45,8 @@ const TripItem = ({ trip }) => {
         : "bg-[#FFEBEC] text-[#E23744]"
     }`}
 >
-  {trip.status}
+  {trip.status === "CANCELLED_BY_USER" ? "CANCELLED" : trip.status}
+
 </span>
 
         </div>

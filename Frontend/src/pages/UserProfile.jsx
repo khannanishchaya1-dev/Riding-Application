@@ -39,7 +39,8 @@ const RideItem = ({ ride }) => {
         : "bg-[#FFEBEC] text-[#E23744]"
     }`}
 >
-  {ride.status}
+  {ride.status === "CANCELLED_BY_CAPTAIN" ? "CANCELLED" : ride.status}
+
 </span>
 
         </div>
