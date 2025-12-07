@@ -210,11 +210,16 @@ const handleDelete = async () => {
         </div>
 
         {/* 🔥 RESTORED BUTTON */}
-        <button
+        {/* <button
          onClick={() => setShowDeleteModal(true)}
          className="mt-5 w-full text-red-600 border border-red-400 py-2 rounded-xl hover:bg-red-50 transition font-semibold"
        >
          ❌ Delete Account Permanently
+       </button> */}
+        <button
+         className="mt-5 w-full text-red-600 border border-red-400 py-2 rounded-xl hover:bg-red-50 transition font-semibold"
+       >
+         View All
        </button>
        
              </div>
