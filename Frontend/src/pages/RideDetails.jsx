@@ -10,6 +10,12 @@ const RideDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [ride, setRide] = useState(null);
+  const vehicleImages = {
+    Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
+    Moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
+    Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
+  };
+  const vehicleImg = vehicleImages[ride?.vehicleType];
 
   useEffect(() => {
     fetchRide();
@@ -77,19 +83,35 @@ useEffect(() => {
       >
         
         {/* Captain Info */}
-        <div className="p-5 border-b flex items-center gap-4">
-          <div className="size-14 bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold">
-            {ride.captain.fullname.firstname[0]}
-          </div>
+        {/* Captain Info */}
+<div className="p-5 border-b flex items-center gap-4">
+  {ride?.captain ? (
+    <>
+      <img
+        src={vehicleImg}
+        className="h-12 w-12 rounded-lg border"
+        alt="vehicle"
+      />
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800">
-              {ride.captain.fullname.firstname} {ride.captain.fullname.lastname}
-            </h2>
-            <p className="text-gray-500 text-sm">{ride.captain.vehicle.vehicleModel} • {ride.captain.vehicle.color}</p>
-            <p className="text-gray-800 font-semibold">{ride.captain.vehicle.numberPlate}</p>
-          </div>
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800">
+          {ride.captain.fullname.firstname} {ride.captain.fullname.lastname}
+        </h2>
+        <p className="text-gray-500 text-sm">
+          {ride.captain.vehicle.vehicleModel} • {ride.captain.vehicle.color}
+        </p>
+        <p className="text-gray-800 font-semibold">{ride.captain.vehicle.numberPlate}</p>
+      </div>
+    </>
+  ) : (
+    <div className="w-full text-center py-4">
+      <p className="text-gray-600 font-medium">🚫 No Captain Assigned</p>
+      <p className="text-sm text-gray-500">
+        This ride was cancelled or no captain accepted.
+      </p>
+    </div>
+  )}
+</div>
 
         {/* Route */}
         <div className="p-5 space-y-4">
@@ -152,13 +174,27 @@ useEffect(() => {
 
         {/* Contact */}
         <div className="p-5 flex justify-between items-center">
-          <div>
-            <p className="text-gray-400 text-sm">Captain Email</p>
-            <p className="font-semibold text-gray-800">{ride.captain.email}</p>
-          </div>
+  {ride?.captain ? (
+    <>
+      <div>
+        <p className="text-gray-400 text-sm">Captain Email</p>
+        <p className="font-semibold text-gray-800">
+          {ride.captain.email}
+        </p>
+      </div>
 
-          <Mail size={22} className="text-[#E23744]" />
-        </div>
+      <Mail size={22} className="text-[#E23744]" />
+    </>
+  ) : (
+    <div className="w-full text-center py-2">
+      <p className="text-gray-500 text-sm">📍 No Captain Assigned</p>
+      <p className="text-xs text-gray-400">
+        Ride may have been cancelled.
+      </p>
+    </div>
+  )}
+</div>
+
       </motion.div>
 
       {/* 🚀 Payment CTA */}

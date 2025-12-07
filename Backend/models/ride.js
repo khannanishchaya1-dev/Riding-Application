@@ -53,6 +53,11 @@ const rideSchema = new mongoose.Schema({
   otp:{
     type:String,
     select:false
+  },
+  vehicleType:{
+    type:String,
+    enum:['Car','Moto','Auto'],
+    required:true
   }
 },{timestamps:true});
 module.exports = mongoose.model('RIDE',rideSchema);

@@ -1,6 +1,12 @@
 import React from "react";
 
-const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide }) => {
+const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide ,vehicleType}) => {
+   const vehicleImages = {
+    Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
+    Moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
+    Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
+  };
+  const vehicleImg = vehicleImages[vehicleType];
   return (
     <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">
 
@@ -19,7 +25,7 @@ const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide }) => {
       <div className="flex justify-between items-center bg-white/90 border border-gray-200 rounded-2xl p-4 mb-6">
         {/* Vehicle Image */}
         <img
-          src="https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n"
+          src={vehicleImg}
           alt="Vehicle"
           className="h-16 object-contain opacity-90"
         />

@@ -151,7 +151,7 @@ useEffect(() => {
 
   const startRide = (data) => {
     setWaitingForDriver(false);
-    navigate("/riding", { state: { ride: data } });
+    navigate("/riding", { state: { ride: data,vehicleType: vehicleType } });
   };
   const cancelHandler = (data) => {
     console.log("Ride cancelled by captain");
@@ -496,6 +496,7 @@ rounded-t-3xl transition-all duration-300 pointer-events-auto ${
           lookingForVehicle={lookingForVehicle}
           setlookingForVehicle={setlookingForVehicle}
           ride={ride}
+vehicleType={vehicleType}
         />
 
       </div>
@@ -532,6 +533,7 @@ rounded-t-3xl transition-all duration-300 pointer-events-auto ${
           setWaitingForDriver={setWaitingForDriver}
           ride={ride}
 CancelRide={CancelRide}
+vehicleType={vehicleType}
         />
       </div>
     </div>
