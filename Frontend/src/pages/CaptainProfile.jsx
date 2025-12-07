@@ -24,6 +24,17 @@ const TripItem = ({ trip }) => {
   const statusColor =
     trip.status === "COMPLETED" ? "text-green-700" : "text-[#E23744]";
 
+    const getDisplayStatus = () => {
+  switch (trip.status) {
+    case "CANCELLED_BY_CAPTAIN":
+      return "CANCELLED";
+    case "CANCELLED_BY_USER":
+      return "CANCELLED";
+    default:
+      return trip.status;
+  }
+};
+
   return (
     <Link to={`/captain-ride-details/${trip._id}`}>
     <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#FFD2D6] hover:shadow-md transition flex justify-between items-center cursor-pointer">
@@ -45,7 +56,7 @@ const TripItem = ({ trip }) => {
         : "bg-[#FFEBEC] text-[#E23744]"
     }`}
 >
-  {trip.status === "CANCELLED_BY_USER" ? "CANCELLED" : trip.status}
+  {getDisplayStatus()}
 
 </span>
 

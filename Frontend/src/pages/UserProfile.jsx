@@ -16,6 +16,17 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 const RideItem = ({ ride }) => {
+  const getDisplayStatus = () => {
+  switch (ride.status) {
+    case "CANCELLED_BY_CAPTAIN":
+      return "CANCELLED";
+    case "CANCELLED_BY_USER":
+      return "CANCELLED";
+    default:
+      return ride.status;
+  }
+};
+
   return (
     <Link to={`/passenger-ride-details/${ride._id}`}>
     <div className="backdrop-blur-xl bg-white/70 border border-gray-200 rounded-2xl p-4 flex justify-between items-center hover:scale-[0.99] transition-all cursor-pointer shadow-sm">
@@ -39,7 +50,7 @@ const RideItem = ({ ride }) => {
         : "bg-[#FFEBEC] text-[#E23744]"
     }`}
 >
-  {ride.status === "CANCELLED_BY_CAPTAIN" ? "CANCELLED" : ride.status}
+  {getDisplayStatus()}
 
 </span>
 
