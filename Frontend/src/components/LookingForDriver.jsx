@@ -1,13 +1,13 @@
 import React from "react";
 
-const LookingForDriver = ({ ride, setlookingForVehicle,vehicleType }) => {
+const LookingForDriver = ({ ride, setlookingForVehicle }) => {
   const vehicleImages = {
     Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
     Moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
     Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
   };
 
-  const vehicleImg = vehicleImages[vehicleType];
+  const vehicleImg = vehicleImages[ride?.vehicleType];
   return (
     <div className="px-3">
 
@@ -80,7 +80,7 @@ const LookingForDriver = ({ ride, setlookingForVehicle,vehicleType }) => {
 
       {/* Cancel */}
       <button
-        onClick={() => setlookingForVehicle(false)}
+        onClick={() => { setlookingForVehicle(false); localStorage.removeItem("activeRide"); }}
         className="w-full mt-5 py-3 rounded-xl text-gray-500 text-sm hover:text-black transition active:scale-95"
       >
         Cancel Search

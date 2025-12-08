@@ -25,6 +25,11 @@ useEffect(() => {
     navigate("/riding", { state: { ride } });
   }
 }, [ride]);
+// useEffect(() => {
+//   if (ride?.status === "ACCEPTED") {
+//     navigate("/home", { state: { ride } });
+//   }
+// }, [ride]);
 
   const fetchRide = async () => {
     try {

@@ -19,6 +19,7 @@ import VehiclePanel from "../components/VehiclePanel";
 import { Link } from "react-router-dom";
 import NoDriverFound from "../components/NoDriverFound";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 
 
@@ -26,6 +27,7 @@ import toast from "react-hot-toast";
 
 
 const Home = () => {
+  const location=useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [origin, setorigin] = useState("");
   const [destination, setdestination] = useState("");
@@ -43,7 +45,10 @@ const Home = () => {
   const [waitingForDriver, setWaitingForDriver] = useState(false);
   const [fare, setfare] = useState({});
   const [vehicleType,setvehicleType]=useState("");
-  const [ride,setride]=useState({});
+  const [ride,setride]=useState(()=>{
+  const storedRide = localStorage.getItem("activeRide");
+  return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
+});
   const { user, setUser } = useContext(UserDataContext); // Get user data from context
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
 const[noDriverFound,setnoDriverFound] = useState(false);
@@ -62,7 +67,11 @@ useEffect(() => {
 }
 
 }, []);
-
+useEffect(()=>{
+  return()=>{
+    localStorage.removeItem("activeRide");
+  }
+},[])
 
   useEffect(() => {
     if (!user._id) return;
@@ -87,8 +96,36 @@ useEffect(() => {
     if (typeof setActiveField === "function") setActiveField(null);
   };
   useEffect(() => {
-  console.log("Updated ride:", ride);
-}, [ride]); // This will run whenever `ride` changes
+  if (!ride) return;
+
+  if (ride.status === "REQUESTED") {
+    setlookingForVehicle(true);
+  } else if (ride.status === "ACCEPTED") {
+    setWaitingForDriver(true);
+  }
+}, [ride]);
+
+useEffect(() => {
+  if (!ride) {
+    localStorage.removeItem("activeRide");
+    return;
+  }
+
+  // Always update when ride changes
+  localStorage.setItem("activeRide", JSON.stringify(ride));
+  console.log("Ride updated:", ride);
+
+  // If ride finished or cancelled → clean local storage
+  if (
+    ride.status === "CANCELLED" ||
+    ride.status === "CANCELLED_BY_USER" ||
+    ride.status === "CANCELLED_BY_CAPTAIN" ||
+    ride.status === "COMPLETED"
+  ) {
+    localStorage.removeItem("activeRide");
+  }
+
+}, [ride]); // runs only when ride or its status changes
 
 
  useEffect(() => {
@@ -106,7 +143,9 @@ useEffect(() => {
     toast.error("❌ No driver found");
 
     setlookingForVehicle(false);
+    localStorage.removeItem("activeRide");
     setnoDriverFound(true);
+
   }, 30000);
 
   return () => {
@@ -151,6 +190,7 @@ useEffect(() => {
 
   const startRide = (data) => {
     setWaitingForDriver(false);
+    localStorage.removeItem("activeRide");
     navigate("/riding", { state: { ride: data,vehicleType: vehicleType } });
   };
   const cancelHandler = (data) => {
@@ -182,7 +222,7 @@ useEffect(() => {
     );
 
     toast.success(response.data?.message || "✔ Ride Cancelled");
-
+localStorage.removeItem("activeRide");
     // Close modals
     setWaitingForDriver(false);
     // Reset local ride state
@@ -325,7 +365,9 @@ const create_ride = async (selectedVehicleType) => {
     );
 console.log("Ride creation response:", response);
     // Store ride properly
+
     setride(response.data.ride);
+    localStorage.setItem("activeRide", JSON.stringify(response.data.ride));
 
     console.log("🚗 Ride Created:", response.data.ride);
 
