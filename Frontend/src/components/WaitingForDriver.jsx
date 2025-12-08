@@ -1,15 +1,16 @@
 import React from "react";
 
-const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide ,vehicleType}) => {
-   const vehicleImages = {
+const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide, vehicleType }) => {
+  const vehicleImages = {
     Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
     Moto: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
     Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
   };
+
   const vehicleImg = vehicleImages[vehicleType];
+
   return (
     <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">
-
       {/* Drag Handle */}
       <div className="w-16 h-[5px] bg-gray-300 rounded-full mx-auto mb-5"></div>
 
@@ -24,29 +25,36 @@ const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide ,vehicleType})
       {/* Driver Card */}
       <div className="flex justify-between items-center bg-white/90 border border-gray-200 rounded-2xl p-4 mb-6">
         {/* Vehicle Image */}
-        <img
-          src={vehicleImg}
-          alt="Vehicle"
-          className="h-16 object-contain opacity-90"
-        />
+        <img src={vehicleImg} alt="Vehicle" className="h-16 object-contain opacity-90" />
 
         {/* Driver Info */}
-        <div className="text-right">
-          <p className="font-semibold text-lg text-black">
-            {ride?.captain?.fullname?.firstname} {ride?.captain?.fullname?.lastname}
-          </p>
-          <p className="text-sm text-gray-500">
-            {ride?.captain?.vehicle?.numberPlate}
-          </p>
-          <p className="mt-1 text-lg tracking-widest font-semibold text-[#E23744]">
-            OTP: {ride?.otp}
-          </p>
-        </div>
+        {/* Driver Info */}
+<div className="text-right">
+  <p className="font-semibold text-lg text-black">
+    {ride?.captain?.fullname?.firstname} {ride?.captain?.fullname?.lastname}
+  </p>
+
+  <p className="text-sm text-gray-500">
+    {ride?.captain?.vehicle?.numberPlate}
+  </p>
+
+  {/* 👉 Tap to Call Button (No phone number shown) */}
+  <a
+    href={`tel:${ride?.captain?.phone}`}
+    className="inline-block mt-2 bg-[#E23744] text-white text-xs px-4 py-2 rounded-lg active:scale-95 transition shadow-md"
+  >
+    Call Captain
+  </a>
+
+  <p className="mt-2 text-lg tracking-widest font-semibold text-[#E23744]">
+    OTP: {ride?.otp}
+  </p>
+</div>
+
       </div>
 
       {/* Trip Summary */}
       <div className="bg-white/90 backdrop-blur-lg border border-gray-200 rounded-2xl p-5 space-y-5">
-
         {/* Pickup */}
         <div className="flex items-start gap-4">
           <div className="h-12 w-12 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -94,8 +102,7 @@ const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide ,vehicleType})
         onClick={() => {
           setWaitingForDriver(false);
           CancelRide();
-        }
-      }
+        }}
         className="w-full text-center mt-6 py-3 text-gray-500 text-sm hover:text-black active:scale-95 transition"
       >
         Cancel Ride

@@ -44,7 +44,8 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
         Finish Ride
       </h3>
       <p className="text-xs text-gray-500 text-center mt-1 mb-5">
-        Make sure you’ve collected the payment before completing the trip.
+      Make sure you’ve collected the payment before completing the trip.
+
       </p>
 
       {/* Passenger Card */}
@@ -103,7 +104,7 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
               ₹{ride?.fare}
             </h4>
             <p className="text-xs text-gray-600">
-              Take cash from the passenger before ending the ride.
+              Check payment status before ending
             </p>
           </div>
         </div>

@@ -10,6 +10,7 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
@@ -20,6 +21,7 @@ const UserSignup = () => {
   const newUser = {
     email,
     password,
+    phone,
     fullname: { firstname: firstName, lastname: lastName },
   };
 
@@ -84,6 +86,17 @@ const UserSignup = () => {
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
               />
             </div>
+          </div>
+
+           <div>
+            <label className="text-sm text-gray-600 font-medium">Phone Number</label>
+            <input
+              type="tel"
+              placeholder="9876543210"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            />
           </div>
 
           {/* Email */}

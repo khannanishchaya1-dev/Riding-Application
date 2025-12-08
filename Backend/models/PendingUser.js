@@ -5,6 +5,7 @@ const pendingUserSchema = new mongoose.Schema({
   fullname: Object,
   email: String,
   password: String,
+  phone: String,
   otp: String,
   createdAt: Date,
 }, { expires: "10m" }); // Auto delete after 10 min

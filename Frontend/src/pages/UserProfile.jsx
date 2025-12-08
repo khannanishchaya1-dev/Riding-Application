@@ -10,6 +10,7 @@ import {
   MapPin,
   Clock,
   ArrowRight,
+  Phone
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -182,6 +183,10 @@ const handleDelete = async () => {
           <div className="flex justify-between bg-white/90 backdrop-blur-md border border-gray-200 px-4 py-3 rounded-xl shadow-sm">
             <span className="flex items-center gap-2 text-gray-700"><Mail className="w-5 text-[#E23744]" /> Email</span>
             <strong className="truncate max-w-[50%] text-[#E23744]">{user.email}</strong>
+          </div>
+          <div className="flex justify-between bg-white/90 backdrop-blur-md border border-gray-200 px-4 py-3 rounded-xl shadow-sm">
+            <span className="flex items-center gap-2 text-gray-700"><Phone className="w-5 text-[#E23744]" /> Phone</span>
+            <strong className="truncate max-w-[50%] text-[#E23744]">{user.phone}</strong>
           </div>
         </div>
       </div>

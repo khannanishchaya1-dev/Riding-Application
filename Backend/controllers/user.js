@@ -10,12 +10,12 @@ const PendingUser = require("../models/PendingUser");
 const jwt = require('jsonwebtoken');
 
 const handleUserRegister = async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { fullname, email, password,phone } = req.body;
 
   try {
     // Check if already exists in main user table
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Email already registered." });
+    const exists = await User.findOne({ email }) || await User.findOne({ phone });
+    if (exists) return res.status(400).json({ message: "Email or phone number already registered." });
 
     // Delete old pending record if exists
     await PendingUser.deleteOne({ email });
@@ -29,6 +29,7 @@ const handleUserRegister = async (req, res) => {
       fullname,
       password,
       otp,
+      phone,
       createdAt: Date.now(),
     });
 
@@ -110,6 +111,7 @@ const verifyOTP = async (req, res) => {
     fullname: pending.fullname,
     email: pending.email,
     password: pending.password,
+    phone: pending.phone,
   });
 
   // Delete pending record

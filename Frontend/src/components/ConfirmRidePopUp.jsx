@@ -47,25 +47,35 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, C
       </p>
 
       {/* Passenger Card */}
-      <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-200 shadow-sm mb-4">
-        <div className="flex items-center gap-3">
-          <img
-            src="https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg"
-            className="h-11 w-11 rounded-full object-cover border border-gray-200"
-            alt="user"
-          />
-          <div>
-            <h4 className="font-semibold text-gray-900 text-sm">
-              {ride?.userId?.fullname?.firstname} {ride?.userId?.fullname?.lastname}
-            </h4>
-            <p className="text-[11px] text-gray-500">Passenger</p>
-          </div>
-        </div>
+<div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-200 shadow-sm mb-4">
+  <div className="flex items-center gap-3">
+    <img
+      src="https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg"
+      className="h-11 w-11 rounded-full object-cover border border-gray-200"
+      alt="user"
+    />
 
-        <span className="text-xs py-1 px-3 bg-gray-100 text-gray-700 rounded-full font-medium">
-          {ride?.distance || "2.2"} km
-        </span>
-      </div>
+    <div>
+      <h4 className="font-semibold text-gray-900 text-sm">
+        {ride?.userId?.fullname?.firstname} {ride?.userId?.fullname?.lastname}
+      </h4>
+      <p className="text-[11px] text-gray-500">Passenger</p>
+
+      {/* 📞 Call Passenger Button (Phone hidden) */}
+      <a
+        href={`tel:${ride?.userId?.phone}`}
+        className="inline-block mt-1 bg-[#E23744] text-white text-[10px] px-3 py-1.5 rounded-lg active:scale-95 transition shadow-sm"
+      >
+        Call Passenger
+      </a>
+    </div>
+  </div>
+
+  <span className="text-xs py-1 px-3 bg-gray-100 text-gray-700 rounded-full font-medium">
+    {ride?.distance || "2.2"} km
+  </span>
+</div>
+
 
       {/* Ride Details */}
       <div className="bg-[#F9F9F9] border border-gray-200 rounded-2xl shadow-sm divide-y">
@@ -100,7 +110,7 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, C
           <div>
             <p className="text-[11px] text-gray-500">Fare</p>
             <h4 className="text-lg font-semibold text-gray-900">₹{ride?.fare}</h4>
-            <p className="text-[11px] text-gray-500">Cash • Pay before end</p>
+            <p className="text-[11px] text-gray-500">Collect payment once the ride is started</p>
           </div>
         </div>
       </div>

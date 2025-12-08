@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+     phone: { // ⭐ NEW FIELD: Captain's phone number
+      type: String,
+      required: true,
+      unique: true, // Phone numbers should typically be unique
+    },
 
     // 🔐 OTP fields
     otp: String,

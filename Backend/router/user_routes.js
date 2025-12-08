@@ -7,6 +7,9 @@ const { handleUserRegister, handleUserLogin, getUserProfile, logoutUser,verifyOT
 const { authUser } = require('../middlewares/auth');
 router.post('/register',[
   body('email').isEmail().withMessage('Invalid Email'),
+  body("phone") // ⭐ NEW: Phone validation (assuming min 10 digits)
+        .isLength({ min: 10 })
+        .withMessage("Phone number must be at least 10 digits"),
   body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long")
 ],handleUserRegister);
 
