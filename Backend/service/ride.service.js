@@ -129,9 +129,6 @@ console.log(captain)
   .populate('userId')
   .populate('captain').select('+otp');
 
-console.log(ride);
-
-
     if (!ride) {
         throw new Error('Ride not found');
     }

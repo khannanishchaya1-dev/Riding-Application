@@ -28,7 +28,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.get("/find-ride/:id", async (req, res) => {
   try {
-    const ride = await Ride.findById(req.params.id).populate("captain");
+    const ride = await Ride.findById(req.params.id).populate("captain").select('+otp');
 
     if (!ride) return res.status(404).json({ message: "Ride not found" });
 console.log(ride);

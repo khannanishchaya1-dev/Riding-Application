@@ -17,6 +17,7 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
       );
 
       if (response.status === 200) {
+        localStorage.removeItem("activeRide");
         toast.success("🎉 Ride completed successfully!");
         navigate("/captain-home");
       }

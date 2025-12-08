@@ -47,6 +47,7 @@ const Home = () => {
   const [vehicleType,setvehicleType]=useState("");
   const [ride,setride]=useState(()=>{
   const storedRide = localStorage.getItem("activeRide");
+  console.log("Stored ride in Home:", location.state?.ride);
   return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
 });
   const { user, setUser } = useContext(UserDataContext); // Get user data from context
@@ -189,6 +190,7 @@ useEffect(() => {
   };
 
   const startRide = (data) => {
+    localStorage.removeItem("activeRide")
     setWaitingForDriver(false);
     localStorage.removeItem("activeRide");
     navigate("/riding", { state: { ride: data,vehicleType: vehicleType } });

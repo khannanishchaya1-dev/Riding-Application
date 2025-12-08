@@ -19,6 +19,12 @@ const CaptainRideDetails = () => {
   useEffect(() => {
     fetchRide();
   }, []);
+  useEffect(() => {
+    if (ride?.status === "ACCEPTED"  && location.pathname !== "/captain-home") {
+      console.log("Navigating to /home from RideDetails",ride);
+      navigate("/captain-home", { state: { ride } });
+    }
+  }, [ride]);
 
   useEffect(() => {
     // 👇 if ride is still ongoing, send captain back to tracking screen

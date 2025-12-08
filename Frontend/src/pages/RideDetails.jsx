@@ -21,15 +21,16 @@ const RideDetails = () => {
     fetchRide();
   }, []);
 useEffect(() => {
-  if (ride?.status === "ONGOING") {
+  if (ride?.status === "ONGOING"  && location.pathname !== "/home") {
     navigate("/riding", { state: { ride } });
   }
 }, [ride]);
-// useEffect(() => {
-//   if (ride?.status === "ACCEPTED") {
-//     navigate("/home", { state: { ride } });
-//   }
-// }, [ride]);
+useEffect(() => {
+  if (ride?.status === "ACCEPTED"  && location.pathname !== "/home") {
+    console.log("Navigating to /home from RideDetails",ride);
+    navigate("/home", { state: { ride } });
+  }
+}, [ride]);
 
   const fetchRide = async () => {
     try {

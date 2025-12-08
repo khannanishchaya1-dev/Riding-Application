@@ -103,7 +103,7 @@ const RidePopUp = ({ ride, setridePopUppanel, setconfirmridePopUppanel, confirmR
 
         {/* Ignore */}
         <button
-          onClick={() => setridePopUppanel(false)}
+          onClick={() => {setridePopUppanel(false);localStorage.removeItem("activeRide")}}
           className="w-full border border-gray-300 text-gray-700 font-semibold rounded-xl py-3 
           hover:bg-gray-100 transition active:scale-[0.97]"
         >

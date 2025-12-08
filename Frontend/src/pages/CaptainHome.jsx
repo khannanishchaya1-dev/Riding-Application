@@ -11,8 +11,10 @@ import axios from "axios";
 import LiveTracking from "../components/LiveTracking";
 import toast from "react-hot-toast";
 import GadiGoLogo from "../assets/GadiGo.svg";
+import { useLocation } from "react-router-dom";
 
 const CaptainHome = () => {
+  const location=useLocation();
   const [ridePopUppanel, setridePopUppanel] = useState(false);
   const ridePopUppanelRef = useRef(null);
 
@@ -23,8 +25,29 @@ const CaptainHome = () => {
   const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
 
   const incomingSound = useRef(new Audio("/src/assets/sounds/incoming_new.mp3"));
-  const [ride, setride] = useState({});
+  const [ride,setride]=useState(()=>{
+    const storedRide = localStorage.getItem("activeRide");
+    return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
+  });
+useEffect(()=>{
+  return()=>{
+    localStorage.removeItem("activeRide");
+  }
+},[])
+ useEffect(() => {
+  if (!ride) return;
 
+  if (ride.status === "ACCEPTED") {
+    setconfirmridePopUppanel(true);
+    setridePopUppanel(false);
+  }else if (ride.status === "ONGOING") {
+      localStorage.removeItem("activeRide");
+    }else if (ride.status === "REQUESTED") {
+      setconfirmridePopUppanel(false);
+      setridePopUppanel(true);
+      
+  }
+}, [ride]);
   // Load captain from local storage
   useEffect(() => {
     const stored = localStorage.getItem("captain");
@@ -68,6 +91,33 @@ useEffect(() => {
     if (watchId) navigator.geolocation.clearWatch(watchId);
   };
 }, [socket, captainData?._id]);
+useEffect(() => {
+    const storedRide = localStorage.getItem("activeRide");
+    if( storedRide ){
+      
+    }
+  },[]);
+  useEffect(() => {
+    if (!ride) {
+      localStorage.removeItem("activeRide");
+      return;
+    }
+  
+    // Always update when ride changes
+    localStorage.setItem("activeRide", JSON.stringify(ride));
+    console.log("Ride updated:", ride);
+  
+    // If ride finished or cancelled → clean local storage
+    if (
+      ride.status === "CANCELLED" ||
+      ride.status === "CANCELLED_BY_USER" ||
+      ride.status === "CANCELLED_BY_CAPTAIN" ||
+      ride.status === "COMPLETED"
+    ) {
+      localStorage.removeItem("activeRide");
+    }
+  
+  }, [ride]); // runs only when ride or its status changes
 
   // Listen for ride request
   useEffect(() => {
@@ -98,12 +148,18 @@ useEffect(() => {
     sendMessage("ride-accepted", { rideId: ride._id }); // 👈 broadcast event
 
     toast.success("✔ Ride Accepted");
+    localStorage.setItem("activeRide", JSON.stringify(ride));
     setridePopUppanel(false);
     setconfirmridePopUppanel(true);
   } catch {
     toast.error("⚠ Error confirming ride");
   }
 };
+useEffect(() => {
+  if (ride) {
+    localStorage.setItem("activeRide", JSON.stringify(ride));
+  }
+}, [ride]);
 useEffect(() => {
   if (!receiveMessage) return;
   const cancelHandler = (data) => {
@@ -130,7 +186,7 @@ const CancelRide = async () => {
     );
 
     toast.success(response.data?.message || "✔ Ride Cancelled");
-
+localStorage.removeItem("activeRide");
     // Close modals
     setconfirmridePopUppanel(false);
     setridePopUppanel(false);
