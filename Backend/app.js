@@ -19,7 +19,6 @@ app.use(cors({
   origin: "https://riding-application-x1x2.vercel.app",
   credentials: true,
 }));
-
 app.use(express.json());
 app.use(cookieParser());
 connectMongodb(process.env.MONGODB_URL);
