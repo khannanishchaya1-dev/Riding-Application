@@ -150,6 +150,7 @@ const getPaymentBadge = () => {
     {/* Top Home Button */}
     <Link
       to="/home"
+      onClick={() => localStorage.removeItem('activeRide')}
       className="absolute right-5 top-5 h-11 w-11 bg-white flex items-center justify-center 
                   rounded-full shadow-md z-20 hover:scale-105 transition"
     >
