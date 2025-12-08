@@ -42,10 +42,11 @@ useEffect(()=>{
     setridePopUppanel(false);
   }else if (ride.status === "ONGOING") {
       localStorage.removeItem("activeRide");
-    }else if (ride.status === "REQUESTED") {
-      setconfirmridePopUppanel(false);
-      setridePopUppanel(true);
+    
       
+  }else if (ride.status ==="REQUESTED"){
+    setridePopUppanel(true);
+    
   }
 }, [ride]);
   // Load captain from local storage
