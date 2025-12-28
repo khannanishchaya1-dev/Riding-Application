@@ -8,7 +8,7 @@ const LiveTrackingOngoing = ({ origin, destination, rideId, receiveMessage, sock
   const [directions, setDirections] = useState(null);
   const [captainPos, setCaptainPos] = useState(null);
   const mapRef = useRef(null);
-  const routeDrawn = useRef(false);   // 👈 IMPORTANT
+  const routeDrawn = useRef(false);
 
   const safeOrigin = origin ? { lat: Number(origin.lat), lng: Number(origin.lon) } : null;
   const safeDestination = destination ? { lat: Number(destination.lat), lng: Number(destination.lon) } : null;
@@ -22,17 +22,14 @@ const LiveTrackingOngoing = ({ origin, destination, rideId, receiveMessage, sock
     );
   };
 
-  // 🟢 Draw initial static route ONCE
   useEffect(() => {
     if (!safeOrigin || !safeDestination) return;
-    if (routeDrawn.current) return;  // 👈 avoid multiple redraws
-
+    if (routeDrawn.current) return;
     console.log("🛣 Drawing initial origin → destination");
     drawRoute(safeOrigin, safeDestination);
     routeDrawn.current = true;
   }, [safeOrigin, safeDestination]);
 
-  // 📡 LIVE GPS listener
   useEffect(() => {
     if (!socket || !receiveMessage || !rideId) return;
 
@@ -45,17 +42,13 @@ const LiveTrackingOngoing = ({ origin, destination, rideId, receiveMessage, sock
 
       const newPos = { lat: Number(data.lat), lng: Number(data.lon) };
       setCaptainPos(newPos);
-
-      // dynamic route update
       drawRoute(newPos, safeDestination);
-
-      // follow car
-      if (mapRef.current) mapRef.current.panTo(newPos);
+      mapRef.current?.panTo(newPos);
     };
 
     receiveMessage(event, handler);
     return () => offMessage?.(event, handler);
-  }, [socket, receiveMessage, rideId, safeDestination, offMessage]);
+  }, []);
 
   if (!window.google) return <p>📍 Loading map…</p>;
 
@@ -70,9 +63,13 @@ const LiveTrackingOngoing = ({ origin, destination, rideId, receiveMessage, sock
       {captainPos && (
         <Marker
           position={captainPos}
+          icon={{
+            url: "/car.png",
+            scaledSize: new window.google.maps.Size(45, 45),
+            anchor: new window.google.maps.Point(22, 22),
+          }}
         />
       )}
-
       {directions && <DirectionsRenderer directions={directions} />}
     </GoogleMap>
   );
