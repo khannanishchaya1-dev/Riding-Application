@@ -55,6 +55,11 @@ module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
   const fareDetails = await this.calculateFare(origin,destination);
   
   const DistanceTime = await mapService.getDistanceTime(origin,destination);
+  const pickupCoords = await mapService.getCoordinatesfromAddress(origin);
+    const destinationCoords = await mapService.getCoordinatesfromAddress(destination);
+     if (!pickupCoords || !destinationCoords) {
+      return res.status(400).json({ message: "Unable to fetch location. Try different address." });
+    }
   
   
   // Create a new ride in the database (pseudo code)
@@ -65,6 +70,8 @@ module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
     destination,
     vehicleType,
     fare: fareDetails[vehicleType],
+    originCoordinates: pickupCoords,
+    destinationCoordinates: destinationCoords,
     otp:this.generateOTP(6),
     distance:(Number(DistanceTime.distance.value)),
     duration:(Number(DistanceTime.duration.value)),

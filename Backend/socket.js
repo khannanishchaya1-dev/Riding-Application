@@ -14,89 +14,74 @@ const initializeSocketConnection = (server) => {
   });
 
   io.on("connection", async (socket) => {
-    console.log(`🚗 New socket connected: ${socket.id}`);
+    console.log(`⚡ Socket connected: ${socket.id}`);
 
-    // ==== JOIN ROOM ====
+    // ===============================
+    // JOIN USER / CAPTAIN PERSONAL ROOM
+    // ===============================
     socket.on("join", async ({ userId, userType }) => {
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        console.log(`❌ Invalid userId: ${userId}`);
-        return;
-      }
-
-      // Join user-specific room
+      if (!mongoose.Types.ObjectId.isValid(userId)) return;
       socket.join(userId);
-      console.log(`🏠 Socket ${socket.id} joined room: ${userId} (${userType})`);
+      console.log(`🏠 ${userType} joined personal room: ${userId}`);
 
-      // Optional: store socket id in DB for fallback usage
       try {
         if (userType === "user") {
           await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        } else if (userType === "captain") {
+        }
+        if (userType === "captain") {
           await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        } else {
-          console.log(`⚠ Unknown userType: ${userType}`);
         }
       } catch (err) {
-        console.error("❌ Error saving socket ID in DB:", err);
+        console.error("❌ Failed to update socketId:", err);
       }
     });
 
-    // ==== UPDATE CAPTAIN LIVE LOCATION ====
-    socket.on("updateCaptainLocation", async ({ captainId, location }) => {
+    // ===============================
+    // JOIN RIDE ROOM
+    // ===============================
+    socket.on("join-ride", ({ rideId }) => {
+      if (!rideId) return;
+      socket.join(rideId);
+      console.log(`🚕 Socket ${socket.id} joined ride room: ${rideId}`);
+    });
+
+    // ===============================
+    // CAPTAIN LIVE LOCATION UPDATE
+    // ===============================
+    socket.on("updateCaptainLocation", async ({ captainId, rideId, lat, lon }) => {
       try {
-        if (
-          !location ||
-          typeof location.lng !== "number" ||
-          typeof location.ltd !== "number"
-        ) {
-          console.log("⚠ Invalid location payload:", location);
-          return;
+        if (!rideId || typeof lat !== "number" || typeof lon !== "number") {
+          return console.log("⚠ Invalid GPS payload");
         }
 
-        const geoJSONLocation = {
-          type: "Point",
-          coordinates: [location.lng, location.ltd],
-        };
+        const geoLoc = { type: "Point", coordinates: [lon, lat] };
 
-        await captainModel.findByIdAndUpdate(
+        // save captain latest location in DB
+        await captainModel.findByIdAndUpdate(captainId, { location: geoLoc });
+
+        // 🚀 Send location ONLY to user inside ride room
+        io.to(rideId).emit(`location-update-${rideId}`, {
+          lat,
+          lon,
           captainId,
-          { location: geoJSONLocation },
-          { new: true }
-        );
+        });
 
-        // Broadcast updated location to rider (if ride started)
-        io.to(captainId).emit("captain-location-updated", geoJSONLocation);
-
-        console.log(`📍 Captain ${captainId} location updated:`, geoJSONLocation);
+        console.log(`📍 GPS → Captain:${captainId} → Ride:${rideId}`, { lat, lon });
       } catch (err) {
-        console.error("❌ Location update error:", err);
+        console.error("❌ GPS ERROR:", err);
       }
     });
 
-    // ==== CUSTOM TEST EVENT ====
-    socket.on("customEvent", (data) => {
-      console.log(`📩 Custom event from ${socket.id}:`, data);
-    });
-
-    // ==== DISCONNECT ====
     socket.on("disconnect", () => {
-      console.log(`❌ Socket disconnected: ${socket.id}`);
+      console.log(`❌ Disconnected: ${socket.id}`);
     });
   });
 };
 
-// ==== UNIVERSAL MESSAGE SENDER ====
-// Instead of socketId → use room (stable identifier)
+// send socket message helper
 const sendSocketMessageTo = (userId, { event, data }) => {
-  if (!io) {
-    return console.error("❌ Socket server not initialized.");
-  }
-
+  if (!io) return console.error("❌ Socket server not initialized");
   io.to(userId).emit(event, data);
-  console.log(`🚀 Sent "${event}" to room ${userId}`, data);
 };
 
-module.exports = {
-  initializeSocketConnection,
-  sendSocketMessageTo,
-};
+module.exports = { initializeSocketConnection, sendSocketMessageTo };

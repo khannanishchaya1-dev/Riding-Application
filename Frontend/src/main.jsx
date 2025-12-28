@@ -5,25 +5,26 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import UserContext from './UserContext/UserContext.jsx'
 import CaptainContext from './UserContext/CaptainContext.jsx'
-import SocketProvider from "./UserContext/SocketContext.jsx";
-import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
-
+import SocketProvider from "./UserContext/SocketContext.jsx"
+import { LoadScript } from "@react-google-maps/api"
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
-   <BrowserRouter>
-   <SocketProvider>
+  <BrowserRouter>
+    <SocketProvider>
       <CaptainContext>
-       <UserContext>
-        
-      <div className="glass-phone">
-  <App />
-</div>
+        <UserContext>
 
-          
-      </UserContext>
+          <LoadScript
+            googleMapsApiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
+            libraries={["places"]}       
+          >
+            <div className="glass-phone">
+              <App />
+            </div>
+          </LoadScript>
+
+        </UserContext>
       </CaptainContext>
-      </SocketProvider>
-      </BrowserRouter>
-  // </StrictMode>
+    </SocketProvider>
+  </BrowserRouter>
 )

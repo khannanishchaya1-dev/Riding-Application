@@ -1,5 +1,9 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 
+const coordinateSchema = new mongoose.Schema({
+  lat: { type: Number, required: true },
+  lon: { type: Number, required: true }
+}, { _id: false });
 
 const rideSchema = new mongoose.Schema({
   userId:{
@@ -12,6 +16,8 @@ const rideSchema = new mongoose.Schema({
     ref:'captain',
     default:null
   },
+
+  // Address strings
   origin:{
     type:String,
     required:true
@@ -20,44 +26,43 @@ const rideSchema = new mongoose.Schema({
     type:String,
     required:true
   },
+
+  // 📍 New fields — actual coordinates
+  originCoordinates: {
+    type: coordinateSchema,
+    required: true
+  },
+  destinationCoordinates: {
+    type: coordinateSchema,
+    required: true
+  },
+
   status:{
     type:String,
     enum:['REQUESTED','ACCEPTED','ONGOING','COMPLETED','CANCELLED_BY_USER','CANCELLED_BY_CAPTAIN'],
     default:'REQUESTED'
   },
-  fare:{
-    type:Number,
-  },
-  duration:{
-    type:Number,//in seconds
-    
-  },
-  distance:{
-    type:Number,//in meters
 
-  },
-  paymentId:{
-    type:String
-  },
+  fare:{ type:Number },
+  duration:{ type:Number }, // seconds
+  distance:{ type:Number }, // meters
+
+  paymentId:{ type:String },
   paymentStatus:{
     type:String,
     enum:['PENDING','PAID','FAILED'],
     default:'PENDING'
   },
-  OrderId:{
-    type:String
-  },
-  Signature:{
-    type:String
-  },
-  otp:{
-    type:String,
-    select:false
-  },
+  OrderId:{ type:String },
+  Signature:{ type:String },
+
+  otp:{ type:String, select:false },
+
   vehicleType:{
     type:String,
     enum:['Car','Moto','Auto'],
     required:true
   }
-},{timestamps:true});
-module.exports = mongoose.model('RIDE',rideSchema);
+}, { timestamps:true });
+
+module.exports = mongoose.model('RIDE', rideSchema);

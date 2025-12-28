@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSocket } from "../UserContext/SocketContext";
-import LiveTracking from "../components/LiveTracking";
+import LiveTracking from "../components/LiveTrackingOngoing";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const Riding = () => {
     return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
 });
 
-  const { receiveMessage } = useSocket();
+  const { receiveMessage,sendMessage,socket,offMessage } = useSocket();
   const navigate = useNavigate();
   const vehicleImages = {
     Car: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=956/height=538/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9iYWRmYjFkNi02YzJiLTQ1NTMtYjkyOS05ZmYzMmYwMmE1NWUucG5n",
@@ -23,6 +23,29 @@ const Riding = () => {
   };
 
   const vehicleImg = vehicleImages[ride?.vehicleType];
+useEffect(() => {
+  if (!socket || !ride?._id) return;
+
+  console.log("👤 USER joining ride room:", ride._id);
+  sendMessage("join-ride", { rideId: ride._id });
+
+}, [socket, ride?._id]);
+useEffect(() => {
+  if (!socket || !receiveMessage || !ride?._id) return;
+
+  const event = `location-update-${ride._id}`;
+  console.log("📡 USER listening for GPS:", event);
+
+  const handler = (data) => {
+    console.log("📬 USER RECEIVED GPS:", data);  // <--- MUST SHOW
+  };
+
+  receiveMessage(event, handler);
+
+  return () => offMessage?.(event, handler);
+}, [socket, receiveMessage, ride?._id]);
+
+
 
 React.useEffect(() => {
   if (ride) {
@@ -54,6 +77,10 @@ useEffect(() => {
  
 
 }, [receiveMessage, navigate]);
+
+// 🚗 Listen to captain live GPS on USER side
+
+
 
   // ⭐ Razorpay Payment Handler
   const handlePayment = async () => {
@@ -159,7 +186,16 @@ const getPaymentBadge = () => {
 
     {/* 🚗 Map Section (50% Height) */}
     <div className="h-[50vh] w-full">
-      <LiveTracking />
+      
+    <LiveTracking
+      origin={ride?.originCoordinates}
+      destination={ride?.destinationCoordinates}
+      rideId={ride?._id}
+      receiveMessage={receiveMessage}
+      socket={socket}
+      offMessage={offMessage}
+    />
+  
     </div>
 
     {/* 📌 Bottom Ride Details Panel (50% height) */}

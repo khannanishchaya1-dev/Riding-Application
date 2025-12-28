@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, CancelRide }) => {
+const ConfirmRidePopUp = ({ setride,ride, setconfirmridePopUppanel, setridePopUppanel, CancelRide }) => {
   const [OTP, setOTP] = useState("");
   const navigate = useNavigate();
 
@@ -28,12 +28,12 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, C
   };
 
   return (
-    <div className="px-6 pt-7 pb-6 bg-white rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.18)] relative">
+    <div className=" px-6 pt-7 pb-6 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.18)] relative">
 
       {/* Pull Handle */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2">
         <div
-          onClick={() => setconfirmridePopUppanel(false)}
+          onClick={() => { setconfirmridePopUppanel(false); localStorage.removeItem("activeRide");setride(null) }}
           className="w-12 h-[4px] rounded-full bg-gray-300 cursor-pointer active:scale-95"
         />
       </div>
@@ -149,6 +149,8 @@ const ConfirmRidePopUp = ({ ride, setconfirmridePopUppanel, setridePopUppanel, C
         >
           Cancel
         </button>
+
+        
       </form>
     </div>
   );

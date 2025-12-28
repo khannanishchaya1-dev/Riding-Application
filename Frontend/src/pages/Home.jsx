@@ -411,7 +411,7 @@ console.log("Ride creation response:", response);
         
         {/* Main Input Panel (Always visible at the bottom) */}
        {/* Main Input Panel (Zomato Style) */}
-<div className=" backdrop-blur-xl bg-white/15 border border-white/10 p-6 rounded-3xl w-full max-w-lg mx-auto pointer-events-auto">
+<div className=" backdrop-blur-xl border border-white/10 p-6 rounded-3xl w-full max-w-lg mx-auto pointer-events-auto">
 <i
   ref={panelCloseRef}
   onClick={() => setPanelOpen(false)}

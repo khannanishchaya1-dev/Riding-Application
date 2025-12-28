@@ -34,6 +34,21 @@ useEffect(()=>{
     localStorage.removeItem("activeRide");
   }
 },[])
+useEffect(() => {
+  if (!ride) {
+    localStorage.removeItem("activeRide");
+    return;
+  }
+
+  // Only store if ride is still pending or accepted
+  if (ride.status === "REQUESTED" || ride.status === "ACCEPTED") {
+    localStorage.setItem("activeRide", JSON.stringify(ride));
+  } else {
+    localStorage.removeItem("activeRide");
+  }
+
+}, [ride]);
+
  useEffect(() => {
   if (!ride) return;
 
@@ -46,7 +61,7 @@ useEffect(()=>{
       
   }else if (ride.status ==="REQUESTED"){
     setridePopUppanel(true);
-    
+    setconfirmridePopUppanel(false);
   }
 }, [ride]);
   // Load captain from local storage
@@ -64,61 +79,66 @@ useEffect(()=>{
 useEffect(() => {
   if (!socket || !captainData?._id) return;
 
-  let watchId = null;
-
-  const sendLocation = (lat, lng) => {
-    sendMessage("updateCaptainLocation", {
-      captainId: captainData._id,
-      location: { ltd: lat, lng: lng },
-    });
+  const updateAvailabilityLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        sendMessage("updateCaptainLocation", {
+          captainId: captainData._id,
+          lat: coords.latitude,
+          lon: coords.longitude,
+          isAvailable: true
+        });
+      },
+      (err) => console.error("GPS error", err),
+      { enableHighAccuracy: true }
+    );
   };
 
-  // Start GPS watcher
-  watchId = navigator.geolocation.watchPosition(
-    (position) => {
-      const { latitude, longitude } = position.coords;
-      console.log(" 📡 captain location ")
-      sendLocation(latitude, longitude);
-    },
-    (err) => {
-      console.error("GPS Error:", err);
-      toast.error("⚠ Unable to get live location");
-    },
-    { enableHighAccuracy: true, maximumAge: 0 }
-  );
+  // Initial update
+  updateAvailabilityLocation();
 
-  // Cleanup when component unmounts or socket disconnects
-  return () => {
-    if (watchId) navigator.geolocation.clearWatch(watchId);
-  };
+  // Update every 45 sec
+  const interval = setInterval(updateAvailabilityLocation, 45000);
+
+  return () => clearInterval(interval);
 }, [socket, captainData?._id]);
-useEffect(() => {
-    const storedRide = localStorage.getItem("activeRide");
-    if( storedRide ){
-      
-    }
-  },[]);
-  useEffect(() => {
-    if (!ride) {
-      localStorage.removeItem("activeRide");
-      return;
-    }
+
+
+//   useEffect(() => {
+//     if (!ride) {
+//       localStorage.removeItem("activeRide");
+//       return;
+//     }
   
-    // Always update when ride changes
-    localStorage.setItem("activeRide", JSON.stringify(ride));
-    console.log("Ride updated:", ride);
+//     // Always update when ride changes
+//     localStorage.setItem("activeRide", JSON.stringify(ride));
+//     console.log("Ride updated:", ride);
   
-    // If ride finished or cancelled → clean local storage
-    if (
-      ride.status === "CANCELLED" ||
-      ride.status === "CANCELLED_BY_USER" ||
-      ride.status === "CANCELLED_BY_CAPTAIN" ||
-      ride.status === "COMPLETED"
-    ) {
-      localStorage.removeItem("activeRide");
-    }
+//     // If ride finished or cancelled → clean local storage
+//     if (
+//       ride.status === "CANCELLED" ||
+//       ride.status === "CANCELLED_BY_USER" ||
+//       ride.status === "CANCELLED_BY_CAPTAIN" ||
+//       ride.status === "COMPLETED"
+//     ) {
+//       localStorage.removeItem("activeRide");
+//     }
   
-  }, [ride]); // runs only when ride or its status changes
+//   }, [ride]); // runs only when ride or its status changes
+// useEffect(() => {
+//   if (!ride) {
+//     localStorage.removeItem("activeRide");
+//     return;
+//   }
+
+//   // Only save for these states
+//   if (ride.status === "REQUESTED" || ride.status === "ACCEPTED") {
+//     localStorage.setItem("activeRide", JSON.stringify(ride));
+//   } else {
+//     localStorage.removeItem("activeRide");
+//   }
+
+// }, [ride]);
 
   // Listen for ride request
   useEffect(() => {
@@ -140,7 +160,7 @@ useEffect(() => {
   // Confirm ride function
   const confirmRide = async () => {
   try {
-    await axios.post(
+   const response =  await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
       { rideId: ride._id },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
@@ -149,18 +169,13 @@ useEffect(() => {
     sendMessage("ride-accepted", { rideId: ride._id }); // 👈 broadcast event
 
     toast.success("✔ Ride Accepted");
-    localStorage.setItem("activeRide", JSON.stringify(ride));
+    setride(response.data.ride);
     setridePopUppanel(false);
     setconfirmridePopUppanel(true);
   } catch {
     toast.error("⚠ Error confirming ride");
   }
 };
-useEffect(() => {
-  if (ride) {
-    localStorage.setItem("activeRide", JSON.stringify(ride));
-  }
-}, [ride]);
 useEffect(() => {
   if (!receiveMessage) return;
   const cancelHandler = (data) => {
@@ -298,13 +313,14 @@ localStorage.removeItem("activeRide");
       {/* Confirm Ride Popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%] backdrop-blur-xl bg-white/90 
-                border-t border-gray-200 shadow-xl rounded-t-3xl">
+        className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%]  bg-white 
+                border-t border-gray-200 shadow-xl">
         <ConfirmRidePopUp
           ride={ride}
           setridePopUppanel={setridePopUppanel}
           setconfirmridePopUppanel={setconfirmridePopUppanel}
           CancelRide={CancelRide}
+          setride={setride}
         />
       </div>
     </div>

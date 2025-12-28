@@ -11,21 +11,21 @@ const VehiclePanel = ({ fare, setvehiclepanel, setvehicleType, setconfirmRidepan
   const vehicles = [
     {
       id: "Car",
-      name: "WheelzyGo",
+      name: "GadiGO Car",
       seats: 4,
       img: "https://www.svgrepo.com/show/408292/car-white.svg",
       desc: "Affordable, compact rides",
     },
     {
       id: "Moto",
-      name: "Moto",
+      name: "GadiGO Moto",
       seats: 1,
       img: "https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=368/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy8yYzdmYTE5NC1jOTU0LTQ5YjItOWM2ZC1hM2I4NjAxMzcwZjUucG5n",
       desc: "Fast and budget friendly",
     },
     {
       id: "Auto",
-      name: "Wheelzy Auto",
+      name: "GadiGO Auto",
       seats: 2,
       img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
       desc: "Easy and iconic local rides",

@@ -129,6 +129,7 @@ captainSchema.methods.matchPasswordAndGenerateToken = async function (password) 
 
   return this.generateAuthToken();
 };
+captainSchema.index({ location: "2dsphere" });
 
 const captainModel = mongoose.model("captain", captainSchema);
 module.exports = captainModel;
