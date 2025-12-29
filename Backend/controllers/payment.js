@@ -2,6 +2,7 @@ const Razorpay= require("razorpay");
 const crypto = require("crypto");
 const Ride = require("../models/ride");
 const { sendSocketMessageTo } = require("../socket");
+const { validationResult } = require('express-validator');
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
@@ -59,5 +60,36 @@ console.log("payment send to user frontend")
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: "Payment update failed" });
+  }
+};
+module.exports.handleCashPayment = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { rideId } = req.body;
+  console.log(rideId);
+
+  try {
+    // Update DB
+    await Ride.findByIdAndUpdate(rideId, { paymentStatus: "PAID" });
+    // Get updated ride details
+    const ride = await Ride.findById(rideId).populate("captain userId");
+    // 🚨 Notify captain (to allow finishing ride)
+    sendSocketMessageTo(ride.captain.socketId, {
+      event: "payment-success",
+      data: ride,
+    });
+    console.log("Cash payment send to captain frontend");
+    // 🚨 Notify user (UI update)
+    sendSocketMessageTo(ride.userId.socketId, {
+      event: "payment-status-updated",
+      data: ride,
+    });
+    console.log("Cash payment send to user frontend");
+    return res.json({ success: true, message: "Cash payment handled successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Cash payment handling failed" });
   }
 };

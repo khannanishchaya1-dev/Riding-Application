@@ -27,6 +27,10 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
     }
   };
 
+  const remainingKm =
+    typeof ride?.distance === "number"
+      ? (ride.distance / 1000).toFixed(1)
+      : "4.0";
   const passengerName =
     ride?.userId?.fullname?.firstname && ride?.userId?.fullname?.lastname
       ? `${ride.userId.fullname.firstname} ${ride.userId.fullname.lastname}`
@@ -66,7 +70,7 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
         </div>
 
         <span className="text-xs text-gray-600 font-medium">
-          📍 {ride?.distance ? (ride.distance / 1000).toFixed(1) : "2.2"} km
+          📍 {remainingKm} km
         </span>
       </div>
 

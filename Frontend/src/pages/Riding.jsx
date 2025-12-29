@@ -78,7 +78,17 @@ useEffect(() => {
 
 }, [receiveMessage, navigate]);
 
-// 🚗 Listen to captain live GPS on USER side
+// 🚗 Cash payment handler useffect
+// Payment listener
+  // useEffect(() => {
+  //   if (!receiveMessage) return;
+  //   const handler = (data) => {
+  //     toast.success("💳 Passenger completed payment!");
+  //     setride((prev) => ({ ...prev, ...data }));
+  //   };
+  //   receiveMessage("payment-success", handler);
+  //   return () => receiveMessage?.off?.("payment-success", handler);
+  // }, [receiveMessage]);
 
 
 
@@ -125,7 +135,6 @@ useEffect(() => {
           }
         );
 
-        toast.success("🎉 Payment Successful!");
         setride(prevRide => ({ ...prevRide, paymentStatus: "PAID" })); // Update local ride state
         
       },

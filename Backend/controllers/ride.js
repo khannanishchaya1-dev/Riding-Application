@@ -40,6 +40,7 @@ module.exports.createRide = async (req, res) => {
     10,
     vehicleType
   );
+  console.log("captainsNearby", captainsNearby);
 
   console.log("🚗 Captains Found:", captainsNearby.length);
 

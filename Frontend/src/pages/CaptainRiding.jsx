@@ -6,7 +6,7 @@ import LiveTracking from "../components/LiveTrackingOngoing";
 import toast from "react-hot-toast";
 import { useSocket } from "../UserContext/SocketContext";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
-
+import axios from "axios";
 const CaptainRiding = () => {
   const [FinishRidepanel, setFinishRidepanel] = useState(false);
   const { socket, sendMessage, receiveMessage,offMessage } = useSocket();
@@ -83,6 +83,22 @@ const CaptainRiding = () => {
     return () => receiveMessage?.off?.("payment-success", handler);
   }, [receiveMessage]);
 
+
+const handleCashPayment = async () => {
+  try{
+    const token = localStorage.getItem("token"); 
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}payment/cash-payment`, { rideId: ride._id },{
+            headers: {
+              Authorization: `Bearer ${token}`, // 👈 include token again
+            },
+          }); 
+          console.log("💰 Cash payment handled successfully!");
+          setride((prev) => ({ ...prev, paymentStatus: "PAID" }));
+  }catch(err){
+    toast.error("❌ Cash payment failed. Please try again.");
+  }
+}
+
   // Payment badge UI
   const getPaymentBadge = () => {
     const status = ride?.paymentStatus;
@@ -135,29 +151,56 @@ const CaptainRiding = () => {
 
       {/* Bottom Sheet UI */}
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.18)] border-t 
-                      border-gray-200 px-6 py-4 flex items-center justify-between">
-        <button
-          onClick={() => setFinishRidepanel(true)}
-          className="absolute top-1 left-1/2 -translate-x-1/2"
-        >
-          <div className="w-12 h-[4px] bg-gray-300 rounded-full" />
-        </button>
+                border-gray-200 px-6 py-4 flex items-center justify-between">
+  <button
+    onClick={() => setFinishRidepanel(true)}
+    className="absolute top-1 left-1/2 -translate-x-1/2"
+  >
+    <div className="w-12 h-[4px] bg-gray-300 rounded-full" />
+  </button>
 
-        <div className="flex flex-col">
-          <p className="text-xs text-gray-500">Distance remaining</p>
-          <p className="text-lg font-semibold text-gray-900">🚦 {remainingKm} km</p>
-          <div className="mt-2">{getPaymentBadge()}</div>
-        </div>
+  <div className="flex flex-col">
+    <p className="text-xs text-gray-500">Distance remaining</p>
+    <p className="text-lg font-semibold text-gray-900">🚦 {remainingKm} km</p>
+  </div>
 
-        <button
-          disabled={ride?.paymentStatus !== "PAID"}
-          onClick={() => setFinishRidepanel(true)}
-          className="bg-[#E23744] text-white font-semibold rounded-xl px-6 py-3 
-                     text-sm active:scale-[0.97] hover:bg-[#c52e37] transition"
-        >
-          {ride?.paymentStatus !== "PAID" ? "Waiting for Payment..." : "Finish Ride"}
-        </button>
-      </div>
+  <div className="flex flex-col items-end gap-2">
+
+  {/* Payment Status + Cash Option */}
+  <div className="flex items-center gap-2">
+    {getPaymentBadge()}
+
+    {/* Cash Payment Chip */}
+    {ride?.paymentStatus !== "PAID" && (
+      <button
+        onClick={() => {
+          handleCashPayment();
+
+        }}
+        className="px-3 py-[6px] border border-gray-300 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-100 active:scale-95"
+      >
+        Cash Received
+      </button>
+    )}
+  </div>
+
+  {/* Finish Ride CTA */}
+  <button
+    disabled={ride?.paymentStatus !== "PAID"}
+    onClick={() => setFinishRidepanel(true)}
+    className={`px-6 py-3 text-sm font-semibold rounded-xl transition 
+      ${ride?.paymentStatus !== "PAID"
+        ? "bg-gray-200 text-gray-400"
+        : "bg-[#E23744] text-white hover:bg-[#c52e37] active:scale-95"
+      }`}
+  >
+    Finish Ride
+  </button>
+
+</div>
+
+</div>
+
 
       {/* Finish Ride Panel */}
       <div

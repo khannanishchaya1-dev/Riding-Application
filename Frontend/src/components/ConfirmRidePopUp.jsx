@@ -26,7 +26,10 @@ const ConfirmRidePopUp = ({ setride,ride, setconfirmridePopUppanel, setridePopUp
       // add toast here if you want
     }
   };
-
+const remainingKm =
+    typeof ride?.distance === "number"
+      ? (ride.distance / 1000).toFixed(1)
+      : "4.0";
   return (
     <div className=" px-6 pt-7 pb-6 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.18)] relative">
 
@@ -72,7 +75,7 @@ const ConfirmRidePopUp = ({ setride,ride, setconfirmridePopUppanel, setridePopUp
   </div>
 
   <span className="text-xs py-1 px-3 bg-gray-100 text-gray-700 rounded-full font-medium">
-    {ride?.distance || "2.2"} km
+    {remainingKm} km
   </span>
 </div>
 
