@@ -11,6 +11,8 @@ const cookieParser = require('cookie-parser');
 const mapRoutes = require('./router/maps_routes');
 const rideRoutes = require('./router/rides');
 const paymentRoutes = require('./router/payment');
+const analyticsRoute =require('./router/analytics');
+const captainAnalytics = require("./router/captainAnalytics");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -35,5 +37,8 @@ app.use('/captains',captainRoutes);
 app.use('/maps',mapRoutes);
 app.use('/rides',rideRoutes);
 app.use('/payment',paymentRoutes);
+app.use("/analytics", analyticsRoute);
+app.use("/captain-analytics", captainAnalytics);
+
 
 module.exports=app;

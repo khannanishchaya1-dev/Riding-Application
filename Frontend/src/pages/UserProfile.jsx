@@ -15,6 +15,14 @@ import {
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { Bar, Pie, Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement);
+
+
 
 const RideItem = ({ ride }) => {
   const getDisplayStatus = () => {
@@ -88,6 +96,26 @@ const ProfilePage = () => {
 
   const [rides, setrides] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [rideSummary, setRideSummary] = useState("");
+const [showSummaryModal, setShowSummaryModal] = useState(false);
+
+const [chartData, setChartData] = useState(null);
+
+const fetchSummary = async () => {
+  const summaryRes = await axios.post(`${import.meta.env.VITE_BACKEND_URL}analytics/summary`, {
+    userId: user._id
+  });
+
+  const chartRes = await axios.post(`${import.meta.env.VITE_BACKEND_URL}analytics/data`, {
+    userId: user._id
+  });
+
+  setRideSummary(summaryRes.data.summary);
+  setChartData(chartRes.data.chartData);
+  setShowSummaryModal(true);
+};
+
+
 const handleDelete = async () => {
   try {
     console.log("Deleting account...");
@@ -212,39 +240,86 @@ const handleDelete = async () => {
   ❌ Delete Account Permanently
 </button> */}
 <button
-         className="mt-5 w-full text-red-600 border border-red-400 py-2 rounded-xl hover:bg-red-50 transition font-semibold"
-       >
-         View All
-       </button>
+  onClick={fetchSummary}
+  className="mt-5 w-full text-[#E23744] border border-[#E23744] py-2 rounded-xl hover:bg-[#E23744] hover:text-white transition font-semibold"
+>
+  📊 View My Ride Summary
+</button>
+
 
       </div>
-      {showDeleteModal && (
-  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[999]">
+     {/* Ride Summary Modal */}
+{showSummaryModal && (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex justify-center items-center z-[999]">
     <motion.div
-      initial={{ scale: 0.7, opacity: 0 }}
+      initial={{ scale: 0.85, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.7, opacity: 0 }}
-      className="bg-white w-[90%] max-w-md rounded-2xl shadow-xl p-6 text-center"
+      transition={{ duration: 0.2 }}
+      className="bg-white/90 backdrop-blur-xl w-[92%] max-w-lg rounded-3xl shadow-2xl p-0 overflow-hidden max-h-[92vh] flex flex-col"
     >
-      <h2 className="text-xl font-bold text-[#E23744]">Delete Account?</h2>
-      <p className="text-gray-600 mt-2 text-sm">
-        This action <strong>cannot be undone</strong>. Your ride history, account,
-        and stored data will be deleted permanently.
-      </p>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#E23744] to-[#A81C28] text-white px-6 py-4">
+        <h2 className="text-xl font-bold text-center">
+          🚕 Your Gadigo Ride Analytics
+        </h2>
+      </div>
 
-      <div className="flex gap-3 mt-6">
-        <button
-          onClick={() => setShowDeleteModal(false)}
-          className="flex-1 py-2 border rounded-xl font-semibold hover:bg-gray-100 transition"
-        >
-          Cancel
-        </button>
+      {/* Content Scroll */}
+      <div className="overflow-y-auto px-6 py-5 space-y-6">
 
+        {/* Summary Card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+          <h3 className="font-semibold text-[#E23744] mb-2 text-sm">
+            📄 Summary
+          </h3>
+          <pre className="whitespace-pre-wrap text-gray-700 text-sm leading-6">
+            {rideSummary}
+          </pre>
+        </div>
+
+        {/* Charts */}
+        {chartData && (
+          <div className="space-y-6">
+
+            {/* Money Spent Chart */}
+            
+{/* 🆕 Monthly Spending Chart */}
+<div className="bg-white border border-gray-200 rounded-xl shadow p-3">
+  <h3 className="font-semibold mb-2 text-gray-800 text-sm flex items-center gap-1">
+    📆 Monthly Spending (₹)
+  </h3>
+  <Bar
+    data={{
+      labels: Object.keys(chartData.monthlySpend),
+      datasets: [
+        {
+          label: "₹ Spent",
+          data: Object.values(chartData.monthlySpend),
+          backgroundColor: "rgba(40, 167, 69, 0.6)" // green tone
+        }
+      ]
+    }}
+    options={{
+      plugins: { legend: { display: false } },
+    }}
+  />
+</div>
+
+           
+
+            {/* Timeline Chart */}
+            
+          </div>
+        )}
+      </div>
+
+      {/* Close Button */}
+      <div className="p-5 border-t border-gray-200 bg-white/70 backdrop-blur-md">
         <button
-          onClick={handleDelete}
-          className="flex-1 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition"
+          onClick={() => setShowSummaryModal(false)}
+          className="w-full py-3 rounded-xl bg-[#E23744] text-white font-semibold hover:bg-[#b51f30] transition shadow-md"
         >
-          Yes, Delete
+          Close
         </button>
       </div>
     </motion.div>
