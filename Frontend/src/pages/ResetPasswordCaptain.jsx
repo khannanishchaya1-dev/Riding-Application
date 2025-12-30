@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-export default function ResetPassword() {
+export default function ResetPasswordCaptain() {
   const { token } = useParams();
   const navigate = useNavigate();
 
