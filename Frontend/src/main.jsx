@@ -7,10 +7,12 @@ import UserContext from './UserContext/UserContext.jsx'
 import CaptainContext from './UserContext/CaptainContext.jsx'
 import SocketProvider from "./UserContext/SocketContext.jsx"
 import { LoadScript } from "@react-google-maps/api"
+import { AdminProvider } from "./AdminContext/AdminContext";
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <SocketProvider>
+      <AdminProvider>
       <CaptainContext>
         <UserContext>
 
@@ -25,6 +27,7 @@ createRoot(document.getElementById('root')).render(
 
         </UserContext>
       </CaptainContext>
+      </AdminProvider>
     </SocketProvider>
   </BrowserRouter>
 )

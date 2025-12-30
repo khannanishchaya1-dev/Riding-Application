@@ -13,6 +13,7 @@ const rideRoutes = require('./router/rides');
 const paymentRoutes = require('./router/payment');
 const analyticsRoute =require('./router/analytics');
 const captainAnalytics = require("./router/captainAnalytics");
+const adminRoutes = require("./router/admin.routes");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -39,6 +40,7 @@ app.use('/rides',rideRoutes);
 app.use('/payment',paymentRoutes);
 app.use("/analytics", analyticsRoute);
 app.use("/captain-analytics", captainAnalytics);
+app.use("/admin", adminRoutes);
 
 
 module.exports=app;

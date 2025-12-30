@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema(
     salt: {
       type: String,
     },
+    blocked:{
+      type:Boolean,
+      default:false,
+    },
     resetPasswordToken: String,
   resetPasswordExpires: Date,
   },

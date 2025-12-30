@@ -28,6 +28,12 @@ import ForgotPasswordCaptain from './pages/ForgotPasswordCaptain';
 import ResetPasswordCaptain from './pages/ResetPasswordCaptain';
 import RideDetails from './pages/RideDetails';
 import CaptainRideDetails from './pages/CaptainRideDetails';
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UsersList from "./pages/admin/UsersList";
+import CaptainsList from "./pages/admin/CaptainsList";
+import RidesList from "./pages/admin/RidesList";
+import AdminProtectWrapper from "./pages/admin/AdminProtectWrapper";
 
 const App = () => {
   return (
@@ -81,8 +87,13 @@ const App = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/forgot-password-captain" element={<ForgotPasswordCaptain />} />
       <Route path="/reset-password-captain/:token" element={<ResetPasswordCaptain />} />
+      
 
-
+<Route path="/admin/login" element={<AdminLogin />} />
+<Route path="/admin/dashboard" element={<AdminProtectWrapper><AdminDashboard /></AdminProtectWrapper>} />
+<Route path="/admin/users" element={<AdminProtectWrapper><UsersList /></AdminProtectWrapper>} />
+<Route path="/admin/captains" element={<AdminProtectWrapper><CaptainsList /></AdminProtectWrapper>} />
+<Route path="/admin/rides" element={<AdminProtectWrapper><RidesList /></AdminProtectWrapper>} />
     </Routes>
     </>
     

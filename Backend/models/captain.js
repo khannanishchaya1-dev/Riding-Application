@@ -77,6 +77,10 @@ isVerified: { type: Boolean, default: false },
     socketId: {
       type: String,
     },
+     blocked:{
+      type:Boolean,
+      default:false,
+    },
     resetPasswordToken: String,
   resetPasswordExpires: Date,
   },
