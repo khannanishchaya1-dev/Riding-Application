@@ -14,6 +14,7 @@ import GadiGoLogo from "../assets/GadiGo.svg";
 
 const CaptainHome = () => {
   const location = useLocation();
+
   const [ridePopUppanel, setridePopUppanel] = useState(false);
   const ridePopUppanelRef = useRef(null);
 
@@ -30,17 +31,20 @@ const CaptainHome = () => {
     return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
   });
 
+  // Clear Active Ride on unmount
   useEffect(() => {
     return () => {
       localStorage.removeItem("activeRide");
     };
   }, []);
 
+  // Persist ride only if REQUESTED or ACCEPTED
   useEffect(() => {
     if (!ride) {
       localStorage.removeItem("activeRide");
       return;
     }
+
     if (ride.status === "REQUESTED" || ride.status === "ACCEPTED") {
       localStorage.setItem("activeRide", JSON.stringify(ride));
     } else {
@@ -48,27 +52,34 @@ const CaptainHome = () => {
     }
   }, [ride]);
 
+  // Show ride popups depending on status
   useEffect(() => {
     if (!ride) return;
+
     if (ride.status === "ACCEPTED") {
       setconfirmridePopUppanel(true);
       setridePopUppanel(false);
+    } else if (ride.status === "ONGOING") {
+      localStorage.removeItem("activeRide");
     } else if (ride.status === "REQUESTED") {
       setridePopUppanel(true);
       setconfirmridePopUppanel(false);
     }
   }, [ride]);
 
+  // Load captain from local storage
   useEffect(() => {
     const stored = localStorage.getItem("captain");
     if (stored) setCaptainData(JSON.parse(stored));
   }, []);
 
+  // Join socket room
   useEffect(() => {
     if (!socket || !captainData?._id) return;
     sendMessage("join", { userId: captainData._id, userType: "captain" });
   }, [socket, captainData?._id]);
 
+  // GPS Tracking - every 45sec
   useEffect(() => {
     if (!socket || !captainData?._id) return;
 
@@ -86,12 +97,13 @@ const CaptainHome = () => {
         { enableHighAccuracy: true }
       );
     };
+
     updateAvailabilityLocation();
     const interval = setInterval(updateAvailabilityLocation, 45000);
     return () => clearInterval(interval);
   }, [socket, captainData?._id]);
 
-
+  // Listen for new ride
   useEffect(() => {
     if (!socket) return;
 
@@ -100,12 +112,14 @@ const CaptainHome = () => {
       toast.success("🚗 New Ride Request");
       incomingSound.current.currentTime = 0;
       incomingSound.current.play().catch(() => {});
+
       setridePopUppanel(true);
     };
 
     receiveMessage("new-ride", handler);
   }, [socket]);
 
+  // Accept Ride
   const confirmRide = async () => {
     try {
       const response = await axios.post(
@@ -116,6 +130,7 @@ const CaptainHome = () => {
 
       sendMessage("ride-accepted", { rideId: ride._id });
       toast.success("✔ Ride Accepted");
+
       setride(response.data.ride);
       setridePopUppanel(false);
       setconfirmridePopUppanel(true);
@@ -124,6 +139,7 @@ const CaptainHome = () => {
     }
   };
 
+  // Passenger cancels
   useEffect(() => {
     if (!receiveMessage) return;
 
@@ -137,15 +153,16 @@ const CaptainHome = () => {
     receiveMessage("ride-cancelled", cancelHandler);
   }, [receiveMessage]);
 
+  // Captain Cancels Ride
   const CancelRide = async () => {
     try {
-      const res = await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}rides/cancel-ride`,
         { rideId: ride._id },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
-      toast.success(res.data?.message || "✔ Ride Cancelled");
+      toast.success(response.data?.message || "✔ Ride Cancelled");
       localStorage.removeItem("activeRide");
       setconfirmridePopUppanel(false);
       setridePopUppanel(false);
@@ -155,51 +172,54 @@ const CaptainHome = () => {
     }
   };
 
+  // If another captain takes ride
   useEffect(() => {
     if (!socket || !ride?._id) return;
+
     const handler = (data) => {
       if (data._id === ride._id) {
         toast.error("❌ Ride taken by another captain");
-        incomingSound.current?.pause();
         setridePopUppanel(false);
+        incomingSound.current?.pause();
+        if (incomingSound.current) incomingSound.current.currentTime = 0;
         setride({});
       }
     };
+
     socket.on("ride-confirmed", handler);
     return () => socket.off("ride-confirmed", handler);
   }, [socket, ride?._id]);
 
+  // Animation
   useGSAP(() => {
     gsap.to(ridePopUppanelRef.current, {
       transform: ridePopUppanel ? "translateY(0%)" : "translateY(120%)",
-      duration: 0.35,
-      ease: "power2.out",
+      duration: 0.45,
+      ease: "power2.out"
     });
   }, [ridePopUppanel]);
 
   useGSAP(() => {
     gsap.to(confirmridePopUppanelRef.current, {
       transform: confirmridePopUppanel ? "translateY(0%)" : "translateY(200%)",
-      duration: 0.35,
-      ease: "power2.out",
+      duration: 0.45,
+      ease: "power2.out"
     });
   }, [confirmridePopUppanel]);
-
 
   return (
     <div className="h-[100dvh] w-full overflow-hidden relative">
 
-      {/* Header */}
+      {/* Top Header */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-8 z-10">
         <img src={GadiGoLogo} alt="Logo" className="w-32 opacity-90" />
 
         <Link to="/captain-profile">
-          <div className="h-12 w-12 rounded-full bg-white border border-gray-200 
-                          shadow-sm flex items-center justify-center text-black 
-                          font-semibold hover:scale-105 transition">
-            {captainData?.fullname?.firstname?.charAt(0)?.toUpperCase() || "U"}
-          </div>
-        </Link>
+            <div className="h-11 w-11 rounded-full bg-[#111] text-white shadow-sm border border-gray-700 
+                            flex items-center justify-center text-lg font-semibold transition active:scale-95">
+              {captainData?.fullname?.firstname?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+          </Link>
       </div>
 
       {/* Map */}
@@ -207,21 +227,26 @@ const CaptainHome = () => {
         <LiveTracking />
       </div>
 
-      {/* Bottom Captain Details */}
-      <div className="absolute bottom-0 w-full bg-white rounded-t-3xl p-6 
-                      border-t border-gray-200 shadow-[0_-4px_18px_rgba(0,0,0,0.08)] z-20">
+      {/* Bottom User Card */}
+      <div className="absolute bottom-0 w-full backdrop-blur-xl bg-white/70 rounded-t-3xl p-6 border-t border-gray-300 shadow-lg z-20">
         <CaptainDetails captain={captainData} />
       </div>
 
-      {/* New Ride Popup */}
+      {/* Incoming Ride Popup */}
       <div
         ref={ridePopUppanelRef}
-        className="fixed bottom-0 w-full z-40 translate-y-[120%] bg-white 
-                  border-t border-gray-200 shadow-lg rounded-t-3xl p-6">
+        className="fixed bottom-0 w-full z-40 translate-y-[120%] backdrop-blur-xl bg-white/85 border-t border-gray-200 shadow-xl rounded-t-3xl p-6"
+      >
         <RidePopUp
           ride={ride}
-          setridePopUppanel={setridePopUppanel}
-          setconfirmridePopUppanel={setconfirmridePopUppanel}
+          setridePopUppanel={(v) => {
+            if (!v) setconfirmridePopUppanel(false);
+            setridePopUppanel(v);
+          }}
+          setconfirmridePopUppanel={(v) => {
+            setridePopUppanel(false);
+            setTimeout(() => setconfirmridePopUppanel(v), 250);
+          }}
           confirmRide={confirmRide}
         />
       </div>
@@ -229,8 +254,8 @@ const CaptainHome = () => {
       {/* Confirm Ride Popup */}
       <div
         ref={confirmridePopUppanelRef}
-        className="fixed bottom-0 w-full z-40 translate-y-[200%] bg-white 
-                  border-t border-gray-200 shadow-xl rounded-t-3xl">
+        className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%] bg-white border-t border-gray-200 shadow-xl"
+      >
         <ConfirmRidePopUp
           ride={ride}
           setridePopUppanel={setridePopUppanel}

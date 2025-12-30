@@ -1,6 +1,6 @@
-<svg width="220" height="70" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-<text x="0" y="50" fill="black" font-size="45" font-family="Poppins, Arial, Helvetica" font-weight="700"
+<svg width="240" height="80" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<text x="0" y="55" fill="black" font-size="50" font-family="Poppins, Arial, Helvetica" font-weight="900"
       letter-spacing="1">
-  Gadi<tspan fill="black" font-weight="800">Go</tspan>
+  Gadi<tspan font-weight="900">Go</tspan>
 </text>
 </svg>

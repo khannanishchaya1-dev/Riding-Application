@@ -51,15 +51,19 @@ const initializeSocketConnection = (server) => {
     socket.on("updateCaptainLocation", async ({ captainId, rideId, lat, lon }) => {
       try {
         if (!rideId || typeof lat !== "number" || typeof lon !== "number") {
-          return console.log("⚠ Invalid GPS payload");
+           console.log("⚠ Invalid GPS payload",{ rideId, lat, lon });
         }
 
         const geoLoc = { type: "Point", coordinates: [lon, lat] };
 
         // save captain latest location in DB
         await captainModel.findByIdAndUpdate(captainId, { location: geoLoc });
+        console.log("captain location updated")
 
         // 🚀 Send location ONLY to user inside ride room
+        if(!rideId){
+          return console.log("⚠ Invalid GPS payload",{ rideId, lat, lon });
+        }
         io.to(rideId).emit(`location-update-${rideId}`, {
           lat,
           lon,
