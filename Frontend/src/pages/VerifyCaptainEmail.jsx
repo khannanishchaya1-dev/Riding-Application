@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
 
 const VerifyCaptainEmail = () => {
-   const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email || localStorage.getItem("pendingEmail");
 
@@ -50,7 +50,6 @@ const VerifyCaptainEmail = () => {
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("captain", JSON.stringify(res.data.captain));
-
       localStorage.removeItem("pendingCaptainEmail");
 
       navigate("/captain-home");
@@ -76,43 +75,52 @@ const VerifyCaptainEmail = () => {
   };
 
   return (
-    <div className="h-[100dvh] flex flex-col justify-center items-center bg-[#ffffff] px-6 text-center">
-      <img src={WheelzyLogo} className="w-28 mb-4" />
+    <div className="min-h-[100dvh] bg-white flex justify-center items-center px-6">
+      {/* Card */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm w-full max-w-sm px-6 py-8 text-center">
+        <img src={WheelzyLogo} className="w-24 mx-auto mb-4" />
 
-      <h2 className="text-2xl font-semibold text-[#E23744]">Verify Email</h2>
-      <p className="text-gray-500 text-sm mt-2">
-        OTP sent to <strong>{email}</strong>
-      </p>
+        <h2 className="text-2xl font-bold text-gray-800">Verify Email</h2>
+        <p className="text-gray-500 text-sm mt-1">
+          Enter the 6-digit OTP sent to <strong className="text-gray-700">{email}</strong>
+        </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-6 w-full max-w-xs">
-        <div className="flex justify-between">
-          {otp.map((digit, i) => (
-            <input
-              key={i}
-              id={`otp-${i}`}
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(e.target.value, i)}
-              className="w-10 h-12 text-center text-xl font-semibold border rounded-xl outline-none focus:ring-2 focus:ring-[#E23744]"
-            />
-          ))}
-        </div>
+        {/* OTP INPUTS */}
+        <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+          <div className="flex justify-between gap-2">
+            {otp.map((digit, i) => (
+              <input
+                key={i}
+                id={`otp-${i}`}
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(e.target.value, i)}
+                className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-black transition"
+              />
+            ))}
+          </div>
 
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:bg-gray-800 active:scale-95 transition shadow-md"
+          >
+            Verify & Continue
+          </button>
+        </form>
+
+        {/* RESEND */}
         <button
-          type="submit"
-          className="w-full bg-[#E23744] text-white py-3 rounded-xl font-semibold"
+          onClick={resendOTP}
+          disabled={!resendEnabled}
+          className={`mt-4 text-sm font-semibold transition ${
+            resendEnabled
+              ? "text-black hover:opacity-70 active:scale-95"
+              : "text-gray-400"
+          }`}
         >
-          Verify & Continue
+          {resendEnabled ? "Resend OTP" : `Resend in ${timer}s`}
         </button>
-      </form>
-
-      <button
-        onClick={resendOTP}
-        disabled={!resendEnabled}
-        className="mt-4 text-sm font-semibold"
-      >
-        {resendEnabled ? "Resend OTP" : `Resend in ${timer}s`}
-      </button>
+      </div>
     </div>
   );
 };

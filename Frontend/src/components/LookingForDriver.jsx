@@ -8,6 +8,7 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
   };
 
   const vehicleImg = vehicleImages[ride?.vehicleType];
+
   return (
     <div className="px-3">
 
@@ -22,12 +23,12 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
         Matching you with the nearest available driver...
       </p>
 
-      {/* Loading Spinner */}
+      {/* Loader */}
       <div className="flex justify-center mb-5">
-        <div className="animate-spin rounded-full h-14 w-14 border-[3px] border-[#E23744] border-x-transparent border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-14 w-14 border-[3px] border-black/90 border-x-transparent border-t-transparent"></div>
       </div>
 
-      {/* Car Image */}
+      {/* Vehicle Image */}
       <div className="flex justify-center mb-6">
         <img
           src={vehicleImg}
@@ -37,12 +38,12 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
       </div>
 
       {/* Ride Details Box */}
-      <div className="bg-white/85 backdrop-blur-xl border border-gray-200 rounded-2xl p-5 space-y-5">
+      <div className="bg-white border border-gray-200 rounded-2xl p-5 space-y-5">
 
         {/* Pickup */}
         <div className="flex gap-4">
           <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded-xl">
-            <i className="ri-map-pin-user-fill text-[#E23744] text-xl"></i>
+            <i className="ri-map-pin-user-fill text-black/80 text-xl"></i>
           </div>
           <div>
             <p className="font-medium text-black text-sm">Pickup</p>
@@ -53,7 +54,7 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
         {/* Drop */}
         <div className="flex gap-4">
           <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded-xl">
-            <i className="ri-navigation-fill text-[#E23744] text-xl"></i>
+            <i className="ri-navigation-fill text-black/80 text-xl"></i>
           </div>
           <div>
             <p className="font-medium text-black text-sm">Destination</p>
@@ -64,7 +65,7 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
         {/* Fare */}
         <div className="flex gap-4">
           <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded-xl">
-            <i className="ri-money-rupee-circle-fill text-[#E23744] text-xl"></i>
+            <i className="ri-money-rupee-circle-fill text-black/80 text-xl"></i>
           </div>
           <div>
             <p className="text-lg font-semibold text-black">₹{ride?.fare}</p>
@@ -80,8 +81,11 @@ const LookingForDriver = ({ ride, setlookingForVehicle }) => {
 
       {/* Cancel */}
       <button
-        onClick={() => { setlookingForVehicle(false); localStorage.removeItem("activeRide"); }}
-        className="w-full mt-5 py-3 rounded-xl text-gray-500 text-sm hover:text-black transition active:scale-95"
+        onClick={() => {
+          setlookingForVehicle(false);
+          localStorage.removeItem("activeRide");
+        }}
+        className="w-full mt-5 py-3 rounded-xl text-black text-sm hover:text-black transition active:scale-95"
       >
         Cancel Search
       </button>

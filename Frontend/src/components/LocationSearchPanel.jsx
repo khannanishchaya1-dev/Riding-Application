@@ -67,8 +67,8 @@ const LocationSearchPanel = ({ activeField, origin, destination, handleSelect })
 
       {/* Loading */}
       {loading && (
-        <div className="py-4 text-gray-600 text-center">
-          <i className="ri-loader-4-line animate-spin text-2xl text-[#E23744]"></i>
+        <div className="py-4 text-gray-700 text-center">
+          <i className="ri-loader-4-line animate-spin text-2xl text-black"></i>
         </div>
       )}
 
@@ -88,8 +88,8 @@ const LocationSearchPanel = ({ activeField, origin, destination, handleSelect })
           hover:bg-gray-100 active:scale-[0.98] border-b border-gray-200"
         >
           {/* Icon */}
-          <div className="h-11 w-11 rounded-xl bg-gray-100 border border-gray-300 flex items-center justify-center">
-            <i className="ri-map-pin-fill text-[#E23744] text-xl"></i>
+          <div className="h-11 w-11 rounded-xl bg-gray-50 border border-gray-300 flex items-center justify-center">
+            <i className="ri-map-pin-line text-black text-xl"></i>
           </div>
 
           {/* Text */}

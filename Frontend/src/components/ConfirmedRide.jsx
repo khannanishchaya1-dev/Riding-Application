@@ -21,28 +21,16 @@ const ConfirmedRide = ({
   const vehicleImg = vehicleImages[vehicleType];
 
   const onConfirm = async () => {
-  console.log("Creating ride...");
-  
-  const rideCreated = await create_ride(vehicleType);
-  console.log("Ride creation response received :", rideCreated); // WAIT for response
+    const rideCreated = await create_ride(vehicleType);
+    if (!rideCreated) return toast.error("❌ Failed to create ride");
 
-  if (!rideCreated) {
-    toast.error("❌ Failed to create ride");
-    return;
-  }
-
-  setvehiclepanel(false);
-
-  console.log("Ride created, looking for vehicle...");
-  setlookingForVehicle(true);
-
-  console.log("Closed confirm ride panel");
-  setconfirmRidepanel(false);
-};
-
+    setvehiclepanel(false);
+    setlookingForVehicle(true);
+    setconfirmRidepanel(false);
+  };
 
   return (
-    <div className="backdrop-blur-xl bg-white/80 border border-gray-200 rounded-t-3xl p-6 animate-fadeIn">
+    <div className="bg-white border border-gray-200 rounded-t-3xl p-6 animate-fadeIn shadow-xl">
 
       {/* Drag Handle */}
       <div className="w-14 h-[5px] bg-gray-300 rounded-full mx-auto mb-5" />
@@ -57,13 +45,13 @@ const ConfirmedRide = ({
         <img src={vehicleImg} alt={vehicleType} className="h-24 object-contain" />
       </div>
 
-      {/* Ride Details */}
-      <div className="bg-gray-100/60 border border-gray-300 rounded-2xl p-5 space-y-5">
+      {/* Ride Details Card */}
+      <div className="bg-gray-100 border border-gray-200 rounded-2xl p-5 space-y-5">
 
         {/* Pickup */}
         <div className="flex gap-4">
-          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-gray-200/60">
-            <i className="ri-map-pin-user-fill text-[#E23744] text-xl"></i>
+          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-white border border-gray-300">
+            <i className="ri-map-pin-user-fill text-black/80 text-xl"></i>
           </div>
           <div>
             <p className="text-gray-900 font-medium">Pickup</p>
@@ -73,8 +61,8 @@ const ConfirmedRide = ({
 
         {/* Destination */}
         <div className="flex gap-4">
-          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-gray-200/60">
-            <i className="ri-navigation-fill text-[#E23744] text-xl"></i>
+          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-white border border-gray-300">
+            <i className="ri-navigation-fill text-black/80 text-xl"></i>
           </div>
           <div>
             <p className="text-gray-900 font-medium">Destination</p>
@@ -84,11 +72,11 @@ const ConfirmedRide = ({
 
         {/* Fare */}
         <div className="flex gap-4">
-          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-gray-200/60">
-            <i className="ri-money-rupee-circle-fill text-[#E23744] text-xl"></i>
+          <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-white border border-gray-300">
+            <i className="ri-money-rupee-circle-fill text-black/80 text-xl"></i>
           </div>
           <div>
-            <p className="text-gray-900 font-semibold text-lg">₹{fare?.[vehicleType]}</p>
+            <p className="text-black font-semibold text-lg">₹{fare?.[vehicleType]}</p>
             <p className="text-gray-600 text-sm">Cash Payment</p>
           </div>
         </div>
@@ -97,15 +85,16 @@ const ConfirmedRide = ({
       {/* Confirm Button */}
       <button
         onClick={onConfirm}
-        className="mt-6 w-full py-4 text-lg font-semibold bg-[#E23744] text-white rounded-xl transition active:scale-95 hover:bg-[#c62f39]"
+        className="mt-6 w-full py-4 text-lg font-semibold bg-black text-white rounded-xl
+        transition-all active:scale-95 hover:bg-[#222]"
       >
         Confirm Ride
       </button>
 
-      {/* Cancel Option */}
+      {/* Cancel Button */}
       <button
         onClick={() => setconfirmRidepanel(false)}
-        className="mt-3 w-full text-center py-3 text-gray-500 text-sm hover:text-black transition"
+        className="mt-3 w-full text-center py-3 text-gray-500 hover:text-black active:scale-95 transition"
       >
         Cancel
       </button>

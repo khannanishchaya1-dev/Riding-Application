@@ -31,104 +31,99 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
     typeof ride?.distance === "number"
       ? (ride.distance / 1000).toFixed(1)
       : "4.0";
+
   const passengerName =
     ride?.userId?.fullname?.firstname && ride?.userId?.fullname?.lastname
       ? `${ride.userId.fullname.firstname} ${ride.userId.fullname.lastname}`
       : "Passenger";
 
   return (
-    <div className="h-[100dvh] bg-white rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.18)] animate-fadeIn px-6 pt-6 pb-8 relative">
+    <div className="h-[100dvh] bg-white rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.15)] animate-fadeIn px-6 pt-6 pb-10 relative text-black">
 
-      {/* Drag Handle */}
-      <div className="w-12 h-[4px] rounded-full bg-gray-300 mx-auto mb-4 cursor-pointer"
-           onClick={() => setFinishRidepanel(false)}
+      {/* Pull Handle */}
+      <div
+        className="w-12 h-[4px] rounded-full bg-gray-300 mx-auto mb-5 cursor-pointer hover:bg-gray-400 transition"
+        onClick={() => setFinishRidepanel(false)}
       />
 
-      {/* Heading */}
-      <h3 className="text-lg font-semibold text-center text-gray-900">
+      {/* Title */}
+      <h3 className="text-2xl font-bold text-center tracking-tight text-gray-800">
         Finish Ride
       </h3>
-      <p className="text-xs text-gray-500 text-center mt-1 mb-5">
-      Make sure you’ve collected the payment before completing the trip.
-
+      <p className="text-xs text-gray-500 text-center mt-1 mb-6">
+        Make sure you’ve collected payment before completing the trip.
       </p>
 
       {/* Passenger Card */}
-      <div className="flex items-center justify-between bg-[#F9F9F9] rounded-2xl p-4 border border-gray-200 mt-2">
+      <div className="bg-[#F8F8F8] border border-gray-200 rounded-2xl p-4 flex justify-between items-center shadow-sm mb-6">
         <div className="flex items-center gap-3">
           <img
-            className="h-11 w-11 rounded-full object-cover border border-gray-200"
             src="https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg"
-            alt="Passenger"
+            className="h-12 w-12 rounded-full object-cover border border-gray-200 shadow-sm"
+            alt=""
           />
           <div>
-            <h2 className="text-sm font-semibold text-gray-900">
-              {passengerName}
-            </h2>
+            <h4 className="font-semibold text-gray-800 text-sm">{passengerName}</h4>
             <p className="text-[11px] text-gray-500">Passenger</p>
           </div>
         </div>
-
-        <span className="text-xs text-gray-600 font-medium">
+        <span className="text-xs font-medium bg-gray-100 px-3 py-1 rounded-full text-gray-700">
           📍 {remainingKm} km
         </span>
       </div>
 
       {/* Trip Summary */}
-      <div className="bg-[#F5F5F5] rounded-2xl p-4 border border-gray-200 mt-6 space-y-4">
+      <div className="rounded-2xl bg-[#FAFAFA] border border-gray-200 p-5 space-y-5 shadow-inner">
 
         {/* Pickup */}
-        <div className="flex items-start gap-3">
-          <div className="bg-white rounded-lg p-2 border border-gray-200">
-            <i className="ri-map-pin-user-fill text-[#E23744] text-xl" />
+        <div className="flex items-start gap-4">
+          <div className="bg-white border border-gray-200 rounded-lg h-10 w-10 flex items-center justify-center shadow-sm">
+            <i className="ri-map-pin-user-fill text-black text-xl"></i>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900 text-sm">Pickup</h4>
-            <p className="text-xs text-gray-600">{ride?.origin}</p>
+            <p className="text-xs text-gray-500">Pickup</p>
+            <h4 className="font-medium text-gray-800 text-sm">{ride?.origin}</h4>
           </div>
         </div>
 
         {/* Destination */}
-        <div className="flex items-start gap-3">
-          <div className="bg-white rounded-lg p-2 border border-gray-200">
-            <i className="ri-navigation-fill text-[#E23744] text-xl" />
+        <div className="flex items-start gap-4">
+          <div className="bg-white border border-gray-200 rounded-lg h-10 w-10 flex items-center justify-center shadow-sm">
+            <i className="ri-navigation-fill text-black text-xl"></i>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900 text-sm">Drop</h4>
-            <p className="text-xs text-gray-600">{ride?.destination}</p>
+            <p className="text-xs text-gray-500">Drop</p>
+            <h4 className="font-medium text-gray-800 text-sm">{ride?.destination}</h4>
           </div>
         </div>
 
         {/* Fare */}
-        <div className="flex items-start gap-3">
-          <div className="bg-white rounded-lg p-2 border border-gray-200">
-            <i className="ri-money-rupee-circle-fill text-[#E23744] text-xl" />
+        <div className="flex items-start gap-4">
+          <div className="bg-white border border-gray-200 rounded-lg h-10 w-10 flex items-center justify-center shadow-sm">
+            <i className="ri-money-rupee-circle-fill text-black text-xl"></i>
           </div>
           <div>
-            <h4 className="text-lg font-semibold text-gray-900">
-              ₹{ride?.fare}
-            </h4>
-            <p className="text-xs text-gray-600">
-              Check payment status before ending
+            <h4 className="text-xl font-semibold text-gray-900">₹{ride?.fare}</h4>
+            <p className="text-xs text-gray-500">
+              Ride fare collected from customer
             </p>
           </div>
         </div>
       </div>
 
-      {/* Finish Button */}
+      {/* CTA Buttons */}
       <button
         onClick={endRide}
-        className="mt-6 w-full bg-[#E23744] text-white font-semibold rounded-xl py-3.5 text-sm tracking-wide 
-                 hover:bg-[#c82c35] active:scale-[0.97] transition"
+        className="mt-8 w-full bg-black text-white font-semibold rounded-xl py-4 text-sm tracking-wide 
+                 hover:bg-[#1a1a1a] active:scale-95 transition shadow-md"
       >
-        🚦 Finish Ride
+        🚦 End Ride
       </button>
 
-      {/* Cancel Button */}
       <button
         onClick={() => setFinishRidepanel(false)}
-        className="mt-3 w-full bg-gray-100 text-gray-700 font-medium rounded-xl py-3 text-sm 
-                   hover:bg-gray-200 active:scale-[0.97] transition"
+        className="mt-3 w-full py-3 text-gray-700 text-sm rounded-xl border border-gray-300 
+                   bg-white hover:bg-gray-100 active:scale-95 transition"
       >
         Cancel
       </button>

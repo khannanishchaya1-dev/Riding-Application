@@ -55,16 +55,12 @@ const CaptainSignup = () => {
         `${import.meta.env.VITE_BACKEND_URL}captains/register`,
         payload
       );
-console.log(response.status===201);
+
       if (response.data) {
-  toast.success("✔ Captain account created — Check your email for OTP!");
-
-  // Temporarily store email to validate OTP
-  localStorage.setItem("pendingCaptainEmail", form.email);
-
-  navigate("/verify-captain-email",{ state: { email: form.email } }); // redirect to captain OTP page
-}
-
+        toast.success("✔ Captain account created — Check your email for OTP!");
+        localStorage.setItem("pendingCaptainEmail", form.email);
+        navigate("/verify-captain-email", { state: { email: form.email } });
+      }
     } catch (error) {
       toast.error(error.response?.data?.errors?.[0]?.msg || "Signup failed ❌");
     } finally {
@@ -73,88 +69,84 @@ console.log(response.status===201);
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#FAFAFA] flex flex-col overflow-y-auto py-6">
+    <div className="h-[100dvh] w-full flex flex-col bg-white overflow-y-auto">
 
-      {/* Branding */}
-      <div className="text-center">
-        <img src={GadiGoLogo} alt="logo" className="w-28 mx-auto opacity-90" />
+      {/* Logo */}
+      <div className="w-full pt-10">
+        <img src={GadiGoLogo} alt="logo" className="w-32 mx-auto" />
       </div>
 
-      {/* Main Form Container */}
-      <div className="w-full max-w-md mx-auto mt-6 px-5">
+      {/* Form Container */}
+      <div className="w-full max-w-md mx-auto px-6 mt-4 animate-fadeIn">
 
-        <h2 className="text-3xl font-semibold text-[#E23744] text-center tracking-tight">
-          Captain Signup
-        </h2>
-
+        <h2 className="text-4xl font-bold text-[#111] text-center">Captain Signup</h2>
         <p className="text-gray-500 text-center text-sm mt-1">
-          Join Wheelzy and start earning
+          Join and start earning within minutes
         </p>
 
         {/* Form */}
-        <form onSubmit={submitHandler} className="mt-8 space-y-5">
+        <form onSubmit={submitHandler} className="mt-10 space-y-6">
 
-          {/* Name */}
+          {/* Full Name */}
           <div>
-            <label className="text-sm text-gray-600 font-medium">Full Name</label>
-            <div className="flex gap-3 mt-1 flex-col sm:flex-row">
+            <label className="text-[15px] text-gray-700 font-medium">Full Name</label>
+            <div className="flex gap-3 mt-2 flex-col sm:flex-row">
               <input
                 placeholder="First name"
                 value={form.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
               />
               <input
                 placeholder="Last name"
                 value={form.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
               />
             </div>
           </div>
 
           {/* Phone */}
           <div>
-            <label className="text-sm text-gray-600 font-medium">Phone Number</label>
+            <label className="text-[15px] text-gray-700 font-medium">Phone Number</label>
             <input
               type="tel"
               placeholder="9876543210"
               value={form.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm focus:border-black outline-none transition"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="text-sm text-gray-600 font-medium">Email Address</label>
+            <label className="text-[15px] text-gray-700 font-medium">Email Address</label>
             <input
               type="email"
               placeholder="example@mail.com"
               value={form.email}
               onChange={(e) => handleChange("email", e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="text-sm text-gray-600 font-medium flex justify-between">
+            <label className="text-[15px] text-gray-700 font-medium flex justify-between">
               Password
               <span
-                className="text-[#E23744] text-xs cursor-pointer hover:underline"
+                className="text-black text-xs cursor-pointer hover:underline"
                 onClick={() => setShowPass(!showPass)}
               >
                 {showPass ? "Hide" : "Show"}
               </span>
             </label>
-
             <input
               type={showPass ? "text" : "password"}
               placeholder="••••••••"
               value={form.password}
               onChange={(e) => handleChange("password", e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
             />
           </div>
 
@@ -163,7 +155,7 @@ console.log(response.status===201);
             placeholder="Vehicle Model"
             value={form.vehicleModel}
             onChange={(e) => handleChange("vehicleModel", e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
           />
 
           {/* Number Plate */}
@@ -171,7 +163,7 @@ console.log(response.status===201);
             placeholder="Number Plate"
             value={form.numberPlate}
             onChange={(e) => handleChange("numberPlate", e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+            className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
           />
 
           {/* Color + Seats */}
@@ -180,14 +172,14 @@ console.log(response.status===201);
               placeholder="Color"
               value={form.color}
               onChange={(e) => handleChange("color", e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
             />
             <input
-            type="number"
+              type="number"
               placeholder="Capacity (Seats)"
               value={form.capacity}
               onChange={(e) => handleChange("capacity", e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] focus:ring-0 outline-none transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
             />
           </div>
 
@@ -195,7 +187,7 @@ console.log(response.status===201);
           <select
             value={form.vehicleType}
             onChange={(e) => handleChange("vehicleType", e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E23744] outline-none"
+            className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
           >
             <option value="">Select Vehicle Type</option>
             <option value="Car">Car</option>
@@ -203,26 +195,26 @@ console.log(response.status===201);
             <option value="Auto">Auto Rickshaw</option>
           </select>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-xl text-white font-semibold text-lg active:scale-95 transition duration-150 ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#E23744]"
+            className={`w-full py-3 rounded-xl text-white font-semibold text-lg active:scale-95 shadow-md transition duration-150 ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#111]"
             }`}
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
-        {/* Redirect */}
         <p className="text-center text-gray-500 mt-6">
           Already registered?{" "}
-          <Link to="/captain-login" className="text-[#E23744] font-medium hover:underline">
+          <Link to="/captain-login" className="text-black font-semibold hover:underline">
             Login →
           </Link>
         </p>
       </div>
+      <div className="pb-6"></div>
     </div>
   );
 };

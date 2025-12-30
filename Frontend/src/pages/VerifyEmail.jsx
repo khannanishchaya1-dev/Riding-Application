@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import WheelzyLogo from "../assets/wheelzy-captain-dark.svg";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import Logo from "../assets/wheelzy-captain-dark.svg";
 
 const VerifyEmail = () => {
   const location = useLocation();
@@ -14,25 +13,23 @@ const VerifyEmail = () => {
   const [timer, setTimer] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
 
-  // Count down timer
+  // Countdown Timer
   useEffect(() => {
     if (timer === 0) {
       setResendEnabled(true);
       return;
     }
-
-    const interval = setInterval(() => setTimer(timer - 1), 1000);
+    const interval = setInterval(() => setTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [timer]);
 
   const handleChange = (value, index) => {
-    if (!/^[0-9]?$/.test(value)) return; // only digits
+    if (!/^[0-9]?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Focus next input
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
     }
@@ -40,32 +37,23 @@ const VerifyEmail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const finalOtp = otp.join("");
 
-    if (finalOtp.length !== 6) {
-      toast.error("Enter full 6-digit OTP");
-      return;
-    }
+    if (finalOtp.length !== 6) return toast.error("Enter full 6–digit OTP");
 
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}users/verify-otp`,
         { email, otp: finalOtp }
       );
-console.log(response.data);
-      if (response.status === 200) {
-        toast.success("🎉 Email Verified Successfully!");
 
-        // Store authenticated user
-        
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      toast.success("Email Verified 🎉");
 
-        localStorage.removeItem("pendingEmail"); // cleanup
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.removeItem("pendingEmail");
 
-        navigate("/home");
-      }
+      navigate("/home");
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid OTP");
     }
@@ -75,12 +63,8 @@ console.log(response.data);
     if (!resendEnabled) return;
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}users/resend-otp`,
-        { email }
-      );
-
-      toast.success("📩 New OTP sent to your email!");
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}users/resend-otp`, { email });
+      toast.success("📩 New OTP sent");
 
       setTimer(60);
       setResendEnabled(false);
@@ -90,31 +74,31 @@ console.log(response.data);
   };
 
   return (
-    <div className="h-[100dvh] bg-[#FAFAFA] flex flex-col justify-center items-center px-6">
-      <img src={WheelzyLogo} className="w-28 mb-5 opacity-90" alt="" />
+    <div className="h-[100dvh] flex flex-col justify-center items-center bg-white px-6">
 
-      <h2 className="text-2xl font-semibold text-[#E23744]">
-        Verify Your Email
-      </h2>
+      <img src={Logo} alt="Logo" className="w-24 mb-6 opacity-90" />
 
-      <p className="text-gray-600 text-sm text-center mt-2">
-        Enter the 6-digit OTP sent to:
-        <br /> <span className="font-medium">{email}</span>
+      <h2 className="text-2xl font-semibold text-black">Verify Your Email</h2>
+
+      <p className="text-gray-600 text-sm text-center mt-2 leading-relaxed">
+        Enter the 6–digit code sent to<br />
+        <span className="font-medium text-black">{email}</span>
       </p>
 
       {/* OTP Inputs */}
-      <form onSubmit={handleSubmit} className="mt-6 space-y-6 w-full max-w-xs">
+      <form onSubmit={handleSubmit} className="mt-7 space-y-6 w-full max-w-xs">
         <div className="flex justify-between">
           {otp.map((digit, index) => (
             <input
-              key={index}
               id={`otp-${index}`}
+              key={index}
               type="text"
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
-              className="w-11 h-12 text-center border border-gray-300 rounded-xl text-lg font-bold 
-              outline-none focus:ring-2 focus:ring-[#E23744]"
+              className="w-12 h-14 rounded-xl border border-gray-300 bg-gray-50
+                         text-center text-xl font-semibold outline-none
+                         focus:ring-2 focus:ring-black transition"
             />
           ))}
         </div>
@@ -122,20 +106,21 @@ console.log(response.data);
         {/* Verify Button */}
         <button
           type="submit"
-          className="w-full bg-[#E23744] py-3 rounded-xl text-white font-semibold"
+          className="w-full py-3 rounded-xl bg-black text-white font-semibold
+                     hover:bg-neutral-900 active:scale-95 transition"
         >
           Verify & Continue
         </button>
       </form>
 
       {/* Resend OTP */}
-      <p className="text-sm text-gray-500 mt-4">
-        Didn’t receive the code?{" "}
+      <p className="text-sm text-gray-500 mt-5">
+        Didn’t get the code?{" "}
         <button
           onClick={resendOTP}
           disabled={!resendEnabled}
-          className={`font-semibold ${
-            resendEnabled ? "text-[#E23744]" : "text-gray-400"
+          className={`font-medium underline ${
+            resendEnabled ? "text-black" : "text-gray-400"
           }`}
         >
           {resendEnabled ? "Resend OTP" : `Resend in ${timer}s`}

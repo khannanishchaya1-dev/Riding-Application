@@ -12,46 +12,48 @@ const NoDriverFound = ({ setnoDriverFound, setride }) => {
   };
 
   return (
-    <div className="p-6 pb-10 text-center relative animate-fadeIn bg-white rounded-3xl border-t-4 border-[#E23744]">
+    <div className="p-7 pb-10 text-center relative bg-white rounded-3xl border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.12)] animate-fadeIn">
 
       {/* Close Icon */}
       <button
         onClick={reset}
-        className="absolute top-2 right-3 bg-[#FFE5E5] h-9 w-9 rounded-full flex items-center justify-center text-[#E23744] hover:bg-[#ffcccc] transition"
+        className="absolute top-3 right-4 h-9 w-9 rounded-full flex items-center justify-center 
+                   bg-gray-100 text-gray-600 hover:bg-gray-200 transition active:scale-95"
       >
         <i className="ri-close-line text-xl"></i>
       </button>
 
       {/* Title */}
-      <h2 className="text-2xl font-bold text-[#E23744] mt-4">
+      <h2 className="text-xl font-semibold text-[#111] mt-2">
         No Drivers Available
       </h2>
 
       {/* Illustration */}
       <img
-        className="w-20 mx-auto mt-5 drop-shadow-md"
+        className="w-20 mx-auto mt-5 opacity-90"
         src={Cancelled}
         alt="No Driver Illustration"
       />
 
       {/* Subtitle */}
-      <p className="text-gray-600 text-sm mt-4 px-3">
-        We couldn't find a driver nearby right now.  
-        Demand might be high — try again in a moment!
+      <p className="text-gray-500 text-sm mt-4 leading-relaxed">
+        We couldn't match a driver right now.  
+        Please try again after a moment.
       </p>
 
       {/* Retry Button */}
       <button
         onClick={reset}
-        className="w-full mt-7 py-3 bg-[#E23744] text-white font-semibold rounded-xl flex justify-center items-center gap-2 shadow-md hover:bg-[#c72b36] active:scale-[0.98] transition-all"
+        className="w-full mt-7 py-3 text-[15px] font-medium bg-black text-white rounded-xl shadow-md 
+                   hover:bg-[#222] active:scale-95 transition-all flex items-center justify-center gap-2"
       >
-        <i className="ri-refresh-line text-lg animate-spin-slow"></i>
+        <i className="ri-refresh-line text-lg"></i>
         Try Again
       </button>
 
       {/* Passive message */}
-      <p className="mt-4 text-xs text-gray-400">
-        🚗 Checking new drivers nearby...
+      <p className="mt-4 text-[11px] text-gray-400">
+        🚘 Still scanning — new drivers may become available soon
       </p>
     </div>
   );

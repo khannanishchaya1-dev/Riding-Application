@@ -129,13 +129,13 @@ const handleCashPayment = async () => {
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
       <Link
-        to="/captain-home"
-        onClick={() => localStorage.removeItem("activeRide")}
-        className="absolute right-5 top-5 h-11 w-11 bg-white flex items-center justify-center 
-                   rounded-full shadow-md z-20 hover:scale-105 transition"
-      >
-        <i className="ri-logout-box-r-line text-lg text-gray-800" />
-      </Link>
+  to="/captain-home"
+  onClick={() => localStorage.removeItem("activeRide")}
+  className="absolute right-5 top-5 h-11 w-11 bg-white flex items-center justify-center 
+             rounded-full shadow-lg z-20 hover:scale-105 transition"
+>
+  <i className="ri-logout-box-r-line text-lg text-black" />
+</Link>
 
       {/* 🗺️ Full Map */}
       <div className="absolute inset-0 h-full w-full">
@@ -150,65 +150,69 @@ const handleCashPayment = async () => {
       </div>
 
       {/* Bottom Sheet UI */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.18)] border-t 
-                border-gray-200 px-6 py-4 flex items-center justify-between">
+      {/* Bottom Sheet UI */}
+<div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl 
+                shadow-[0_-10px_35px_rgba(0,0,0,0.22)] border-t border-gray-200 
+                px-6 py-4 flex items-center justify-between backdrop-blur-xl">
+
+  {/* Drag Handle */}
   <button
     onClick={() => setFinishRidepanel(true)}
-    className="absolute top-1 left-1/2 -translate-x-1/2"
+    className="absolute top-1 left-1/2 -translate-x-1/2 cursor-pointer"
   >
-    <div className="w-12 h-[4px] bg-gray-300 rounded-full" />
+    <div className="w-14 h-[4px] bg-gray-300 rounded-full transition" />
   </button>
 
+  {/* Distance */}
   <div className="flex flex-col">
     <p className="text-xs text-gray-500">Distance remaining</p>
     <p className="text-lg font-semibold text-gray-900">🚦 {remainingKm} km</p>
   </div>
 
+  {/* Right Actions */}
   <div className="flex flex-col items-end gap-2">
 
-  {/* Payment Status + Cash Option */}
-  <div className="flex items-center gap-2">
-    {getPaymentBadge()}
+    {/* Payment Status + Cash */}
+    <div className="flex items-center gap-2">
+      {getPaymentBadge()}
 
-    {/* Cash Payment Chip */}
-    {ride?.paymentStatus !== "PAID" && (
-      <button
-        onClick={() => {
-          handleCashPayment();
+      {ride?.paymentStatus !== "PAID" && (
+        <button
+          onClick={handleCashPayment}
+          className="px-3 py-[6px] border border-gray-300 text-gray-700 
+                     rounded-full text-xs font-medium hover:bg-gray-100 
+                     active:scale-95 transition-all"
+        >
+          Cash Received
+        </button>
+      )}
+    </div>
 
-        }}
-        className="px-3 py-[6px] border border-gray-300 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-100 active:scale-95"
-      >
-        Cash Received
-      </button>
-    )}
+    {/* Finish Ride CTA */}
+    <button
+      disabled={ride?.paymentStatus !== "PAID"}
+      onClick={() => setFinishRidepanel(true)}
+      className={`px-6 py-3 text-sm font-semibold rounded-xl transition-all shadow-md
+        ${ride?.paymentStatus !== "PAID"
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
+          : "bg-black text-white hover:bg-gray-900 active:scale-95"
+        }`}
+    >
+      Finish Ride
+    </button>
+
   </div>
-
-  {/* Finish Ride CTA */}
-  <button
-    disabled={ride?.paymentStatus !== "PAID"}
-    onClick={() => setFinishRidepanel(true)}
-    className={`px-6 py-3 text-sm font-semibold rounded-xl transition 
-      ${ride?.paymentStatus !== "PAID"
-        ? "bg-gray-200 text-gray-400"
-        : "bg-[#E23744] text-white hover:bg-[#c52e37] active:scale-95"
-      }`}
-  >
-    Finish Ride
-  </button>
-
 </div>
-
-</div>
-
 
       {/* Finish Ride Panel */}
-      <div
-        ref={FinishRideRef}
-        className="fixed h-[100dvh] z-30 bottom-0 bg-white w-full translate-y-full rounded-t-3xl shadow-[0_-8px_28px_rgba(0,0,0,0.18)]"
-      >
-        <FinishRide setFinishRidepanel={setFinishRidepanel} ride={ride} />
-      </div>
+     <div
+  ref={FinishRideRef}
+  className="fixed h-[100dvh] z-30 bottom-0 bg-white w-full translate-y-full 
+            rounded-t-3xl shadow-[0_-12px_35px_rgba(0,0,0,0.25)] border-t border-gray-200"
+>
+  <FinishRide setFinishRidepanel={setFinishRidepanel} ride={ride} />
+</div>
+
     </div>
   );
 };

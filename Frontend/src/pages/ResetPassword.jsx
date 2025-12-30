@@ -32,56 +32,63 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="p-6 h-[100dvh] flex flex-col justify-center">
-      <h2 className="text-2xl text-[#E23744] font-semibold text-center mb-4">
-        Reset Password 🔐
-      </h2>
+    <div className="h-[100dvh] flex flex-col justify-center px-6 bg-white">
 
-      <form onSubmit={submitHandler} className="space-y-5">
+      {/* Title */}
+      <h2 className="text-3xl font-semibold text-black text-center mb-2">
+        Reset Password
+      </h2>
+      <p className="text-gray-500 text-center text-sm mb-8">
+        Enter a strong new password to secure your account
+      </p>
+
+      {/* Form */}
+      <form onSubmit={submitHandler} className="space-y-6 max-w-md mx-auto w-full">
         
-        {/* New password */}
-        <div>
-          <label className="text-sm text-gray-600 font-medium">
-            New Password
-          </label>
+        {/* New Password */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-600 font-medium">New Password</label>
           <input
-            className="border mt-1 p-3 w-full rounded-xl"
             type={showPass ? "text" : "password"}
             placeholder="Enter new password"
-            value={password}
             minLength={6}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full border border-gray-300 bg-gray-50 rounded-xl p-3 text-[15px] outline-none 
+                       focus:ring-2 focus:ring-black transition"
           />
         </div>
 
-        {/* Confirm password */}
-        <div>
-          <label className="text-sm text-gray-600 font-medium">
-            Confirm Password
-          </label>
+        {/* Confirm Password */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-600 font-medium">Confirm Password</label>
           <input
-            className="border mt-1 p-3 w-full rounded-xl"
             type={showPass ? "text" : "password"}
             placeholder="Confirm new password"
-            value={confirmPassword}
             minLength={6}
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            className="w-full border border-gray-300 bg-gray-50 rounded-xl p-3 text-[15px] outline-none 
+                       focus:ring-2 focus:ring-black transition"
           />
         </div>
 
-        {/* Show password toggle */}
-        <p 
-          className="text-sm text-[#E23744] cursor-pointer hover:underline text-right"
+        {/* Toggle View Password */}
+        <button
+          type="button"
           onClick={() => setShowPass(!showPass)}
+          className="text-sm text-black font-medium hover:underline text-right w-full transition"
         >
           {showPass ? "Hide Password" : "Show Password"}
-        </p>
+        </button>
 
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full py-3 rounded-xl bg-[#E23744] text-white font-medium text-lg active:scale-95 transition"
+          className="w-full py-3 rounded-xl bg-black text-white text-[16px] font-semibold
+                     hover:bg-neutral-900 active:scale-95 transition"
         >
           Update Password
         </button>
