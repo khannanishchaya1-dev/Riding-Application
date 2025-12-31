@@ -29,10 +29,6 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 connectMongodb(process.env.MONGODB_URL);
-
-app.get('/',(req,res)=>{
-  res.render('index');
-})
 app.use('/users',userRoutes);
 app.use('/captains',captainRoutes);
 app.use('/maps',mapRoutes);
