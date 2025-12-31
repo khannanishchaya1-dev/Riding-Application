@@ -101,13 +101,19 @@ module.exports.confirmRide = async (req, res) => {
 
   try {
     // Try acquiring lock (atomic)
-    const lock = await redis.set(lockKey, captainId.toString(), { NX: true, EX: 15 });
-console.log("Lock Status = ",lock,req.captain._id)
-    if (!lock) {
-      return res.status(409).json({
-        message: "Ride already accepted by someone else 🚫"
-      });
-    }
+    if (redis) {
+  const result = await redis.set(lockKey, captain._id.toString(), {
+    nx: true,
+    ex: 15, // auto-remove lock in 15 sec
+  });
+  lock = result === "OK";
+}
+
+if (!lock) {
+  return res.status(409).json({
+    message: "Ride already accepted by another captain 🚫"
+  });
+}
 
     // ONLY first captain reaches this point
     const ride = await rideService.confirmRide({ rideId, captain: req.captain });
