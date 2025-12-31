@@ -102,7 +102,7 @@ module.exports.confirmRide = async (req, res) => {
   try {
     // Try acquiring lock (atomic)
     if (redis) {
-  const result = await redis.set(lockKey, captain._id.toString(), {
+  const result = await redis.set(lockKey, captainId.toString(), {
     nx: true,
     ex: 15, // auto-remove lock in 15 sec
   });
