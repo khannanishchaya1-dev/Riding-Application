@@ -4,6 +4,8 @@ const {calculateFare,findRidesByUser,findRidesByCaptain}=require('../service/rid
 const mapService = require('../service/maps.service')
 const {sendSocketMessageTo}= require('../socket');
 const rideModel = require('../models/ride');
+const redis = require("../config/redis");
+
 
 // Further ride controller functions would go here
 module.exports.createRide = async (req, res) => {
@@ -87,28 +89,46 @@ module.exports.calculateFare = async (req, res) => {
  }
 }
 
-module.exports.confirmRide=async (req,res)=>{
-const errors = validationResult(req); 
-if(!errors.isEmpty()){
-  return res.status(400).json({errors:errors.array()})
-} 
+module.exports.confirmRide = async (req, res) => {
+  const errors = validationResult(req); 
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
+  }
 
-const {rideId} = req.body;
-try{
+  const { rideId } = req.body;
+  const captainId = req.captain._id;
+  const lockKey = `ride-lock:${rideId}`;
 
-  const ride = await rideService.confirmRide({rideId,captain:req.captain});
-  console.log("ride has been confirmed sent sucessfully")
-  res.status(200).json({ride});
-   sendSocketMessageTo(ride.userId.socketId,{
-     event:"ride-confirmed",
-     data:ride
-   })
-   console.log("confirmation has been send to frontend")
-  
-}catch(error){
-  res.status(500).json({message:error})
-}
-}
+  try {
+    // Try acquiring lock (atomic)
+    const lock = await redis.set(lockKey, captainId.toString(), { NX: true, EX: 15 });
+console.log("Lock Status = ",lock,req.captain._id)
+    if (!lock) {
+      return res.status(409).json({
+        message: "Ride already accepted by someone else 🚫"
+      });
+    }
+
+    // ONLY first captain reaches this point
+    const ride = await rideService.confirmRide({ rideId, captain: req.captain });
+
+    // Send success response
+    res.status(200).json({ ride });
+
+    // Emit real-time notification
+    sendSocketMessageTo(ride.userId.socketId, {
+      event: "ride-confirmed",
+      data: ride
+    });
+
+    console.log("Ride confirmed & frontend notified ✔️");
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports.cancelRide = async (req, res) => {
   try {
     const { rideId } = req.body;

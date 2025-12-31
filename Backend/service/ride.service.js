@@ -117,32 +117,29 @@ module.exports.userCancelRide=async({rideId})=>{
   return ride;
   
 }
-module.exports.confirmRide = async ({
-    rideId, captain
-}) => {
-    if (!rideId) {
-        throw new Error('Ride id is required');
-    }
+module.exports.confirmRide = async ({ rideId, captain }) => {
+  if (!rideId) {
+    throw new Error("Ride id is required");
+  }
 
-    await rideModel.findOneAndUpdate({
-        _id: rideId
-    }, {
-        status: 'ACCEPTED',
-        captain: captain._id
-    })
-console.log(captain)
-    const ride = await rideModel
-  .findOne({ _id: rideId })
-  .populate('userId')
-  .populate('captain').select('+otp');
+  // atomic update: only update IF still REQUESTED
+  const ride = await rideModel.findOneAndUpdate(
+    { _id: rideId, status: "REQUESTED" },   // condition
+    { status: "ACCEPTED", captain: captain._id },
+    { new: true }
+  )
+    .populate("userId")
+    .populate("captain")
+    .select("+otp");
 
-    if (!ride) {
-        throw new Error('Ride not found');
-    }
+  // if no ride returned → someone already accepted
+  if (!ride) {
+    throw new Error("Ride already accepted by someone else");
+  }
 
-    return ride;
+  return ride;
+};
 
-}
 module.exports.rideStart = async ({rideId,otp,captain})=>{
   if(!rideId || !otp){
     throw new Error('Ride id and otp are required');

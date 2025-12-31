@@ -33,6 +33,7 @@
     "otp": "^2.0.1",
     "otp-generator": "^4.0.1",
     "razorpay": "^2.9.6",
+    "redis": "^5.10.0",
     "resend": "^6.5.2",
     "socket.io": "^4.8.1"
   }

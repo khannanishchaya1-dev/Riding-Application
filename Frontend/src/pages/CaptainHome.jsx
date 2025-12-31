@@ -25,6 +25,7 @@ const CaptainHome = () => {
   const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
 
   const incomingSound = useRef(new Audio("/src/assets/sounds/incoming_new.mp3"));
+  const [rideRejected, setRideRejected] = useState(false);
 
   const [ride, setride] = useState(() => {
     const storedRide = localStorage.getItem("activeRide");
@@ -52,20 +53,36 @@ const CaptainHome = () => {
     }
   }, [ride]);
 
+  // Auto-close ride popup if captain ignores request
+useEffect(() => {
+  if (!ride || ride.status !== "REQUESTED") return;
+
+  const timer = setTimeout(() => {
+    toast.error("⏳ Request timed out");
+    incomingSound.current.pause();
+    incomingSound.current.currentTime = 0;
+
+    setride(null);               // remove ride
+    setridePopUppanel(false);    // close request popup panel
+  }, 19000); // 19 seconds timeout
+
+  return () => clearTimeout(timer);
+}, [ride]);
+
+
   // Show ride popups depending on status
   useEffect(() => {
-    if (!ride) return;
+  if (!ride || rideRejected) return;
 
-    if (ride.status === "ACCEPTED") {
-      setconfirmridePopUppanel(true);
-      setridePopUppanel(false);
-    } else if (ride.status === "ONGOING") {
-      localStorage.removeItem("activeRide");
-    } else if (ride.status === "REQUESTED") {
-      setridePopUppanel(true);
-      setconfirmridePopUppanel(false);
-    }
-  }, [ride]);
+  if (ride.status === "ACCEPTED") {
+    setconfirmridePopUppanel(true);
+    setridePopUppanel(false);
+  } else if (ride.status === "REQUESTED") {
+    setridePopUppanel(true);
+    setconfirmridePopUppanel(false);
+  }
+}, [ride, rideRejected]);
+
 
   // Load captain from local storage
   useEffect(() => {
@@ -121,23 +138,35 @@ const CaptainHome = () => {
 
   // Accept Ride
   const confirmRide = async () => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
-        { rideId: ride._id },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-      );
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}rides/confirm-ride`,
+      { rideId: ride._id },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
 
-      sendMessage("ride-accepted", { rideId: ride._id });
-      toast.success("✔ Ride Accepted");
+    sendMessage("ride-accepted", { rideId: ride._id });
+    toast.success("✔ Ride Accepted");
 
-      setride(response.data.ride);
-      setridePopUppanel(false);
-      setconfirmridePopUppanel(true);
-    } catch {
-      toast.error("⚠ Error confirming ride");
+    setride(response.data.ride);
+    setridePopUppanel(false);
+    setconfirmridePopUppanel(true);
+
+  } catch (error) {
+    if (error.response?.status === 409 || error.response?.status===500) {
+      // ride already accepted by someone else
+      toast.error("❌ Ride already accepted by another captain");
+      setRideRejected(true); 
+      setride(null);               // Clear ride data
+    setridePopUppanel(false);    // Close request popup
+    setconfirmridePopUppanel(false); // Ensure confirm is not shown 
+      return;
     }
-  };
+
+    toast.error("⚠️ Something went wrong");
+  }
+};
+
 
   // Passenger cancels
   useEffect(() => {
@@ -182,7 +211,7 @@ const CaptainHome = () => {
         setridePopUppanel(false);
         incomingSound.current?.pause();
         if (incomingSound.current) incomingSound.current.currentTime = 0;
-        setride({});
+        setride(null);
       }
     };
 
@@ -200,12 +229,14 @@ const CaptainHome = () => {
   }, [ridePopUppanel]);
 
   useGSAP(() => {
+    const show = confirmridePopUppanel && ride && ride.status === "ACCEPTED";
+
     gsap.to(confirmridePopUppanelRef.current, {
-      transform: confirmridePopUppanel ? "translateY(0%)" : "translateY(200%)",
+      transform: show ? "translateY(0%)" : "translateY(200%)",
       duration: 0.45,
       ease: "power2.out"
     });
-  }, [confirmridePopUppanel]);
+  }, [confirmridePopUppanel,ride]);
 
   return (
     <div className="h-[100dvh] w-full overflow-hidden relative">
@@ -252,18 +283,22 @@ const CaptainHome = () => {
       </div>
 
       {/* Confirm Ride Popup */}
-      <div
-        ref={confirmridePopUppanelRef}
-        className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%] bg-white border-t border-gray-200 shadow-xl"
-      >
-        <ConfirmRidePopUp
-          ride={ride}
-          setridePopUppanel={setridePopUppanel}
-          setconfirmridePopUppanel={setconfirmridePopUppanel}
-          CancelRide={CancelRide}
-          setride={setride}
-        />
-      </div>
+      {/* Confirm Ride Popup */}
+{ride && ride.status === "ACCEPTED" ? (
+  <div
+    ref={confirmridePopUppanelRef}
+    className="inset-x-0 fixed bottom-0 w-full z-40 translate-y-[200%] bg-white border-t border-gray-200 shadow-xl"
+  >
+    <ConfirmRidePopUp
+      ride={ride}
+      setridePopUppanel={setridePopUppanel}
+      setconfirmridePopUppanel={setconfirmridePopUppanel}
+      CancelRide={CancelRide}
+      setride={setride}
+    />
+  </div>
+) : null}
+
     </div>
   );
 };

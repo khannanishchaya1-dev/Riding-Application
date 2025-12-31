@@ -147,7 +147,7 @@ useEffect(() => {
     localStorage.removeItem("activeRide");
     setnoDriverFound(true);
 
-  }, 30000);
+  }, 20000);
 
   return () => {
     clearTimeout(timer);
