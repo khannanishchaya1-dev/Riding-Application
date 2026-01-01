@@ -11,6 +11,18 @@ import axios from "axios";
 import LiveTracking from "../components/LiveTracking";
 import toast from "react-hot-toast";
 import GadiGoLogo from "../assets/GadiGo.svg";
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
 
 const CaptainHome = () => {
   const location = useLocation();
@@ -31,6 +43,24 @@ const CaptainHome = () => {
     const storedRide = localStorage.getItem("activeRide");
     return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
   });
+
+  const [distanceFromPassenger, setDistanceFromPassenger] = useState(0);
+  
+  
+  useEffect(() => {
+      async function fetchInitialDistance() {
+        try {
+          const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}captains/location/passenger`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}`}} );
+          const { lat, lon } = res.data;
+          const dist = getDistance(lat, lon, ride.originCoordinates.lat, ride.originCoordinates.lon);
+          setDistanceFromPassenger(dist.toFixed(1)); // km instant
+        } catch (err) {
+          console.log("⚠ Could not fetch initial captain location");
+        }
+      }
+  
+      if (ride?.originCoordinates) fetchInitialDistance();
+    }, [ride]);
 
   // Clear Active Ride on unmount
   useEffect(() => {
@@ -279,6 +309,7 @@ useEffect(() => {
             setTimeout(() => setconfirmridePopUppanel(v), 250);
           }}
           confirmRide={confirmRide}
+          distanceFromPassenger={distanceFromPassenger}
         />
       </div>
 

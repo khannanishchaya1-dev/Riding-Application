@@ -7,6 +7,18 @@ import toast from "react-hot-toast";
 import { useSocket } from "../UserContext/SocketContext";
 import { CaptainDataContext } from "../UserContext/CaptainContext";
 import axios from "axios";
+function getDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI/180;
+  const dLon = (lon2 - lon1) * Math.PI/180;
+  const a =
+    Math.sin(dLat/2)**2 +
+    Math.cos(lat1*Math.PI/180) *
+    Math.cos(lat2*Math.PI/180) *
+    Math.sin(dLon/2)**2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
 const CaptainRiding = () => {
   const [FinishRidepanel, setFinishRidepanel] = useState(false);
   const { socket, sendMessage, receiveMessage,offMessage } = useSocket();
@@ -18,6 +30,12 @@ const CaptainRiding = () => {
     const storedRide = localStorage.getItem("activeRide");
     return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
   });
+  const [remainingKm, setRemainingKm] = useState(
+  ride?.distance ? Number(ride.distance).toFixed(1) : "0.0"
+);
+
+console.log("SOCKET:", socket);
+console.log("receiveMessage type:", typeof receiveMessage);
 
   // GSAP animation for Bottom sheet
   useEffect(() => {
@@ -39,33 +57,40 @@ const CaptainRiding = () => {
 
   // 📡 Send GPS location continuously
   useEffect(() => {
-    console.log("🚦 SOCKET:", socket);
-    console.log("🧑 captainId:", captainData?._id);
-    console.log("🚕 rideId:", ride?._id);
+  if (!socket || !captainData?._id || !ride?._id || !ride?.destinationCoordinates) return;
 
-    if (!socket || !captainData?._id || !ride?._id) {
-      console.warn("❌ Live tracking NOT initialized – missing values");
-      return;
-    }
+  sendMessage("join-ride", { rideId: ride._id });
 
-    sendMessage("join-ride", { rideId: ride._id });
+  const dest = ride.destinationCoordinates;
 
-    const watchId = navigator.geolocation.watchPosition(
-      ({ coords }) => {
-        console.log("📡 Sending GPS:", coords.latitude, coords.longitude);
-        sendMessage("updateCaptainLocation", {
-          captainId: captainData._id,
-          rideId: ride._id,
-          lat: coords.latitude,
-          lon: coords.longitude,
-        });
-      },
-      (err) => console.error("GPS Error:", err),
-      { enableHighAccuracy: true, maximumAge: 0 }
-    );
+  const watchId = navigator.geolocation.watchPosition(
+    ({ coords }) => {
+      const { latitude, longitude } = coords;
 
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, [socket, captainData?._id, ride?._id]);
+      console.log("📡 Sending GPS:", latitude, longitude);
+
+      // 🔹 Calculate distance (Captain -> Destination)
+      const km = getDistanceKm(latitude, longitude, dest.lat, dest.lon);
+      console.log("Updated Distance" , km)
+      setRemainingKm(km.toFixed(1));  // <-- update state instantly
+
+      // 🔹 Send GPS to backend (no need to include distance)
+      sendMessage("updateCaptainLocation", {
+        captainId: captainData._id,
+        rideId: ride._id,
+        lat: latitude,
+        lon: longitude,
+      });
+    },
+    (err) => console.error("GPS Error:", err),
+    { enableHighAccuracy: true, maximumAge: 0 }
+  );
+
+  return () => navigator.geolocation.clearWatch(watchId);
+}, [socket, ride?._id, captainData?._id]);
+
+
+
 
   // Toast on ride start
   useEffect(() => {
@@ -121,10 +146,7 @@ const handleCashPayment = async () => {
     );
   };
 
-  const remainingKm =
-    typeof ride?.distance === "number"
-      ? (ride.distance / 1000).toFixed(1)
-      : "4.0";
+
 
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">

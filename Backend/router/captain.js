@@ -86,6 +86,14 @@ router.delete("/delete-account", authCaptain, async (req, res) => {
   }
 });
 router.post("/cancel-ride", authCaptain, );
+// GET /captain/location/:id
+router.get("/location/passenger", authCaptain,async (req,res)=>{
+  console.log("hello jiji")
+  const captain = req.captain;
+  console.log("captain is.....",captain)
+  res.json({ lat: captain.location.coordinates[1], lon: captain.location.coordinates[0] });
+});
+
 
 
 module.exports=router;

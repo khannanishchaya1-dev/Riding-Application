@@ -1,13 +1,45 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
 
-const RidePopUp = ({ ride, setridePopUppanel, setconfirmridePopUppanel, confirmRide }) => {
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
+const RidePopUp = ({ ride, setridePopUppanel, setconfirmridePopUppanel, confirmRide,distanceFromPassenger}) => {
   const soundRef = useRef(new Audio("/src/assets/sounds/incoming.mp3"));
+
+  // 🧠 Immediately get distance using last known location
+  useEffect(() => {
+    async function fetchInitialDistance() {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}captains/location/passenger`);
+        const { lat, lon } = res.data;
+        const dist = getDistance(lat, lon, ride.originCoordinates.lat, ride.originCoordinates.lon);
+        setDistance(dist.toFixed(1)); // km instant
+      } catch (err) {
+        console.log("⚠ Could not fetch initial captain location");
+      }
+    }
+
+    if (ride?.originCoordinates) fetchInitialDistance();
+  }, []);
+
+  // 🔄 Live GPS Update
 
   const closePanel = () => {
     setridePopUppanel(false);
     soundRef.current.currentTime = 0;
     soundRef.current.play().catch(() => {});
   };
+
 
   return (
     <div className="px-6 pb-7 pt-10 relative">
@@ -41,7 +73,10 @@ const RidePopUp = ({ ride, setridePopUppanel, setconfirmridePopUppanel, confirmR
           </div>
         </div>
 
-        <span className="text-lg font-bold text-gray-900">2.4 km</span>
+        <span className="text-lg font-bold text-gray-900">
+  {distanceFromPassenger? `${distanceFromPassenger} km` : "N/A"}
+</span>
+
       </div>
 
       {/* Ride Details */}

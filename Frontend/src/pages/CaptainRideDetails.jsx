@@ -178,7 +178,7 @@ const CaptainRideDetails = () => {
           <div>
             <Gauge className="mx-auto text-yellow-600" size={22} />
             <p className="text-sm text-gray-500">Distance</p>
-            <p className="font-semibold">{(ride.distance / 1000).toFixed(1)} km</p>
+            <p className="font-semibold">{(ride.distance).toFixed(1)} km</p>
           </div>
         </div>
 

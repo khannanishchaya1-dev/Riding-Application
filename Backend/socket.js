@@ -2,6 +2,8 @@ const { Server } = require("socket.io");
 const userModel = require("./models/user");
 const captainModel = require("./models/captain");
 const mongoose = require("mongoose");
+const redis = require("./config/redis");
+const {getDistanceInKm} = require("./service/maps.service.js");
 
 let io;
 
@@ -63,17 +65,35 @@ const initializeSocketConnection = (server) => {
         // 🚀 Send location ONLY to user inside ride room
         if(!rideId){
           return console.log("⚠ Invalid GPS payload",{ rideId, lat, lon });
-        }
+        }else{
+  //         const rideKey = `ride:${rideId}`;
+  //         const rideRaw = await redis.get(rideKey);
+
+  // const rideData = rideRaw ? JSON.parse(rideRaw) : {};
+
+  // const destination = rideData.destinationCoordinates;
+  // if (!destination) return;
+
+  //  const distance = await getDistanceInKm(lat, lon, destination.lat, destination.lon);
+
+  // // Save remaining distance
+  // console.log(distance);
+
+  // await redis.set(`${rideKey}:distanceRemaining`,  String(distance));
+
+console.log("🔥 SOCKET UPDATE:", lat, lon, "ride:", rideId);
         io.to(rideId).emit(`location-update-${rideId}`, {
           lat,
           lon,
           captainId,
         });
+      }
 
         console.log(`📍 GPS → Captain:${captainId} → Ride:${rideId}`, { lat, lon });
       } catch (err) {
         console.error("❌ GPS ERROR:", err);
       }
+    
     });
 
     socket.on("disconnect", () => {

@@ -14,26 +14,34 @@ module.exports.createRide = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  
+  const origin=req.body.origin;
+    const destination=req.body.destination;
+  const originCoordinates = await mapService.getCoordinatesfromAddress(origin);
+      const destinationCoordinates = await mapService.getCoordinatesfromAddress(destination);
+       if (!originCoordinates || !destinationCoordinates) {
+        return res.status(400).json({ message: "Unable to fetch location. Try different address." });
+      }
 
   try {
-  console.log(req.user._id, req.body.origin, req.body.destination, req.body.vehicleType);
 
   const vehicleType = req.body.vehicleType;
 
   // 1️⃣ Create ride
   const newRide = await rideService.createRideModel({
     userId: req.user._id,
-    origin: req.body.origin,
-    destination: req.body.destination,
-    vehicleType
+    origin,
+    destination,
+    vehicleType,
+    originCoordinates,
+    destinationCoordinates
+
+
   });
 
   console.log("🆕 Ride Created:", newRide);
 
   // 2️⃣ Convert address → coordinates
-  const originCoordinates = await mapService.getCoordinatesfromAddress(req.body.origin);
-  console.log("📍 Origin Coordinates:", originCoordinates);
+  
 
   // 3️⃣ Get captains nearby
   const captainsNearby = await mapService.getCaptainsInRadius(
@@ -56,6 +64,16 @@ module.exports.createRide = async (req, res) => {
       data: rideWithUser
     });
   });
+  // ⬅️ SAVE RIDE TO REDIS
+    await redis.set(`ride:${newRide._id}`, JSON.stringify({
+      originCoordinates: newRide.originCoordinates,
+      destinationCoordinates: newRide.destinationCoordinates,
+      fare: newRide.fare,
+      distance: newRide.distance,
+      status: newRide.status,
+      paymentStatus: newRide.paymentStatus,
+    }));
+    console.log("ride saved in redis");
 
   // 6️⃣ Final response to frontend
   return res.status(201).json({

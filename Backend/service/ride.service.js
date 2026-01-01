@@ -15,9 +15,16 @@ module.exports.calculateFare=async (origin,destination)=>{
   
   const baseFare = 50;//in rupees
   const distance = await mapService.getDistanceTime(origin,destination);
+  const pickupCoords = await mapService.getCoordinatesfromAddress(origin);
+    const destinationCoords = await mapService.getCoordinatesfromAddress(destination);
+    console.log(pickupCoords,destinationCoords)
+     if (!pickupCoords || !destinationCoords) {
+      return res.status(400).json({ message: "Unable to fetch location. Try different address." });
+    }
   
-
-  const distanceInKm = distance.distance.value / 1000;
+  const distanceInKm = await mapService.getDistanceInKm(pickupCoords.lat,pickupCoords.lon,destinationCoords.lat,destinationCoords.lon);
+  console.log(origin,destination)
+  
   const rates = {
     Car: { perKm: 15, minFare: 80 },
     Auto: { perKm: 10, minFare: 60 },
@@ -45,23 +52,18 @@ module.exports.calculateFare=async (origin,destination)=>{
   return fares;
 }
 
-module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
+module.exports.createRideModel=async({userId,origin,destination,vehicleType,originCoordinates,destinationCoordinates})=>{
   
-  if(!userId || !origin || !destination || !vehicleType){
-    console.log("issue in frontend")
+  if(!userId || !origin || !destination || !vehicleType || !originCoordinates||!destinationCoordinates){
     throw new Error("All fields are required to create a ride");
   }
 
-  const fareDetails = await this.calculateFare(origin,destination);
+ 
   
   const DistanceTime = await mapService.getDistanceTime(origin,destination);
-  const pickupCoords = await mapService.getCoordinatesfromAddress(origin);
-    const destinationCoords = await mapService.getCoordinatesfromAddress(destination);
-     if (!pickupCoords || !destinationCoords) {
-      return res.status(400).json({ message: "Unable to fetch location. Try different address." });
-    }
   
-  
+  const distanceInKm = await mapService.getDistanceInKm(originCoordinates.lat,originCoordinates.lon,destinationCoordinates.lat,destinationCoordinates.lon);
+  const fareDetails = await this.calculateFare(origin,destination,distanceInKm);
   // Create a new ride in the database (pseudo code)
   
   const newRide = await RIDE.create({
@@ -70,10 +72,10 @@ module.exports.createRideModel=async({userId,origin,destination,vehicleType})=>{
     destination,
     vehicleType,
     fare: fareDetails[vehicleType],
-    originCoordinates: pickupCoords,
-    destinationCoordinates: destinationCoords,
+    originCoordinates,
+    destinationCoordinates,
     otp:this.generateOTP(6),
-    distance:(Number(DistanceTime.distance.value)),
+    distance:(Number(distanceInKm)),
     duration:(Number(DistanceTime.duration.value)),
   });
   return newRide;

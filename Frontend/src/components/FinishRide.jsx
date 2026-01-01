@@ -29,7 +29,7 @@ const FinishRide = ({ ride, setFinishRidepanel }) => {
 
   const remainingKm =
     typeof ride?.distance === "number"
-      ? (ride.distance / 1000).toFixed(1)
+      ? (ride.distance).toFixed(1)
       : "4.0";
 
   const passengerName =
