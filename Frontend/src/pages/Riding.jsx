@@ -47,6 +47,45 @@ const Riding = () => {
   };
 
   const vehicleImg = vehicleImages[ride?.vehicleType];
+  useEffect(() => {
+  if (!receiveMessage || !offMessage) return;
+
+  const handler = (data) => {
+    setride((prev) => {
+      const updated = { ...prev, ...data };
+      localStorage.setItem("activeRide", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  receiveMessage("payment-status-updated", handler);
+
+  return () => {
+    offMessage("payment-status-updated", handler);
+  };
+}, [receiveMessage, offMessage]);
+
+
+  useEffect(() => {
+  const fetchRideStatus = async () => {
+    if (!ride?._id) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}rides/${ride._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setride(data); // this updates paymentStatus reliably
+    } catch (err) {
+      console.error("Failed to sync ride status", err);
+    }
+  };
+
+  fetchRideStatus();
+}, []);
+
 
   // 🚗 Join ride room
   useEffect(() => {
@@ -123,6 +162,7 @@ const Riding = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setride((prev) => ({ ...prev, paymentStatus: "PAID" }));
+        localStorage.setItem("activeRide", JSON.stringify(updatedRide));
       },
     };
 
