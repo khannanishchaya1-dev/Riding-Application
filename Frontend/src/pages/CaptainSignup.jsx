@@ -18,10 +18,38 @@ const CaptainSignup = () => {
     vehicleType: "",
     numberPlate: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [, setCaptainData] = useContext(CaptainDataContext);
+  const [image, setImage] = useState(null);
+const [preview, setPreview] = useState(null);
+const [imageError, setImageError] = useState("");
+ const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // ❌ Type check
+  if (!file.type.startsWith("image/")) {
+    setImageError("Only image files are allowed");
+    return;
+  }
+
+  // ❌ Size check (2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    setImageError("Image size must be under 2MB");
+    return;
+  }
+
+  setImageError("");
+  setImage(file);
+
+  // 👁️ Preview
+  const reader = new FileReader();
+  reader.onloadend = () => setPreview(reader.result);
+  reader.readAsDataURL(file);
+};
+
+  
 
   const navigate = useNavigate();
 
@@ -32,28 +60,28 @@ const CaptainSignup = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
+const formData = new FormData();
 
-    const payload = {
-      fullname: {
-        firstname: form.firstName,
-        lastname: form.lastName,
-      },
-      email: form.email,
-      phone: form.phone,
-      password: form.password,
-      vehicle: {
-        vehicleModel: form.vehicleModel,
-        vehicleType: form.vehicleType,
-        color: form.color,
-        capacity: form.capacity,
-        numberPlate: form.numberPlate,
-      },
-    };
+  Object.entries(form).forEach(([key, value]) => {
+  if (value !== "" && value !== null) {
+    formData.append(key, String(value));
+  }
+});
 
+if (!image) {
+  toast.error("Profile image is required");
+  setLoading(false);
+  return;
+}
+
+  if (image) {
+    formData.append("image", image);
+  }
     try {
+      console.log("Submitting form data:", formData);
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}captains/register`,
-        payload
+       formData
       );
 
       if (response.data) {
@@ -149,6 +177,34 @@ const CaptainSignup = () => {
               className="w-full mt-2 px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200 shadow-sm outline-none focus:border-black transition"
             />
           </div>
+          {/* Captain Image */}
+{/* Profile Image */}
+<div>
+  <label className="text-[15px] text-gray-700 font-medium">
+    Profile Photo
+  </label>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className="w-full mt-2 px-4 py-3 rounded-xl bg-[#FAFAFA] border border-gray-200"
+  />
+
+  {imageError && (
+    <p className="text-red-500 text-xs mt-1">{imageError}</p>
+  )}
+
+  {preview && (
+    <img
+      src={preview}
+      alt="preview"
+      className="mt-3 w-28 h-28 object-cover rounded-full border"
+    />
+  )}
+</div>
+
+
 
           {/* Vehicle Model */}
           <input

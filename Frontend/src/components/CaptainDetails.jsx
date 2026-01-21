@@ -48,7 +48,7 @@ if (!res.data.captain.status) {
         <div className="flex items-center gap-3">
           <img
             className="w-14 h-14 rounded-full object-cover"
-            src="https://media.gettyimages.com/id/1752533660/video/happy-worker-and-face-of-business-asian-man-in-office-with-pride-confidence-and-ambition-in.jpg?s=640x640&k=20&c=FPPyepfVwPRmGudzLY-RkfVPiT1lPE_wBZ2WQZVGUOM="
+            src={captainData.avatar}
             alt="Captain"
           />
         

@@ -5,48 +5,56 @@ const { handleCaptainRegister, loginCaptain, getCaptainProfile, logoutCaptain,ch
 const { authCaptain } = require('../middlewares/auth');
 const Ride = require('../models/ride');
 const Captain = require("../models/captain");
+const upload = require("../middlewares/upload");
 
-router.post('/register',
-[
-    // Personal Details Validation
+
+router.post(
+  "/register",
+  upload.single("image"), // ✅ multer FIRST
+
+  [
+    // Personal details
     body("email").isEmail().withMessage("Invalid Email"),
-    body("phone") // ⭐ NEW: Phone validation (assuming min 10 digits)
-        .isLength({ min: 10 })
-        .withMessage("Phone number must be at least 10 digits"),
-        
-    body("fullname.firstname")
-        .isLength({ min: 3 })
-        .withMessage("First name must be at least 3 characters"),
-    body("fullname.lastname") // ⭐ NEW: Last name validation
-        .isLength({ min: 3 })
-        .withMessage("Last name must be at least 3 characters"),
-        
+
+    body("phone")
+      .isLength({ min: 10 })
+      .withMessage("Phone number must be at least 10 digits"),
+
+    body("firstName")
+      .isLength({ min: 3 })
+      .withMessage("First name must be at least 3 characters"),
+
+    body("lastName")
+      .isLength({ min: 3 })
+      .withMessage("Last name must be at least 3 characters"),
+
     body("password")
-        .isLength({ min: 6 })
-        .withMessage("Password must be at least 6 characters long"),
-        
-    // Vehicle Details Validation
-    body("vehicle.color").notEmpty().withMessage("Vehicle color is required"),
-    
-    body("vehicle.vehicleModel") // ⭐ NEW: Vehicle Model validation
-        .notEmpty()
-        .withMessage("Vehicle model (car name) is required"),
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters long"),
 
-    body("vehicle.capacity")
-        .isInt({ min: 1 })
-        .withMessage("Capacity must be at least 1"),
-        
-    body("vehicle.vehicleType")
-  .isIn(["Car", "Moto","Auto"])
-  .withMessage("Vehicle type must be car, motorcycle, or Auto Rickshaw"),
+    // Vehicle details
+    body("color").notEmpty().withMessage("Vehicle color is required"),
 
-        
-    body("vehicle.numberPlate")
-        .notEmpty()
-        .withMessage("Number plate is required"),
-],
-handleCaptainRegister
+    body("vehicleModel")
+      .notEmpty()
+      .withMessage("Vehicle model is required"),
+
+    body("capacity")
+      .isInt({ min: 1 })
+      .withMessage("Capacity must be at least 1"),
+
+    body("vehicleType")
+      .isIn(["Car", "Moto", "Auto"])
+      .withMessage("Vehicle type must be Car, Moto, or Auto"),
+
+    body("numberPlate")
+      .notEmpty()
+      .withMessage("Number plate is required"),
+  ],
+
+  handleCaptainRegister
 );
+
 router.post('/login',[
   body("email").isEmail().withMessage('Invalid Email'),
   body("password").isLength({min:6}).withMessage("Password mus be of atleast 6 charchters long")

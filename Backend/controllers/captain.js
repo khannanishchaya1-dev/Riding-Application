@@ -6,45 +6,77 @@ const  {sendOTP,sendEmail}  = require("./emailService");
 const jwt = require('jsonwebtoken');
 const PendingCaptain = require("../models/PendingCaptain");
 const crypto = require("crypto");
+const cloudinary = require("../config/cloudinary");
 
 const handleCaptainRegister = async (req, res) => {
   try {
-    const { fullname, email, phone, password, vehicle } = req.body;
-
-    // Check if already signed up
-    const exists = await Captain.findOne({ email });
-   
-    if (exists) return res.status(400).json({ message: "Email already registered." });
-
-    // Remove any previous registration attempts
-    await PendingCaptain.deleteOne({ email });
-
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Store temporary record
-    await PendingCaptain.create({
-      fullname,
+    const {
+      firstName,
+      lastName,
       email,
       phone,
-      vehicle,
       password,
-      otp
+      vehicleModel,
+      vehicleType,
+      color,
+      capacity,
+      numberPlate,
+    } = req.body;
+
+    // 1️⃣ Check if already registered
+    const exists = await Captain.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "Email already registered." });
+    }
+
+    // 2️⃣ Upload image
+    let imageUrl = "";
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "gadigo/captains",
+      });
+      imageUrl = uploadResult.secure_url;
+    }
+
+    // 3️⃣ Remove old pending record
+    await PendingCaptain.deleteOne({ email });
+
+    // 4️⃣ Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // 5️⃣ Create pending captain (✅ CORRECT SHAPE)
+    await PendingCaptain.create({
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+      email,
+      phone,
+      password,
+      avatar: imageUrl,
+      vehicle: {
+        vehicleModel,
+        vehicleType,
+        color,
+        capacity: Number(capacity),
+        numberPlate,
+      },
+      otp,
     });
 
-console.log("pending captain created");
-    // Send OTP
+    // 6️⃣ Send OTP
     await sendOTP(email, otp);
-    console.log("OTP sent to:", email);
-    
+
     return res.status(201).json({
-      message: "OTP sent! Verify email to activate your captain account."
+      message: "OTP sent! Verify email to activate your captain account.",
     });
 
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ message: err.message });
   }
 };
+
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
@@ -65,6 +97,7 @@ const verifyOtp = async (req, res) => {
     phone: pending.phone,
     password: pending.password,
     vehicle: pending.vehicle,
+    avatar: pending.avatar,
     isVerified: true
   });
 

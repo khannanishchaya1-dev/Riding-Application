@@ -94,8 +94,8 @@ useEffect(() => {
   {ride?.captain ? (
     <>
       <img
-        src={vehicleImg}
-        className="h-12 w-12 rounded-lg border"
+        src={ride.captain.avatar}
+        className="h-15 w-15 border rounded-full object-cover"
         alt="vehicle"
       />
 

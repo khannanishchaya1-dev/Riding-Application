@@ -7,6 +7,10 @@ const pendingCaptainSchema = new mongoose.Schema({
   vehicle: Object,
   password: String, // Must already be hashed if using hashing middleware
   otp: String,
+  avatar: {
+  type: String,
+  default: "",
+},
   createdAt: {
     type: Date,
     default: Date.now,
