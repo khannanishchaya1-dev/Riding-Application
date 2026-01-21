@@ -377,6 +377,7 @@ console.log("Ride creation response:", response);
     return true; // 👈 tells UI success
 
   } catch (error) {
+    console.log("Error creating ride:", error);
     console.log(error.response?.data?.message || error.message);
     return false; // 👈 tells UI failure
   }

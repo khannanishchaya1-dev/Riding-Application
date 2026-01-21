@@ -9,16 +9,34 @@ const razorpay = new Razorpay({
 });
 
 module.exports.createOrder = async (req, res) => {
-  const { amount } = req.body;
+  try {
+    const { amount } = req.body;
 
-  const options = {
-    amount,
-    currency: "INR",
-    receipt: "receipt_" + Date.now(),
-  };
+    if (!amount) {
+      return res.status(400).json({ message: "Amount is required" });
+    }
+console.log("Creating Razorpay Order for amount:", amount);
+    const options = {
+      amount: Math.round(amount), // convert ₹ to paise
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+console.log(typeof options.amount);
+    console.log("Creating Razorpay Order:", options);
 
-  const order = await razorpay.orders.create(options);
-  res.json(order);
+    const order = await razorpay.orders.create(options);
+
+    console.log("Order created:", order);
+
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Razorpay order error:", error);
+
+    res.status(500).json({
+      message: "Failed to create Razorpay order",
+      error: error.message,
+    });
+  }
 };
 
 module.exports.verifyPayment = async (req, res) => {

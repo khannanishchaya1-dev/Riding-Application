@@ -64,6 +64,7 @@ const Riding = () => {
   const handlePayment = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("Initiating payment for ride:", ride);
       const { data } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}payment/create-order`,
         { amount: ride.fare * 100 },
@@ -95,6 +96,7 @@ const Riding = () => {
 
       new window.Razorpay(options).open();
     } catch (err) {
+      console.log("Payment Error:", err.response?.data?.message || err.message);
       toast.error("❌ Payment failed — Try again.");
       setride((prev) => ({ ...prev, paymentStatus: "FAILED" }));
     }

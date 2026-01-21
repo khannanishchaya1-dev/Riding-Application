@@ -1,6 +1,7 @@
 
 let redis;
 if (process.env.NODE_ENV === "production") {
+  console.log("Using Upstash Redis");
   const { Redis } = require("@upstash/redis");
   redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
