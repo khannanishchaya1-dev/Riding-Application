@@ -126,55 +126,58 @@ const Riding = () => {
 
   // 💳 Razorpay Handler
   const handlePayment = async () => {
-  try {
-    const loaded = await loadRazorpay();
-
-    if (!loaded) {
-      toast.error("Razorpay SDK failed to load");
-      return;
-    }
-
-    console.log("Razorpay constructor:", window.Razorpay); // MUST NOT be undefined
-
-    const token = localStorage.getItem("token");
-
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}payment/create-order`,
-      { amount: ride.fare * 100 },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY,
-      amount: data.amount,
-      currency: "INR",
-      name: "GadiGo",
-      order_id: data.id,
-      handler: async function (response) {
-        await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}payment/verify`,
-          {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-            rideId: ride._id,
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setride((prev) => ({ ...prev, paymentStatus: "PAID" }));
-        console.log("Payment successful");
-        localStorage.setItem("activeRide", JSON.stringify(updatedRide));
-        
-      },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  } catch (err) {
-    console.error(err);
-    toast.error("❌ Payment failed");
+  const loaded = await loadRazorpay();
+  if (!loaded) {
+    toast.error("Razorpay SDK failed to load");
+    return;
   }
+
+  const token = localStorage.getItem("token");
+
+  const { data } = await axios.post(
+    `${import.meta.env.VITE_BACKEND_URL}payment/create-order`,
+    { amount: Math.round(ride.fare * 100) },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY,
+    amount: data.amount,
+    currency: "INR",
+    name: "GadiGo",
+    order_id: data.id,
+    handler: async function (response) {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}payment/verify`,
+        {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          rideId: ride._id,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setride((prev) => {
+        const updated = { ...prev, paymentStatus: "PAID" };
+        localStorage.setItem("activeRide", JSON.stringify(updated));
+        return updated;
+      });
+
+      toast.success("Payment successful");
+    },
+    modal: {
+      ondismiss: () => {
+        toast.error("Payment cancelled");
+      },
+    },
+  };
+
+  // 🔥 MUST remind browser this is user-triggered
+  const rzp = new window.Razorpay(options);
+  rzp.open();
 };
+
 
   const getPaymentBadge = () => {
     const status = ride?.paymentStatus;
