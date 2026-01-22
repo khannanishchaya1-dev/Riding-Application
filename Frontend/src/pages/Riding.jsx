@@ -141,37 +141,79 @@ const Riding = () => {
   );
 
   const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY,
-    amount: data.amount,
-    currency: "INR",
-    name: "GadiGo",
-    order_id: data.id,
-    handler: async function (response) {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}payment/verify`,
-        {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-          rideId: ride._id,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  key: import.meta.env.VITE_RAZORPAY_KEY,
+  amount: data.amount,
+  currency: "INR",
+  name: "GadiGo",
+  description: "Ride Payment",
+  order_id: data.id,
 
-      setride((prev) => {
-        const updated = { ...prev, paymentStatus: "PAID" };
-        localStorage.setItem("activeRide", JSON.stringify(updated));
-        return updated;
-      });
+  handler: async function (response) {
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}payment/verify`,
+      {
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+        rideId: ride._id,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      toast.success("Payment successful");
+    setride((prev) => {
+      const updated = { ...prev, paymentStatus: "PAID" };
+      localStorage.setItem("activeRide", JSON.stringify(updated));
+      return updated;
+    });
+
+    toast.success("Payment successful");
+  },
+
+  // 🔥 MOBILE OPTIMIZATION
+  modal: {
+    escape: false,
+    backdropclose: false,
+    animation: true,
+    ondismiss: () => {
+      toast.error("Payment cancelled");
     },
-    modal: {
-      ondismiss: () => {
-        toast.error("Payment cancelled");
+  },
+
+  // 🔥 PREFILL (improves mobile UX)
+  prefill: {
+    name: ride?.user?.fullname || "",
+    email: ride?.user?.email || "",
+    contact: ride?.user?.phone || "",
+  },
+
+  // 🔥 FORCE MOBILE-FIRST METHODS
+  method: {
+    upi: true,
+    card: true,
+    netbanking: true,
+    wallet: true,
+  },
+
+  // 🔥 THE MOST IMPORTANT FLAG
+  config: {
+    display: {
+      blocks: {
+        utib: {
+          name: "Pay using UPI",
+          instruments: [{ method: "upi" }],
+        },
+      },
+      sequence: ["block.utib"],
+      preferences: {
+        show_default_blocks: true,
       },
     },
-  };
+  },
+
+  theme: {
+    color: "#000000",
+  },
+};
 
   // 🔥 MUST remind browser this is user-triggered
   const rzp = new window.Razorpay(options);
