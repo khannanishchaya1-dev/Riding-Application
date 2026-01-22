@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "./AdminNavbar";
+import toast from "react-hot-toast";
 
 const CaptainsList = () => {
   const [captains, setCaptains] = useState([]);
@@ -26,6 +27,28 @@ const CaptainsList = () => {
     };
     fetchCaptains();
   }, []);
+  const blockUnblockCaptain = async (id)=>{
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}admin/block-captain/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      });
+      if(response.data.success){
+        toast.success(response.data.message);
+        setCaptains((prevCaptains) =>
+          prevCaptains.map((c) =>
+            c._id === id ? { ...c, blocked: !c.blocked }:c
+          )
+        );
+      }else{
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error blocking captain:", error.message);
+      toast.error("Something went wrong");
+    }
+  }
 
   const toggleStatus = (id) => {
     setCaptains((prev) =>
@@ -119,14 +142,14 @@ const CaptainsList = () => {
                     </td>
                     <td className="px-4">
                       <button
-                        onClick={() => toggleStatus(c._id)}
+                        onClick={() => blockUnblockCaptain(c._id)}
                         className={`w-full sm:w-auto px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                          c.status
-                            ? "bg-red-500 text-white hover:bg-red-600"
-                            : "bg-green-500 text-white hover:bg-green-600"
+                          c.blocked
+                            ? "bg-green-500 text-white hover:bg-green-600"
+                            : "bg-red-500 text-white hover:bg-red-600"
                         }`}
                       >
-                        {c.status ? "Block" : "Unblock"}
+                        {c.blocked ? "Unblock" : "Block"}
                       </button>
                     </td>
                   </tr>
@@ -140,5 +163,5 @@ const CaptainsList = () => {
     </div>
   );
 };
-
+"bg-red-500 text-white hover:bg-red-600"
 export default CaptainsList;

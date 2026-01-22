@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 import AdminNavbar from "./AdminNavbar";
 
@@ -30,14 +31,37 @@ const UsersList = () => {
     fetchUsers();
   }, []);
 
-  // Block / Unblock Local Toggle
-  const toggleBlock = (id) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u._id === id ? { ...u, isBlocked: !u.isBlocked } : u
-      )
+  const blockUnblockUser = async (id) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}admin/block-user/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      }
     );
-  };
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+
+      // 🔁 UPDATE UI STATE
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === id ? { ...u, blocked: !u.blocked } : u
+        )
+      );
+    } else {
+      toast.error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Error blocking user:", error.message);
+    toast.error("Something went wrong");
+  }
+};
+
+  // Block / Unblock Local Toggle
 
   if (loading) {
     return (
@@ -101,14 +125,14 @@ const UsersList = () => {
                     </td>
                     <td className="px-4">
                       <button
-                        onClick={() => toggleBlock(u._id)}
+                        onClick={() => blockUnblockUser(u._id)}
                         className={`w-full sm:w-auto px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                          u.isBlocked
+                          u.blocked
                             ? "bg-green-500 text-white hover:bg-green-600"
                             : "bg-red-500 text-white hover:bg-red-600"
                         }`}
                       >
-                        {u.isBlocked ? "Unblock" : "Block"}
+                        {u.blocked ? "Unblock" : "Block"}
                       </button>
                     </td>
                   </tr>

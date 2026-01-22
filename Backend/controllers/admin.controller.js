@@ -109,3 +109,39 @@ exports.getRideStats = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+exports.blockUnblockUser = async(req,res)=>{
+  try{
+    const {userId}=req.params;
+    if(!userId){
+      return res.status(400).json({message:"User ID is required"});
+  }
+    const user = await User.findById(userId);
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
+    user.blocked = !user.blocked;
+    await user.save();
+    const statusMessage = user.blocked ? "blocked" : "unblocked";
+    res.json({ success: true, message: `User ${statusMessage} successfully` });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+exports.blockUnblockCaptain = async(req,res)=>{
+  try{
+    const {captainId}=req.params;
+    if(!captainId){
+      res.status(400).json({message:"Captain ID is required"});
+    }
+    const captain = await Captain.findById(captainId);
+    if(!captain){
+      return res.status(404).json({message:"Captain not found"});
+    }
+    captain.blocked = !captain.blocked;
+    await captain.save();
+    const statusMessage = captain.blocked ? "blocked" : "unblocked";
+    res.json({ success: true, message: `Captain ${statusMessage} successfully` });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}

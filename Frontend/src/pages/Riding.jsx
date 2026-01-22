@@ -162,7 +162,9 @@ const Riding = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setride((prev) => ({ ...prev, paymentStatus: "PAID" }));
+        console.log("Payment successful");
         localStorage.setItem("activeRide", JSON.stringify(updatedRide));
+        
       },
     };
 
