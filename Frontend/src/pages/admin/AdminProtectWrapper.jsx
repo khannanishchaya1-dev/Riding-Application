@@ -3,17 +3,14 @@ import { AdminContext } from "../../AdminContext/AdminContext";
 import { useNavigate } from "react-router-dom";
 const AdminProtectedWrapper = ({children}) => {
   const token=localStorage.getItem('adminToken');
-  const captain = localStorage.getItem('captain');
   const navigate=useNavigate();
   useEffect(()=>{
     if(!token){
       navigate('/admin/login');
       return;
-    }else if(captain.blocked){
-      navigate('/captain-blocked');
     }
 
-  },[token,navigate,captain])
+  },[token,navigate])
   
   if(!token){
     return null; // or a loading spinner, or a redirect to login page

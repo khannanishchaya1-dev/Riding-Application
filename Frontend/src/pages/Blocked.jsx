@@ -37,6 +37,7 @@ const Blocked = () => {
   const handleLoginRedirect = () => {
     // optional: clear session
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 

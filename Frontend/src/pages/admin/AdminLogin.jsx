@@ -23,6 +23,7 @@ const AdminLogin = () => {
 
       toast.success("Welcome Admin 🚀");
       localStorage.setItem("adminToken", res.data.token);
+      localStorage.setItem("admin", JSON.stringify(res.data.admin));
       console.log("this res.data", res.data);
       setAdmin(res.data.admin);
       navigate("/admin/dashboard");

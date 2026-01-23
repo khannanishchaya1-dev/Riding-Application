@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect } from "react";
 import { FiBell } from "react-icons/fi";
 import { MdOutlineLogout } from "react-icons/md";
 import { AdminContext } from "../../AdminContext/AdminContext";
 
 const AdminNavbar = () => {
   const { admin, setAdmin } = useContext(AdminContext);
-  localStorage.setItem("adminName", admin?.name || "Admin");
-
+ 
+const adminData = JSON.parse(localStorage.getItem("admin"));
   return (
     <nav className="w-full bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between sticky top-0 z-30">
       
@@ -27,7 +27,7 @@ const AdminNavbar = () => {
         {/* Profile */}
         <div className="flex items-center gap-2">
           <img
-            src={`https://ui-avatars.com/api/?name=${admin?.name || "Admin"}&background=random`}
+            src={`https://ui-avatars.com/api/?name=${adminData?.name || "Admin"}&background=random`}
             alt="admin avatar"
             className="w-8 h-8 rounded-full object-cover"
           />

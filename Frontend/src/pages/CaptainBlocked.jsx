@@ -10,6 +10,12 @@ const Blocked = () => {
   const [ , setCaptainData] = React.useContext(CaptainDataContext);
   const navigate = useNavigate();
   const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
+  const handleLoginRedirect = () => {
+    // optional: clear session
+    localStorage.removeItem("token");
+    localStorage.removeItem("captain");
+    navigate("/captain-login");
+  };
   useEffect(() => {
     if (!socket) return;
 
@@ -48,15 +54,12 @@ const Blocked = () => {
     };
   }, [socket, navigate]);
   return (
-    <div className="h-[100dvh] w-full flex items-center justify-center bg-gray-50">
-      
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 text-center 
-                      border border-gray-200 animate-fadeIn">
+   <div className="h-[100dvh] w-full flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6 text-center border border-gray-200">
 
         {/* Icon */}
         <div className="flex justify-center mb-4">
-          <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center 
-                          animate-pulse">
+          <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center animate-pulse">
             <i className="ri-forbid-2-line text-3xl text-red-600"></i>
           </div>
         </div>
@@ -67,22 +70,33 @@ const Blocked = () => {
         </h1>
 
         {/* Message */}
-        <p className="text-gray-600 mb-4 leading-relaxed">
+        <p className="text-gray-600 mb-4">
           Your <span className="font-semibold text-red-600">GadiGo Captain account</span> has been blocked by the admin.
         </p>
 
         <p className="text-sm text-gray-500 mb-6">
-          🚫 You will <span className="font-medium text-gray-700">not be able to book rides</span>, 
-          request captains, or make payments until your account is unblocked.
+          Your captain account is currently blocked. You won’t be able to accept rides or receive payments until it’s unblocked.
         </p>
 
         {/* Support Info */}
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600 mb-5">
           📞 Support: <span className="font-medium">support@gadigo.com</span>
           <br />
           🕒 Available: 10:00 AM – 6:00 PM
         </div>
 
+        {/* Login Button */}
+        <button
+          onClick={handleLoginRedirect}
+          className="w-full py-3 rounded-xl bg-black text-white font-semibold hover:bg-neutral-900 transition"
+        >
+          🔐 Go to Login
+        </button>
+
+        {/* Optional link style */}
+        <p className="text-xs text-gray-400 mt-3">
+          Try logging in again after your account is unblocked
+        </p>
       </div>
     </div>
   );

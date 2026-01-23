@@ -33,6 +33,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({ users: 0, captains: 0, rides: 0 });
   const [rideStats, setRideStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {admin} = React.useContext(AdminContext);
 
   // Animated numbers
   const animUsers = useCountUp(stats.users);
