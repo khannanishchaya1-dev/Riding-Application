@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { useSocket } from "../UserContext/SocketContext";
 import {
   LogOut,
   Car,
@@ -34,6 +35,8 @@ const TripItem = ({ trip }) => {
         return trip.status;
     }
   };
+  
+
 
   return (
     <Link to={`/captain-ride-details/${trip._id}`}>
@@ -74,6 +77,12 @@ const TripItem = ({ trip }) => {
 
 const CaptainProfile = () => {
   const navigate = useNavigate();
+  const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
+const [isBlocked, setIsBlocked] = useState(() => {
+  const stored = JSON.parse(localStorage.getItem("captain"));
+  return stored?.blocked || false;
+});
+
   const [captainData, setCaptainData] = useState(
     JSON.parse(localStorage.getItem("captain")) || null
   );
@@ -120,6 +129,49 @@ const CaptainProfile = () => {
     setChartData(charts.data.chartData);
     setShowAnalytics(true);
   };
+  useEffect(() => {
+  if (!socket) return;
+
+  const handleBlockStatus = (data) => {
+    const storedCaptain = JSON.parse(localStorage.getItem("captain")) || {};
+
+    if (data.blocked) {
+      toast.error(data.message || "Your account has been blocked");
+
+      const updatedCaptain = {
+        ...storedCaptain,
+        blocked: true,
+      };
+
+      // ✅ UPDATE BOTH
+      localStorage.setItem("captain", JSON.stringify(updatedCaptain));
+      setCaptainData(updatedCaptain);
+      setIsBlocked(true); // 🔥 THIS WAS MISSING
+    } else {
+      const updatedCaptain = {
+        ...storedCaptain,
+        blocked: false,
+      };
+
+      localStorage.setItem("captain", JSON.stringify(updatedCaptain));
+      setCaptainData(updatedCaptain);
+      setIsBlocked(false);
+    }
+  };
+
+  socket.on("captain-block-status", handleBlockStatus);
+
+  return () => {
+    socket.off("captain-block-status", handleBlockStatus);
+  };
+}, [socket]);
+
+useEffect(() => {
+  if (isBlocked) {
+    navigate("/captain-blocked", { replace: true });
+  }
+}, [isBlocked, navigate]);
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">

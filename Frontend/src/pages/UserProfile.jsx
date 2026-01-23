@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { useSocket } from "../UserContext/SocketContext";
 import {
   LogOut, Mail, User, Car, MapPin, Clock, ArrowRight, Phone
 } from "lucide-react";
@@ -78,6 +79,11 @@ const ProfilePage = () => {
   const [chartData, setChartData] = useState(null);
   const [rideSummary, setRideSummary] = useState("");
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+   const { socket, sendMessage, receiveMessage, offMessage } = useSocket();
+  const [isBlocked, setIsBlocked] = useState(() => {
+    const stored = JSON.parse(localStorage.getItem("user"));
+    return stored?.blocked || false;
+  });
 
   const navigate = useNavigate();
 
@@ -120,6 +126,56 @@ const ProfilePage = () => {
   }, [user]);
 
   if (!user) return <div className="h-screen flex justify-center items-center">Loading...</div>;
+  useEffect(() => {
+  if (!socket) return;
+
+  const handleBlockStatus = (data) => {
+    if (data.blocked) {
+      // 🔔 Show toast
+      toast.error(`${data.message} — you are restricted from booking rides`);
+
+      // 🔒 Update user status in localStorage
+      const user = JSON.parse(localStorage.getItem("user")) || {};
+      const updatedUser = {
+        ...user,
+        blocked: true,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // 🚫 Redirect to blocked page
+      navigate("/blocked", { replace: true });
+    }else{
+       const user = JSON.parse(localStorage.getItem("user")) || {};
+      const updatedUser = {
+        ...user,
+        blocked: false,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      navigate("/home", { replace: true });
+
+    }
+  };
+
+  socket.on("user-block-status", handleBlockStatus);
+
+  // 🧹 Cleanup
+  return () => {
+    socket.off("user-block-status", handleBlockStatus);
+  };
+}, [socket, navigate]);
+useEffect(() => {
+  if (isBlocked) {
+    navigate("/blocked", { replace: true });
+  }
+}, [isBlocked, navigate]);
+useEffect(() => {
+  const storedCaptain = JSON.parse(localStorage.getItem("captain"));
+  if (storedCaptain?.blocked) {
+    navigate("/captain-blocked");
+  }
+}, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">

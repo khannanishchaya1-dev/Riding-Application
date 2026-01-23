@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
@@ -26,6 +26,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
 const CaptainHome = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [ridePopUppanel, setridePopUppanel] = useState(false);
   const ridePopUppanelRef = useRef(null);
@@ -46,7 +47,45 @@ const CaptainHome = () => {
 
   const [distanceFromPassenger, setDistanceFromPassenger] = useState(0);
   
-  
+  useEffect(() => {
+  if (!socket) return;
+
+  const handleBlockStatus = (data) => {
+    if (data.blocked) {
+      // 🔔 Show toast
+      toast.error(`${data.message} — you are restricted from taking rides`);
+
+      // 🔒 Update captain status in localStorage
+      const captainData = JSON.parse(localStorage.getItem("captain")) || {};
+      const updatedCaptain = {
+        ...captainData,
+        blocked: true,
+      };
+      setCaptainData(updatedCaptain);
+      localStorage.setItem("captain", JSON.stringify(updatedCaptain));
+
+      // 🚫 Redirect to blocked page
+      navigate("/captain-blocked", { replace: true });
+    }else{
+       const captainData = JSON.parse(localStorage.getItem("captain")) || {};
+      const updatedCaptain = {
+        ...captainData,
+        blocked: false,
+      };
+      setCaptainData(updatedCaptain);
+      localStorage.setItem("captain", JSON.stringify(updatedCaptain));
+
+    }
+  };
+
+  socket.on("captain-block-status", handleBlockStatus);
+
+  // 🧹 Cleanup
+  return () => {
+    socket.off("captain-block-status", handleBlockStatus);
+  };
+}, [socket, navigate]);
+
   useEffect(() => {
       async function fetchInitialDistance() {
         try {
@@ -68,6 +107,15 @@ const CaptainHome = () => {
       localStorage.removeItem("activeRide");
     };
   }, []);
+   useEffect(() => {
+  const storedCaptain = JSON.parse(localStorage.getItem("captain"));
+
+  if (storedCaptain?.blocked) {
+    toast.error("Your account is blocked. Please contact support.");
+    navigate("/captain-blocked", { replace: true });
+  }
+}, [navigate]);
+
 
   // Persist ride only if REQUESTED or ACCEPTED
   useEffect(() => {

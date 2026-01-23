@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Captain = require("../models/captain");
 const Ride = require("../models/ride");
+const { sendSocketMessageTo } = require("../socket");
 
 exports.adminLogin = async (req, res) => {
   try {
@@ -122,6 +123,17 @@ exports.blockUnblockUser = async(req,res)=>{
     user.blocked = !user.blocked;
     await user.save();
     const statusMessage = user.blocked ? "blocked" : "unblocked";
+    if (user.socketId) {
+      sendSocketMessageTo(user.socketId, {
+        event: "user-block-status",
+        data: {
+          blocked: user.blocked,
+          message: user.blocked
+            ? "🚫 Your account has been blocked by admin"
+            : "✅ Your account has been unblocked by admin",
+        },
+      });
+    }
     res.json({ success: true, message: `User ${statusMessage} successfully` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -140,6 +152,17 @@ exports.blockUnblockCaptain = async(req,res)=>{
     captain.blocked = !captain.blocked;
     await captain.save();
     const statusMessage = captain.blocked ? "blocked" : "unblocked";
+    if (captain.socketId) {
+      sendSocketMessageTo(captain.socketId, {
+        event: "captain-block-status",
+        data: {
+          blocked: captain.blocked,
+          message: captain.blocked
+            ? "🚫 Your account has been blocked by admin"
+            : "✅ Your account has been unblocked by admin",
+        },
+      });
+    }
     res.json({ success: true, message: `Captain ${statusMessage} successfully` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

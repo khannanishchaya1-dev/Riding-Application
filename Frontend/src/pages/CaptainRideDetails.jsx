@@ -15,7 +15,14 @@ const CaptainRideDetails = () => {
     Auto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRor72fdhJNar5p8b5iAmiwHtcY-c5XCd8nbvYwWgvVfy4Fmyt_9kB8-5kr8rWXdpO_DL0&usqp=CAU",
   };
   const vehicleImg = vehicleImages[ride?.vehicleType];
+useEffect(() => {
+  const storedCaptain = JSON.parse(localStorage.getItem("captain"));
 
+  if (storedCaptain?.blocked) {
+    toast.error("Your account is blocked. Please contact support.");
+    navigate("/captain-blocked", { replace: true });
+  }
+}, [navigate]);
   useEffect(() => {
     fetchRide();
   }, []);

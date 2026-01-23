@@ -20,12 +20,17 @@ const UserLogin = () => {
         { email, password }
       );
 
-      toast.success("Welcome back! 🚗🔥");
-      setUser(res.data.user);
+      
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-
+       if(res.data.user && res.data.user.blocked){
+                toast.error("Your account has been blocked. Please contact support.");
+                navigate("/blocked");
+                return;
+              }
+toast.success("Welcome back! 🚗🔥");
+      setUser(res.data.user);
       navigate("/home");
     } catch {
       toast.error("Invalid email or password ❌");

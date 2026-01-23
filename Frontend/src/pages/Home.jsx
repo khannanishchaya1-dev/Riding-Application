@@ -26,6 +26,7 @@ import { useLocation } from "react-router-dom";
 
 
 
+
 const Home = () => {
   const location=useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,12 +54,27 @@ const Home = () => {
   const { user, setUser } = useContext(UserDataContext); // Get user data from context
   const [captainData] = useContext(CaptainDataContext); // Get captain data from context
 const[noDriverFound,setnoDriverFound] = useState(false);
-  const { sendMessage } = useSocket();
+  const { socket,sendMessage } = useSocket();
   const {receiveMessage,offMessage}=useSocket();
   const navigate = useNavigate();
 const noDriverFoundRef = useRef(null);
 
-  
+  const [isBlocked, setIsBlocked] = useState(() => {
+  const stored = JSON.parse(localStorage.getItem("user"));
+  return stored?.blocked || false;
+});
+useEffect(() => {
+  if (isBlocked) {
+    navigate("/blocked", { replace: true });
+  }
+}, [isBlocked, navigate]);
+useEffect(() => {
+  const storedCaptain = JSON.parse(localStorage.getItem("captain"));
+  if (storedCaptain?.blocked) {
+    navigate("/captain-blocked");
+  }
+}, []);
+
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
   if (storedUser){ 
@@ -74,6 +90,45 @@ useEffect(()=>{
     localStorage.removeItem("activeRide");
   }
 },[])
+ useEffect(() => {
+  if (!socket) return;
+
+  const handleBlockStatus = (data) => {
+    if (data.blocked) {
+      // 🔔 Show toast
+      toast.error(`${data.message} — you are restricted from booking rides`);
+
+      // 🔒 Update user status in localStorage
+      const user = JSON.parse(localStorage.getItem("user")) || {};
+      const updatedUser = {
+        ...user,
+        blocked: true,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // 🚫 Redirect to blocked page
+      navigate("/blocked", { replace: true });
+    }else{
+       const user = JSON.parse(localStorage.getItem("user")) || {};
+      const updatedUser = {
+        ...user,
+        blocked: false,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      navigate("/home", { replace: true });
+
+    }
+  };
+
+  socket.on("user-block-status", handleBlockStatus);
+
+  // 🧹 Cleanup
+  return () => {
+    socket.off("user-block-status", handleBlockStatus);
+  };
+}, [socket, navigate]);
 
   useEffect(() => {
     if (!user._id) return;

@@ -34,6 +34,8 @@ import UsersList from "./pages/admin/UsersList";
 import CaptainsList from "./pages/admin/CaptainsList";
 import RidesList from "./pages/admin/RidesList";
 import AdminProtectWrapper from "./pages/admin/AdminProtectWrapper";
+import Blocked from './pages/Blocked';
+import CaptainBlocked from './pages/CaptainBlocked';
 
 const App = () => {
   return (
@@ -94,6 +96,8 @@ const App = () => {
 <Route path="/admin/users" element={<AdminProtectWrapper><UsersList /></AdminProtectWrapper>} />
 <Route path="/admin/captains" element={<AdminProtectWrapper><CaptainsList /></AdminProtectWrapper>} />
 <Route path="/admin/rides" element={<AdminProtectWrapper><RidesList /></AdminProtectWrapper>} />
+<Route path="/blocked" element={<UserProtectWrapper><Blocked /></UserProtectWrapper>} />
+<Route path="/captain-blocked" element={<CaptainProtectWrapper><CaptainBlocked /></CaptainProtectWrapper>} />
     </Routes>
     </>
     

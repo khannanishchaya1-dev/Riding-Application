@@ -27,6 +27,11 @@ const CaptainLogin = () => {
         setCaptainData(response.data.captain);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("captain", JSON.stringify(response.data.captain));
+        if(response.data.captain.blocked){
+          toast.error("Your account has been blocked. Please contact support.");
+          navigate("/captain-blocked");
+          return;
+        }
 
         toast.success("Welcome Captain 🚖🔥");
         navigate("/captain-home");
