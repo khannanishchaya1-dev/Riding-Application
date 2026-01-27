@@ -50,14 +50,7 @@ const CaptainsList = () => {
     }
   }
 
-  const toggleStatus = (id) => {
-    setCaptains((prev) =>
-      prev.map((c) =>
-        c._id === id ? { ...c, status: !c.status } : c
-      )
-    );
-  };
-
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen text-gray-500">

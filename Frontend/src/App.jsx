@@ -36,8 +36,31 @@ import RidesList from "./pages/admin/RidesList";
 import AdminProtectWrapper from "./pages/admin/AdminProtectWrapper";
 import Blocked from './pages/Blocked';
 import CaptainBlocked from './pages/CaptainBlocked';
+import AIChatbot from './components/AIchatbot';
+import { useLocation } from "react-router-dom";
 
 const App = () => {
+  
+  const location = useLocation();
+
+  // Pages where chatbot should be hidden
+  const hideChatbotPaths = [
+    "/",                 // Splash
+    "/start",
+    "/login",
+    "/signup",
+    "/captain-login",
+    "/captain-signup",
+    "/admin/login",
+    "/forgot-password",
+    "/forgot-password-captain"
+  ];
+
+  const shouldHideChatbot =
+    hideChatbotPaths.includes(location.pathname) ||
+    location.pathname.startsWith("/reset-password") ||
+    location.pathname.startsWith("/reset-password-captain") ||
+    location.pathname.startsWith("/verify");
   return (
     <>
     <Toaster position="top-center" reverseOrder={false} />
@@ -99,6 +122,7 @@ const App = () => {
 <Route path="/blocked" element={<UserProtectWrapper><Blocked /></UserProtectWrapper>} />
 <Route path="/captain-blocked" element={<CaptainProtectWrapper><CaptainBlocked /></CaptainProtectWrapper>} />
     </Routes>
+    {!shouldHideChatbot && <AIChatbot />}
     </>
     
   )

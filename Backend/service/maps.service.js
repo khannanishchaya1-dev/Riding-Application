@@ -130,7 +130,8 @@ module.exports.getCaptainsInRadius = async (lat, lon, radius, vehicleType) => {
 
     const captains = await captainModel.find({
       status: true, // only active captains
-      "vehicle.vehicleType": vehicleType, // 🔥 filter based on requested vehicle type
+      "vehicle.vehicleType": vehicleType,
+      blocked: false, // 🔥 filter based on requested vehicle type
       location: {
         $geoWithin: {
           $centerSphere: [[lon, lat], radius / 6371], 

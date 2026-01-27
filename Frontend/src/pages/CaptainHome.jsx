@@ -51,6 +51,7 @@ const CaptainHome = () => {
   if (!socket) return;
 
   const handleBlockStatus = (data) => {
+    
     if (data.blocked) {
       // 🔔 Show toast
       toast.error(`${data.message} — you are restricted from taking rides`);

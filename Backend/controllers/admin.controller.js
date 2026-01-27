@@ -141,6 +141,7 @@ exports.blockUnblockUser = async(req,res)=>{
 };
 exports.blockUnblockCaptain = async(req,res)=>{
   try{
+    
     const {captainId}=req.params;
     if(!captainId){
       res.status(400).json({message:"Captain ID is required"});
@@ -151,6 +152,7 @@ exports.blockUnblockCaptain = async(req,res)=>{
     }
     captain.blocked = !captain.blocked;
     await captain.save();
+    
     const statusMessage = captain.blocked ? "blocked" : "unblocked";
     if (captain.socketId) {
       sendSocketMessageTo(captain.socketId, {
