@@ -111,7 +111,7 @@ const RideDetails = () => {
 
 
   return (
-    <div className="h-[100dvh] bg-gray-50 px-5 py-8">
+    <div className="min-h-screen bg-gray-50 px-5 py-8">
       
       {/* HEADER */}
       <div className="flex items-center justify-between">
