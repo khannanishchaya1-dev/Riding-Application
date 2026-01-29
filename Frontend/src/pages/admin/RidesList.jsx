@@ -96,7 +96,7 @@ const RideList = () => {
               {/* Ride Details */}
               <div className="mt-3 text-sm text-gray-600 space-y-1">
                 <p><span className="font-medium">Fare:</span> ₹{r.fare?.toFixed(2)}</p>
-                <p><span className="font-medium">Distance:</span> {(r.distance / 1000).toFixed(2)} km</p>
+                <p><span className="font-medium">Distance:</span> {(r.distance).toFixed(2)} km</p>
                 <p>
                   <span className="font-medium">Payment:</span>{" "}
                   <span
