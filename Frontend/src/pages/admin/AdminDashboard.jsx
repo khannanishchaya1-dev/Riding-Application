@@ -30,7 +30,7 @@ const CenterTextPlugin = {
 ChartJS.register(CenterTextPlugin);
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState({ users: 0, captains: 0, rides: 0 });
+  const [stats, setStats] = useState({ users: 0, captains: 0, rides: 0 ,reports:0});
   const [rideStats, setRideStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const {admin} = React.useContext(AdminContext);
@@ -39,6 +39,7 @@ const AdminDashboard = () => {
   const animUsers = useCountUp(stats.users);
   const animCaptains = useCountUp(stats.captains);
   const animRides = useCountUp(stats.rides);
+  const animReports = useCountUp(stats.reports);
 
   useEffect(() => {
     const loadStats = async () => {
@@ -82,6 +83,7 @@ const AdminDashboard = () => {
             <Card title="Total Users" value={animUsers} />
             <Card title="Total Captains" value={animCaptains} />
             <Card title="Total Rides" value={animRides} />
+            <Card title="Total Reports" value={animReports} />
           </div>
 
           {/* Manage Section */}
@@ -93,6 +95,7 @@ const AdminDashboard = () => {
             <NavCard title="Users" desc="View, track & block users" link="/admin/users" />
             <NavCard title="Captains" desc="Approve & monitor drivers" link="/admin/captains" />
             <NavCard title="Rides" desc="View ride logs & status" link="/admin/rides" />
+            <NavCard title="Reports" desc="Handle user & captain reports" link="/admin/reports" />
           </div>
 
           {/* Widgets */}

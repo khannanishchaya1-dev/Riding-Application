@@ -38,6 +38,10 @@ import Blocked from './pages/Blocked';
 import CaptainBlocked from './pages/CaptainBlocked';
 import AIChatbot from './components/AIchatbot';
 import { useLocation } from "react-router-dom";
+import PassengerReported from './pages/PassengerReported';
+import CaptainReported from './pages/CaptainReported';
+import ReportsList from './pages/admin/ReportList';
+
 
 const App = () => {
   
@@ -53,7 +57,15 @@ const App = () => {
     "/captain-signup",
     "/admin/login",
     "/forgot-password",
-    "/forgot-password-captain"
+    "/forgot-password-captain",
+    "/captain-reported",
+    "/passenger-reported",
+    "/admin/dashboard",
+    "/admin/users",
+    "/admin/captains",
+    "/admin/rides",
+    "/admin/reports"
+
   ];
 
   const shouldHideChatbot =
@@ -106,6 +118,8 @@ const App = () => {
       <Route path='/captain-ride-details/:id' element={
         <CaptainProtectWrapper> <CaptainRideDetails/></CaptainProtectWrapper>
       }/>
+      <Route path="/passenger-reported" element={<CaptainProtectWrapper><PassengerReported /></CaptainProtectWrapper>} />
+
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/verify-captain-email" element={<VerifyCaptainEmail />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -119,8 +133,10 @@ const App = () => {
 <Route path="/admin/users" element={<AdminProtectWrapper><UsersList /></AdminProtectWrapper>} />
 <Route path="/admin/captains" element={<AdminProtectWrapper><CaptainsList /></AdminProtectWrapper>} />
 <Route path="/admin/rides" element={<AdminProtectWrapper><RidesList /></AdminProtectWrapper>} />
+<Route path="/admin/reports" element={<AdminProtectWrapper><ReportsList /></AdminProtectWrapper>} />
 <Route path="/blocked" element={<UserProtectWrapper><Blocked /></UserProtectWrapper>} />
 <Route path="/captain-blocked" element={<CaptainProtectWrapper><CaptainBlocked /></CaptainProtectWrapper>} />
+<Route path="/captain-reported" element={<UserProtectWrapper><CaptainReported /></UserProtectWrapper>} />
     </Routes>
     {!shouldHideChatbot && <AIChatbot />}
     </>

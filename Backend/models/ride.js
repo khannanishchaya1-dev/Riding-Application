@@ -62,7 +62,17 @@ const rideSchema = new mongoose.Schema({
     type:String,
     enum:['Car','Moto','Auto'],
     required:true
+  },
+  
+  reportedbyPassenger:{
+    type:Boolean,
+    default:false
+  },
+  reportedbyCaptain:{
+    type:Boolean,
+    default:false
   }
+
 }, { timestamps:true });
 
 module.exports = mongoose.model('RIDE', rideSchema);

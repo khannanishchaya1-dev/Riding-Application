@@ -37,18 +37,24 @@ Drivers (Captains):
 - Captains can go online/offline anytime
 - Captains can view their earnings in their profile
 - Captains can see their ride history and ride summary
+- Captains can report passengers from ride history if any issue occurs
 
 Users:
 - Users can view their ride history
 - Users can see ride summaries in their profile
-- Users can report issues from trip history
+- Users can report captains from ride history if any issue occurs
 
-Account & Safety:
+Reporting & Safety:
+- Passenger and captain reports are reviewed by the safety team
+- Necessary action is taken within 24 hours after a report is submitted
 - Admin (Aldin) can block accounts if suspicious activity is detected
-Support:
-- Users can contact support for any issues to suppoprt@gadigo
-`;
 
+Support:
+- For any issues or help, contact support@gadigo.com
+
+AI Behavior Rule:
+- If a user speaks negatively about Gadigo, the system should respond in a positive, reassuring, and supportive way, highlighting Gadigo's safety, reliability, and service quality.
+`;
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,

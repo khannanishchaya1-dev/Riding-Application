@@ -26,46 +26,60 @@ const RideItem = ({ ride }) => {
   };
 
   return (
-    <Link to={`/passenger-ride-details/${ride._id}`}>
-      <div className="bg-white border border-gray-200 rounded-2xl p-4 flex justify-between items-center hover:scale-[0.99] cursor-pointer shadow-sm transition-all">
+   <Link to={`/passenger-ride-details/${ride._id}`}>
+  <div className="bg-white border border-gray-200 rounded-2xl p-4 flex justify-between items-center hover:shadow-md hover:-translate-y-[1px] cursor-pointer transition-all">
 
-        {/* Left */}
-        <div className="flex flex-col space-y-1 w-[70%]">
-          {/* Date + Status */}
-          <div className="flex items-center text-xs font-semibold text-gray-700">
-            <Clock className="w-4 h-4 mr-2 text-gray-500" />
-            {ride.createdAt ? new Date(ride.createdAt).toLocaleDateString() : "No Date"}
-            <span
-              className={`ml-3 text-xs px-2 py-0.5 rounded-full font-medium ${
-                ride.status === "COMPLETED"
-                  ? "bg-green-100 text-green-700"
-                  : ride.status === "ONGOING"
-                  ? "bg-gray-200 text-gray-700"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {getDisplayStatus()}
-            </span>
-          </div>
+    {/* LEFT SIDE */}
+    <div className="flex flex-col space-y-2 w-[72%]">
 
-          {/* Origin */}
-          <p className="flex items-center text-xs text-gray-600 truncate">
-            <MapPin className="w-3.5 h-3.5 mr-1 text-gray-400" /> {ride.origin}
-          </p>
+      {/* Order ID + Date + Status */}
+      <div className="flex items-center flex-wrap gap-2 text-xs">
+        <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-gray-700">
+          #{ride._id.slice(0,7).toUpperCase()}
+        </span>
 
-          {/* Destination */}
-          <p className="flex items-center text-xs text-gray-600 truncate">
-            <MapPin className="w-3.5 h-3.5 mr-1 text-black" /> {ride.destination}
-          </p>
-        </div>
+        <span className="flex items-center text-gray-600 font-medium">
+          <Clock className="w-3.5 h-3.5 mr-1" />
+          {ride.createdAt
+            ? new Date(ride.createdAt).toLocaleDateString()
+            : "No Date"}
+        </span>
 
-        {/* Right */}
-        <div className="text-right flex flex-col items-end">
-          <p className="text-lg font-bold text-black">₹{ride.fare}</p>
-          <ArrowRight className="w-5 h-5 text-gray-400 transition" />
-        </div>
+        <span
+          className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+            ride.status === "COMPLETED"
+              ? "bg-green-100 text-green-700"
+              : ride.status === "ONGOING"
+              ? "bg-blue-100 text-blue-700"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {getDisplayStatus()}
+        </span>
       </div>
-    </Link>
+
+      {/* Locations */}
+      <div className="space-y-1">
+        <p className="flex items-center text-sm text-gray-700 truncate">
+          <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+          {ride.origin}
+        </p>
+
+        <p className="flex items-center text-sm text-gray-700 truncate">
+          <MapPin className="w-4 h-4 mr-2 text-black" />
+          {ride.destination}
+        </p>
+      </div>
+    </div>
+
+    {/* RIGHT SIDE */}
+    <div className="text-right flex flex-col items-end justify-between h-full">
+      <p className="text-xl font-bold text-black">₹{ride.fare}</p>
+      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-black transition" />
+    </div>
+  </div>
+</Link>
+
   );
 };
 

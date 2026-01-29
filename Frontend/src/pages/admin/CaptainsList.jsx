@@ -6,6 +6,10 @@ import toast from "react-hot-toast";
 const CaptainsList = () => {
   const [captains, setCaptains] = useState([]);
   const [loading, setLoading] = useState(true);
+   const [search, setSearch] = useState("");
+  const filteredCaptains = captains.filter((c) =>
+    c.email?.toLowerCase().includes(search.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchCaptains = async () => {
@@ -27,134 +31,134 @@ const CaptainsList = () => {
     };
     fetchCaptains();
   }, []);
-  const blockUnblockCaptain = async (id)=>{
+
+  const blockUnblockCaptain = async (id) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}admin/block-captain/${id}`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
-      });
-      if(response.data.success){
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}admin/block-captain/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
         toast.success(response.data.message);
-        setCaptains((prevCaptains) =>
-          prevCaptains.map((c) =>
-            c._id === id ? { ...c, blocked: !c.blocked }:c
+        setCaptains((prev) =>
+          prev.map((c) =>
+            c._id === id ? { ...c, blocked: !c.blocked } : c
           )
         );
-      }else{
+      } else {
         toast.error(response.data.message);
       }
-    } catch (error) {
-      console.error("Error blocking captain:", error.message);
+    } catch {
       toast.error("Something went wrong");
     }
-  }
+  };
 
-  
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen text-gray-500">
+      <div className="flex justify-center items-center min-h-screen text-gray-500 text-sm">
         Loading captains...
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-[#F8FAFC]">
-      {/* Sidebar */}
-      
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <AdminNavbar admin={{ name: "Super Admin" }} />
 
-      {/* Main */}
-      <div className="flex-1 w-full">
-        <AdminNavbar admin={{ name: "Super Admin" }} />
+     <main className="p-4 h-[calc(100vh-70px)] overflow-y-auto no-scrollbar">
 
-        <main className="p-4 md:p-6 overflow-y-auto">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
-            Captains
-          </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 max-w-3xl mx-auto">
+  <h1 className="text-lg font-semibold text-gray-800">Users</h1>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600 border-b">
-                  <th className="py-3 px-4 font-medium">Name</th>
-                  <th className="py-3 px-4 font-medium">Email</th>
-                  <th className="py-3 px-4 font-medium">Phone</th>
-                  <th className="py-3 px-4 font-medium">Vehicle</th>
-                  <th className="py-3 px-4 font-medium">Plate</th>
-                  <th className="py-3 px-4 font-medium">Capacity</th>
-                  <th className="py-3 px-4 font-medium">Status</th>
-                  <th className="py-3 px-4 font-medium">Verified</th>
-                  <th className="py-3 px-4 font-medium w-32">Action</th>
-                </tr>
-              </thead>
+  <input
+    type="text"
+    placeholder="Search by email..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full sm:w-64 px-3 py-2 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
 
-              <tbody>
-                {captains.map((c, i) => (
-                  <tr
-                    key={c._id}
-                    className={`border-b hover:bg-gray-100 transition ${
-                      i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    }`}
+
+       <div className="space-y-4 max-w-3xl mx-auto">
+          {filteredCaptains.map((c) => (
+            <div
+              key={c._id}
+              className="bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {c.fullname?.firstname} {c.fullname?.lastname}
+                  </p>
+                  <p className="text-sm text-gray-500">{c.email}</p>
+                  <p className="text-sm text-gray-500">{c.phone}</p>
+                </div>
+
+                <span
+                  className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    c.status
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {c.status ? "Active" : "Blocked"}
+                </span>
+              </div>
+
+              <div className="mt-3 text-sm text-gray-600 space-y-1">
+                <p>
+                  <span className="font-medium">Vehicle:</span>{" "}
+                  {c.vehicle?.vehicleModel} ({c.vehicle?.vehicleType})
+                </p>
+                <p>
+                  <span className="font-medium">Plate:</span>{" "}
+                  {c.vehicle?.numberPlate}
+                </p>
+                <p>
+                  <span className="font-medium">Capacity:</span>{" "}
+                  {c.vehicle?.capacity}
+                </p>
+                <p>
+                  <span className="font-medium">Verified:</span>{" "}
+                  <span
+                    className={
+                      c.isVerified
+                        ? "text-blue-600"
+                        : "text-yellow-600"
+                    }
                   >
-                    <td className="py-3 px-4 font-medium">
-                      {c.fullname?.firstname} {c.fullname?.lastname}
-                    </td>
-                    <td className="px-4 text-gray-600">{c.email}</td>
-                    <td className="px-4 text-gray-600">{c.phone}</td>
-                    <td className="px-4 text-gray-600">
-                      {c.vehicle?.vehicleModel} ({c.vehicle?.vehicleType})
-                    </td>
-                    <td className="px-4 text-gray-600">
-                      {c.vehicle?.numberPlate}
-                    </td>
-                    <td className="px-4 text-gray-600">
-                      {c.vehicle?.capacity}
-                    </td>
-                    <td className="px-4">
-                      {c.status ? (
-                        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">
-                          Blocked
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4">
-                      {c.isVerified ? (
-                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs font-medium">
-                          Pending
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4">
-                      <button
-                        onClick={() => blockUnblockCaptain(c._id)}
-                        className={`w-full sm:w-auto px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                          c.blocked
-                            ? "bg-green-500 text-white hover:bg-green-600"
-                            : "bg-red-500 text-white hover:bg-red-600"
-                        }`}
-                      >
-                        {c.blocked ? "Unblock" : "Block"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                    {c.isVerified ? "Yes" : "Pending"}
+                  </span>
+                </p>
+              </div>
 
-            </table>
-          </div>
-        </main>
-      </div>
+              <button
+                onClick={() => blockUnblockCaptain(c._id)}
+                className={`mt-4 w-full py-2 rounded-lg text-sm font-medium transition ${
+                  c.blocked
+                    ? "bg-green-500 text-white hover:bg-green-600"
+                    : "bg-red-500 text-white hover:bg-red-600"
+                }`}
+              >
+                {c.blocked ? "Unblock Captain" : "Block Captain"}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {filteredCaptains.length === 0 && (
+          <p className="text-center text-gray-500 mt-6">No matching captains found</p>
+        )}
+      </main>
     </div>
   );
 };
-"bg-red-500 text-white hover:bg-red-600"
+
 export default CaptainsList;

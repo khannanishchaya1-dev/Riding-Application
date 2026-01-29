@@ -40,38 +40,60 @@ const TripItem = ({ trip }) => {
 
   return (
     <Link to={`/captain-ride-details/${trip._id}`}>
-      <div className="bg-white border border-gray-200 rounded-2xl p-4 flex justify-between items-center hover:scale-[0.99] cursor-pointer shadow-sm transition-all">
-        <div className="flex flex-col space-y-1 w-[70%]">
-          <div className="flex items-center text-xs font-semibold text-gray-700">
-            <Clock className="w-4 h-4 mr-2 text-gray-500" />
-            {new Date(trip.createdAt).toLocaleDateString()}
-            <span
-              className={`ml-3 text-xs px-2 py-0.5 rounded-full font-medium ${
-                trip.status === "COMPLETED"
-                  ? "bg-green-100 text-green-700"
-                  : trip.status === "ONGOING"
-                  ? "bg-gray-200 text-gray-700"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {getStatus()}
-            </span>
-          </div>
+  <div className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-md hover:-translate-y-[1px] cursor-pointer transition-all space-y-3">
 
-          <p className="flex items-center text-xs text-gray-600 truncate">
-            <MapPin className="w-3.5 h-3.5 mr-1 text-gray-400" /> {trip.origin}
-          </p>
-          <p className="flex items-center text-xs text-gray-600 truncate">
-            <MapPin className="w-3.5 h-3.5 mr-1 text-black" /> {trip.destination}
-          </p>
+    {/* TOP CONTENT */}
+    <div className="flex justify-between items-center">
+
+      {/* LEFT */}
+      <div className="flex flex-col space-y-2 w-[72%]">
+        <div className="flex items-center flex-wrap gap-2 text-xs">
+          <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-gray-700">
+            #{trip._id.slice(0,7).toUpperCase()}
+          </span>
+
+          <span className="flex items-center text-gray-600 font-medium">
+            <Clock className="w-3.5 h-3.5 mr-1" />
+            {new Date(trip.createdAt).toLocaleDateString()}
+          </span>
+
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+              trip.status === "COMPLETED"
+                ? "bg-green-100 text-green-700"
+                : trip.status === "ONGOING"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {getStatus()}
+          </span>
         </div>
 
-        <div className="text-right flex flex-col items-end">
-          <p className="text-lg font-bold text-black">₹{trip.fare.toFixed(2)}</p>
-          <ArrowRight className="w-5 h-5 text-gray-400" />
+        <div className="space-y-1">
+          <p className="flex items-center text-sm text-gray-700 truncate">
+            <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+            {trip.origin}
+          </p>
+
+          <p className="flex items-center text-sm text-gray-700 truncate">
+            <MapPin className="w-4 h-4 mr-2 text-black" />
+            {trip.destination}
+          </p>
         </div>
       </div>
-    </Link>
+
+      {/* RIGHT */}
+      <div className="text-right flex flex-col items-end">
+        <p className="text-xl font-bold text-black">₹{trip.fare.toFixed(2)}</p>
+        <ArrowRight className="w-5 h-5 text-gray-400 transition" />
+      </div>
+    </div>
+
+    
+  </div>
+</Link>
+
   );
 };
 

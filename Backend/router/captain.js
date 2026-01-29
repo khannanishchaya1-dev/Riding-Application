@@ -7,7 +7,7 @@ const Ride = require('../models/ride');
 const Captain = require("../models/captain");
 const upload = require("../middlewares/upload");
 
-
+const reportController = require('../controllers/report');
 router.post(
   "/register",
   upload.single("image"), // ✅ multer FIRST
@@ -101,6 +101,8 @@ router.get("/location/passenger", authCaptain,async (req,res)=>{
   console.log("captain is.....",captain)
   res.json({ lat: captain.location.coordinates[1], lon: captain.location.coordinates[0] });
 });
+
+router.post('/report-passenger',body("passengerId").isMongoId().withMessage("Invalid passenger ID"),authCaptain, reportController.reportPassenger);
 
 
 

@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+
 
 userSchema.pre("save",function(next){
    const user=this;

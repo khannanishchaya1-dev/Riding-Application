@@ -4,7 +4,9 @@ const{body} = require('express-validator');
 const Ride = require('../models/ride');
 const User = require("../models/user");
 const { handleUserRegister, handleUserLogin, getUserProfile, logoutUser,verifyOTP,resendOtp,forgotPassword,resetPassword } =require('../controllers/user');
+const reportController = require('../controllers/report');
 const { authUser } = require('../middlewares/auth');
+
 router.post('/register',[
   body('email').isEmail().withMessage('Invalid Email'),
   body("phone") // ⭐ NEW: Phone validation (assuming min 10 digits)
@@ -48,7 +50,14 @@ router.delete("/delete-account", authUser, async (req, res) => {
     res.status(500).json({ message: "Failed to delete account" });
   }
 });
-
+router.post(
+  "/report-captain",
+  authUser,
+  body("rideId").isMongoId().withMessage("Invalid Ride Id"),
+  body("captainId").isMongoId().withMessage("Invalid Captain Id"),
+  body("reason").isString().notEmpty().withMessage("Reason is required"),
+  reportController.reportCaptain
+);
 
 
 module.exports=router;

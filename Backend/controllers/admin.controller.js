@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Captain = require("../models/captain");
+const Report = require("../models/reports");
 const Ride = require("../models/ride");
 const { sendSocketMessageTo } = require("../socket");
 
@@ -42,13 +43,15 @@ exports.getAdminStats = async (req, res) => {
     const users = await User.countDocuments();
     const captains = await Captain.countDocuments();
     const rides = await Ride.countDocuments();
+    const reports = await Report.countDocuments();
 
     return res.json({
       success: true,
       stats: {
         users,
         captains,
-        rides
+        rides,
+        reports
       }
     });
   } catch (error) {
@@ -170,3 +173,62 @@ exports.blockUnblockCaptain = async(req,res)=>{
     res.status(500).json({ success: false, message: error.message });
   }
 }
+exports.getAllReports = async (req, res) => {
+  try {
+    const reports = await Report.find()
+      .populate({
+        path: "rideId",
+        select: "origin destination fare status createdAt"
+      }).populate({
+        path: "reportedBy",
+        select: "fullname email phone"
+      }).populate({
+        path: "reportedUser",
+        select: "fullname email phone"
+      }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      count: reports.length,
+      reports,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+exports.updateReportStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = ["RESOLVED", "REJECTED", "UNDER_REVIEW"];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    const report = await Report.findById(id);
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    report.status = status;
+    await report.save();
+
+    res.json({
+      success: true,
+      message: `Report marked as ${status}`,
+      report,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

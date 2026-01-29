@@ -1,0 +1,62 @@
+.report-container {
+  padding: 10px;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.report-table thead {
+  background: #f4f4f4;
+}
+
+.status-badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* MOBILE CARD VIEW */
+.report-cards {
+  display: none;
+}
+
+.report-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.date {
+  font-size: 12px;
+  color: gray;
+  margin-top: 6px;
+}
+
+/* 📱 Switch to cards on small screens */
+@media (max-width: 768px) {
+  .report-table {
+    display: none;
+  }
+  .report-cards {
+    display: block;
+  }
+}
