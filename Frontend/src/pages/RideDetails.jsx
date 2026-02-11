@@ -23,13 +23,12 @@ const RideDetails = () => {
   const [reportReason, setReportReason] = useState("");
   const [loadingReport, setLoadingReport] = useState(false);
   const [isCaptainBlocked, setIsCaptainBlocked] = useState(false);
-  
-    useEffect(() => {
-      if (ride?.reportedbyPassenger === true) {
-        setIsCaptainBlocked(true);
-      }
-    }, [ride]);
-  
+
+  useEffect(() => {
+    if (ride?.reportedbyPassenger === true) {
+      setIsCaptainBlocked(true);
+    }
+  }, [ride]);
 
   useEffect(() => {
     fetchRide();
@@ -51,7 +50,7 @@ const RideDetails = () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}users/find-ride/${id}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setRide(res.data.ride);
     } catch {
@@ -65,7 +64,11 @@ const RideDetails = () => {
   const getStatusStyle = () => {
     switch (ride.status) {
       case "COMPLETED":
-        return { bg: "bg-green-100", text: "text-green-700", Icon: CheckCircle };
+        return {
+          bg: "bg-green-100",
+          text: "text-green-700",
+          Icon: CheckCircle,
+        };
       case "ONGOING":
         return { bg: "bg-yellow-100", text: "text-yellow-700", Icon: Timer };
       default:
@@ -75,44 +78,41 @@ const RideDetails = () => {
 
   const { bg, text, Icon } = getStatusStyle();
   const handleReportPassenger = async () => {
-  if (!reportReason.trim()) {
-    toast.error("Please enter a reason");
-    return;
-  }
-  
-  try {
-    setLoadingReport(true);
+    if (!reportReason.trim()) {
+      toast.error("Please enter a reason");
+      return;
+    }
 
-    const res = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}users/report-captain`,
-      {
-        rideId: ride._id,
-        captainId: ride.captain._id,
-        reason: reportReason,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      setLoadingReport(true);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}users/report-captain`,
+        {
+          rideId: ride._id,
+          captainId: ride.captain._id,
+          reason: reportReason,
         },
-        withCredentials: true,
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          withCredentials: true,
+        },
+      );
 
-    toast.success("Captain reported 🚩");
-    setShowReportModal(false);
-    navigate("/captain-reported", { state: { reason: reportReason } });
-
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Failed to report");
-  } finally {
-    setLoadingReport(false);
-  }
-};
-
+      toast.success("Captain reported 🚩");
+      setShowReportModal(false);
+      navigate("/captain-reported", { state: { reason: reportReason } });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to report");
+    } finally {
+      setLoadingReport(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 px-5 py-8">
-      
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <motion.h1
@@ -195,7 +195,6 @@ const RideDetails = () => {
 
         {/* STATS */}
         <div className="grid grid-cols-3 text-center p-5 gap-4">
-          
           {/* FARE */}
           <div className="bg-gray-50 rounded-xl py-3">
             <Wallet className="mx-auto text-[#E23744]" size={22} />
@@ -239,66 +238,69 @@ const RideDetails = () => {
         <hr className="mx-4 border-gray-200" />
 
         {/* CONTACT */}
-           <div className="p-5 flex justify-between items-center">
-                    {/* REPORT PASSENGER */}
+        <div className="p-5 flex justify-between items-center">
+          {/* REPORT PASSENGER */}
+           {ride.status !== "REQUESTED" && (
           <div className="px-5 pb-4">
             <button
-            onClick={() => setShowReportModal(true)}
-            disabled={isCaptainBlocked}
-            className={`text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2 shadow-sm
-              ${isCaptainBlocked 
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
-                : "bg-red-600 text-white hover:bg-red-700"}
+              onClick={() => setShowReportModal(true)}
+              disabled={isCaptainBlocked}
+              className={`text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2 shadow-sm
+              ${
+                isCaptainBlocked
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-red-600 text-white hover:bg-red-700"
+              }
             `}
-          >
-            🚩 {isCaptainBlocked ? "Captain Already Reported" : "Report Captain"}
-          </button>
-          
-          {showReportModal && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl"
-              >
-                <h2 className="text-lg font-semibold mb-3">Report Passenger</h2>
-          
-                <textarea
-                  placeholder="Describe the issue..."
-                  value={reportReason}
-                  onChange={(e) => setReportReason(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                  rows={4}
-                />
-          
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    onClick={() => setShowReportModal(false)}
-                    className="px-4 py-2 text-sm rounded-lg border"
-                  >
-                    Cancel
-                  </button>
-          
-                  <button
-                    onClick={handleReportPassenger}
-                    disabled={loadingReport}
-                    className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
-                  >
-                    {loadingReport ? "Reporting..." : "Submit Report"}
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-          
-          </div>
-          
-          
-                    <Mail size={22} className="text-[#E23744]" />
+            >
+              🚩{" "}
+              {isCaptainBlocked ? "Captain Already Reported" : "Report Captain"}
+            </button>
+
+            {showReportModal && (
+              <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl"
+                >
+                  <h2 className="text-lg font-semibold mb-3">
+                    Report Passenger
+                  </h2>
+
+                  <textarea
+                    placeholder="Describe the issue..."
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    rows={4}
+                  />
+
+                  <div className="flex justify-end gap-3 mt-4">
+                    <button
+                      onClick={() => setShowReportModal(false)}
+                      className="px-4 py-2 text-sm rounded-lg border"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleReportPassenger}
+                      disabled={loadingReport}
+                      className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {loadingReport ? "Reporting..." : "Submit Report"}
+                    </button>
                   </div>
                 </motion.div>
-          
-      
+              </div>
+            )}
+          </div>
+           )}
+
+          <Mail size={22} className="text-[#E23744]" />
+        </div>
+      </motion.div>
 
       {/* PAYMENT CTA */}
       {ride.paymentStatus !== "PAID" && ride.status === "ONGOING" && (

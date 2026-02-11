@@ -64,7 +64,9 @@ const App = () => {
     "/admin/users",
     "/admin/captains",
     "/admin/rides",
-    "/admin/reports"
+    "/admin/reports",
+    "/riding",
+    "/captain-riding"
 
   ];
 
