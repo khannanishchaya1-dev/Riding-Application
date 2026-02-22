@@ -411,6 +411,7 @@ const create_ride = async (selectedVehicleType) => {
     destination,
     vehicleType: selectedVehicleType,
   };
+  
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}rides/create-ride`,

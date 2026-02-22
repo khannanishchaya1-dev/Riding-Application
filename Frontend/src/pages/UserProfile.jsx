@@ -284,7 +284,7 @@ useEffect(() => {
                 </pre>
               </div>
 
-              {chartData && (
+              {chartData?.monthlySpend && (
                 <div className="space-y-6">
                   {/* Monthly Spending */}
                   <div className="bg-white border border-gray-200 rounded-xl shadow p-3">
