@@ -11,9 +11,11 @@ const UserLogin = () => {
   const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}users/login`,
@@ -34,6 +36,8 @@ toast.success("Welcome back! 🚗🔥");
       navigate("/home");
     } catch {
       toast.error("Invalid email or password ❌");
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -96,11 +100,15 @@ toast.success("Welcome back! 🚗🔥");
           </div>
 
           {/* Submit Button */}
+          
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-[#111] text-white font-semibold text-lg active:scale-95 transition duration-150 shadow-lg"
+            disabled={loading}
+            className={`w-full py-3 rounded-xl text-white font-semibold text-lg active:scale-95 transition duration-150 shadow-md ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#111]"
+            }`}
           >
-            Continue
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
