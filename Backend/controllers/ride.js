@@ -25,6 +25,7 @@ module.exports.createRide = async (req, res) => {
   try {
 
   const vehicleType = req.body.vehicleType;
+  console.log("Creating ride with:", { origin, destination, vehicleType, originCoordinates, destinationCoordinates });
 
   // 1️⃣ Create ride
   const newRide = await rideService.createRideModel({

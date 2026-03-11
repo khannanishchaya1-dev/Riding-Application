@@ -7,7 +7,7 @@ const captainModel = require('../models/captain')
 
 
 module.exports.calculateFare=async (origin,destination)=>{
-   
+  
  
   if(!origin || !destination){
     throw new error("Pickup and destination locations are required")
@@ -18,6 +18,7 @@ module.exports.calculateFare=async (origin,destination)=>{
   const pickupCoords = await mapService.getCoordinatesfromAddress(origin);
     const destinationCoords = await mapService.getCoordinatesfromAddress(destination);
     console.log(pickupCoords,destinationCoords)
+    console.log(pickupCoords,destinationCoords);
      if (!pickupCoords || !destinationCoords) {
       return res.status(400).json({ message: "Unable to fetch location. Try different address." });
     }

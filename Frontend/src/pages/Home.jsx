@@ -411,6 +411,7 @@ const create_ride = async (selectedVehicleType) => {
     destination,
     vehicleType: selectedVehicleType,
   };
+  console.log("Creating ride with details:", ride_details);
   
   try {
     const response = await axios.post(

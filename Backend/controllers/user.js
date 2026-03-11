@@ -45,6 +45,7 @@ const handleUserRegister = async (req, res) => {
 };
 const handleUserLogin =async  (req,res,next)=>{
 
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -56,6 +57,7 @@ const handleUserLogin =async  (req,res,next)=>{
   
   
   const user = await User.findOne({email}).select('+password');
+  
 
   if(!user){
     return res.status(401).json({message:'Invalid email and password'});

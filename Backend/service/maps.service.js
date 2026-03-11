@@ -20,6 +20,8 @@ module.exports.getCoordinatesfromAddress = async (address) => {
         });
 
         const data = res.data;
+        console.log("Geocoding response:", data);
+    
         if (data.status !== 'OK' || !Array.isArray(data.results) || data.results.length === 0) {
             return null;
         }
@@ -27,6 +29,7 @@ module.exports.getCoordinatesfromAddress = async (address) => {
         const location = data.results[0].geometry.location; // { lat, lng }
         return {lon: Number(location.lng), lat: Number(location.lat) };
     } catch (err) {
+        
         return null;
     }
 }

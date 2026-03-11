@@ -68,7 +68,10 @@ const App = () => {
     "/riding",
     "/captain-riding",
     "/home",
-    "/captain-home"
+    "/captain-home",
+    "/logout",
+    "/captain-logout",
+    
 
   ];
 
