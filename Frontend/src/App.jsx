@@ -41,6 +41,7 @@ import { useLocation } from "react-router-dom";
 import PassengerReported from './pages/PassengerReported';
 import CaptainReported from './pages/CaptainReported';
 import ReportsList from './pages/admin/ReportList';
+import NotFound from './pages/NotFound';
 
 
 const App = () => {
@@ -144,8 +145,10 @@ const App = () => {
 <Route path="/blocked" element={<UserProtectWrapper><Blocked /></UserProtectWrapper>} />
 <Route path="/captain-blocked" element={<CaptainProtectWrapper><CaptainBlocked /></CaptainProtectWrapper>} />
 <Route path="/captain-reported" element={<UserProtectWrapper><CaptainReported /></UserProtectWrapper>} />
+<Route path="*" element={<NotFound />} />
     </Routes>
     {!shouldHideChatbot && <AIChatbot />}
+
     </>
     
   )
