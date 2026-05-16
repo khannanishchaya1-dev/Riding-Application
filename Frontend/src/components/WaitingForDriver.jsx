@@ -10,7 +10,7 @@ const WaitingForDriver = ({ ride, setWaitingForDriver, CancelRide }) => {
   const vehicleImg = vehicleImages[ride?.vehicleType];
 
   return (
-    <div className="bg-white rounded-t-3xl border-t border-gray-200  p-6 ">
+    <div className="bg-white rounded-t-3xl p-6 ">
 
       {/* Handle Bar */}
       <div className="w-14 h-[5px] bg-gray-300 rounded-full mx-auto mb-5"></div>

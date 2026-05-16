@@ -88,19 +88,53 @@ const LiveTrackingOngoing = ({
       options={options}
     >
       {/* 🚗 Captain Live Icon */}
-      {captainPos && (
-        <Marker
-          position={captainPos}
-          icon={{
-            url: "/car.png",
-            scaledSize: new window.google.maps.Size(45, 45),
-            anchor: new window.google.maps.Point(22, 22),
-          }}
-        />
-      )}
+      {/* 🚗 Live Captain */}
+{captainPos && (
+  <Marker
+    position={captainPos}
+    icon={{
+      url: "https://img.icons8.com/?size=100&id=EC624Rw9WKdA&format=png&color=000000",
+      scaledSize: new window.google.maps.Size(45, 45),
+      anchor: new window.google.maps.Point(22, 22),
+    }}
+  />
+)}
+
+{/* 📍 Pickup */}
+{safeOrigin && (
+  <Marker
+    position={safeOrigin}
+    icon={{
+      url: "https://img.icons8.com/?size=100&id=KtUiBF6lEFel&format=png&color=000000",
+      scaledSize: new window.google.maps.Size(40, 40),
+      anchor: new window.google.maps.Point(20, 40),
+    }}
+    optimized={false}
+  />
+)}
+
+{/* 🏁 Destination */}
+{safeDestination && (
+  <Marker
+    position={safeDestination}
+    icon={{
+      url: "https://img.icons8.com/?size=100&id=20844&format=png&color=000000",
+      scaledSize: new window.google.maps.Size(40, 40),
+      anchor: new window.google.maps.Point(20, 40),
+    }}
+    optimized={false}
+  />
+)}
 
       {/* 🛣 Route Line */}
-      {directions && <DirectionsRenderer directions={directions} />}
+      {directions && (
+  <DirectionsRenderer
+    directions={directions}
+    options={{
+      suppressMarkers: true,
+    }}
+  />
+)}
     </GoogleMap>
   );
 };

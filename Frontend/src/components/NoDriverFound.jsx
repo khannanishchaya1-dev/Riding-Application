@@ -12,7 +12,7 @@ const NoDriverFound = ({ setnoDriverFound, setride }) => {
   };
 
   return (
-    <div className="p-7 pb-10 text-center relative bg-white rounded-3xl border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.12)] animate-fadeIn">
+    <div className="p-7 pb-10 text-center relative bg-white rounded-3xl animate-fadeIn">
 
       {/* Close Icon */}
       <button

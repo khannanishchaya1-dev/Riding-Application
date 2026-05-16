@@ -456,7 +456,7 @@ console.log("Ride creation response:", response);
 
   {/* Profile Button */}
   <Link to="/profile">
-    <div className="h-11 w-11 rounded-full bg-[#111] text-white shadow-sm border border-gray-700 
+    <div className="h-10 w-10 rounded-full bg-[#111] text-white shadow-sm border border-gray-700 
                     flex items-center justify-center text-lg font-semibold transition active:scale-95">
       {user?.fullname?.firstname?.charAt(0)?.toUpperCase() || "U"}
     </div>
@@ -465,7 +465,7 @@ console.log("Ride creation response:", response);
 
 
       {/* Background Animation (LiveTracking) */}
-      <div className="h-[100dvh] w-screen z-10">
+      <div className="h-[65dvh] w-screen z-10">
         <LiveTracking />
       </div>
 
@@ -475,7 +475,7 @@ console.log("Ride creation response:", response);
         {/* Main Input Panel (Always visible at the bottom) */}
        {/* Main Input Panel (Zomato Style) */}
 {/* 🚗 Premium Minimal – Main Input Panel */}
-<div className="bg-white border border-gray-200 p-6  w-full max-w-lg mx-auto shadow-md pointer-events-auto relative">
+<div className="h-[35dvh] w-full bg-white border border-gray-200 p-6  w-full max-w-lg mx-auto shadow-md pointer-events-auto relative">
 
   {/* Close arrow – animate only when full panel open */}
   <i

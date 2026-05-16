@@ -333,12 +333,12 @@ useEffect(() => {
       </div>
 
       {/* Map */}
-      <div className="h-[100dvh]">
+      <div className="h-[60dvh]">
         <LiveTracking />
       </div>
 
       {/* Bottom User Card */}
-      <div className="absolute bottom-0 w-full backdrop-blur-xl bg-white/70 rounded-t-3xl p-6 border-t border-gray-300 shadow-lg z-20">
+      <div className="h-[40dvh] w-full absolute bottom-0 w-full backdrop-blur-xl bg-white/70 rounded-t-3xl p-6 border-t border-gray-300 shadow-lg z-20">
         <CaptainDetails captain={captainData} />
       </div>
 
