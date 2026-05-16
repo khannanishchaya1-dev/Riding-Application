@@ -150,6 +150,7 @@ const App = () => {
     {!shouldHideChatbot && <AIChatbot />}
 
     </>
+
     
   )
 }

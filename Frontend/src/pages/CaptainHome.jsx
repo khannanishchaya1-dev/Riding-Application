@@ -338,9 +338,9 @@ useEffect(() => {
       </div>
 
       {/* Bottom User Card */}
-      <div className="h-[40dvh] w-full absolute bottom-0 w-full backdrop-blur-xl bg-white/70 rounded-t-3xl p-6 border-t border-gray-300 shadow-lg z-20">
-        <CaptainDetails captain={captainData} />
-      </div>
+     <div className="h-[40dvh] w-full absolute bottom-0 backdrop-blur-xl bg-gradient-to-r from-yellow-300 to-yellow-200 rounded-t-3xl p-6 border-t border-yellow-200 shadow-2xl z-20">
+  <CaptainDetails captain={captainData} />
+</div>
 
       {/* Incoming Ride Popup */}
       <div
