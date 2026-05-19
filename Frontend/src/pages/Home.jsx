@@ -465,7 +465,7 @@ console.log("Ride creation response:", response);
 
 
       {/* Background Animation (LiveTracking) */}
-      <div className="h-[65dvh] w-screen z-10">
+      <div className="h-[60dvh] w-screen z-10">
         <LiveTracking />
       </div>
 
@@ -475,7 +475,7 @@ console.log("Ride creation response:", response);
         {/* Main Input Panel (Always visible at the bottom) */}
        {/* Main Input Panel (Zomato Style) */}
 {/* 🚗 Premium Minimal – Main Input Panel */}
-<div className="h-[35dvh] w-full bg-white border border-gray-200 p-6  w-full max-w-lg mx-auto shadow-md pointer-events-auto relative">
+<div className="h-[40dvh] w-full bg-white border border-gray-200 p-6  w-full max-w-lg mx-auto shadow-md pointer-events-auto relative">
 
   {/* Close arrow – animate only when full panel open */}
   <i
