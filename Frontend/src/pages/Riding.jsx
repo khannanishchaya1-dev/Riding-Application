@@ -4,6 +4,9 @@ import { useSocket } from "../UserContext/SocketContext";
 import LiveTracking from "../components/LiveTrackingOngoing";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+
+
 const loadRazorpay = () => {
   return new Promise((resolve) => {
     if (window.Razorpay) {
@@ -31,12 +34,9 @@ const loadRazorpay = () => {
 
 
 const Riding = () => {
+  const { rideId } = useParams();
   const location = useLocation();
-  const [ride, setride] = useState(() => {
-    const storedRide = localStorage.getItem("activeRide");
-    return storedRide ? JSON.parse(storedRide) : location.state?.ride || null;
-  });
-
+  const [ride, setride] = useState(null);
   const { receiveMessage, sendMessage, socket, offMessage } = useSocket();
   const navigate = useNavigate();
 
@@ -67,17 +67,20 @@ const Riding = () => {
 
 
   useEffect(() => {
+
   const fetchRideStatus = async () => {
-    if (!ride?._id) return;
+    
+    if (!rideId) return;
 
     try {
       const token = localStorage.getItem("token");
+      console.log(`${import.meta.env.VITE_BACKEND_URL}rides/${rideId}`)
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}rides/${ride._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}rides/${rideId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setride(data); // this updates paymentStatus reliably
+      setride(data.ride); // this updates paymentStatus reliably
     } catch (err) {
       console.error("Failed to sync ride status", err);
     }
@@ -123,6 +126,21 @@ const Riding = () => {
       navigate("/home");
     });
   }, [receiveMessage]);
+  useEffect(() => {
+  const fetchRide = async () => {
+    const token = localStorage.getItem("token");
+console.log(`${import.meta.env.VITE_BACKEND_URL}rides/${rideId}`)
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}rides/${rideId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log(data);
+
+    setride(data.ride);
+  };
+
+  fetchRide();
+}, [rideId]);
 
   // 💳 Razorpay Handler
   const handlePayment = async () => {

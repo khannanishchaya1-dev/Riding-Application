@@ -14,6 +14,7 @@ const UserLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
+    console.log(`${import.meta.env.VITE_BACKEND_URL}users/login`);
     e.preventDefault();
     setLoading(true);
     try {
@@ -21,6 +22,7 @@ const UserLogin = () => {
         `${import.meta.env.VITE_BACKEND_URL}users/login`,
         { email, password }
       );
+
 
       
 

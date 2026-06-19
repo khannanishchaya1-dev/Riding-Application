@@ -5,6 +5,8 @@ const {query}=require('express-validator');
 const { authUser, authCaptain } = require('../middlewares/auth');
 const {createRide} = require('../controllers/ride');
 const rideController=require('../controllers/ride');
+const Ride = require('../models/ride');
+
 
 
 router.post('/create-ride',body('origin').isString().notEmpty().withMessage('Origin is required'),body('destination').isString().notEmpty().withMessage('Destination is required'),body('vehicleType').isString().isIn(['Car', 'Auto', 'Moto']).notEmpty().withMessage('Vehicle type is required'),authUser,createRide);
@@ -19,6 +21,17 @@ router.post('/find-rides',body('user_id').isMongoId().withMessage('invalid userI
 router.post('/find-captain-rides',body('captain_id').isMongoId().withMessage('invalid captain_id'),authCaptain,rideController.findCaptainRide);
 router.post('/cancel-ride',body('rideId').isMongoId().withMessage('invalid rideId'),authCaptain,rideController.cancelRide);
 router.post('/user-cancel-ride',body('rideId').isMongoId().withMessage('invalid rideId'),authUser,rideController.userCancelRide);
+router.get("/:id",authUser ,async (req, res) => {
+  try {
+    const ride = await Ride.findById(req.params.id).populate("captain").select('+otp');
+
+    if (!ride) return res.status(404).json({ message: "Ride not found" });
+console.log(ride);
+    res.json({ ride });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 
 

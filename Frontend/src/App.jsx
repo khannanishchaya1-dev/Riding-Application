@@ -113,7 +113,7 @@ const App = () => {
       <Route path='/captain-logout' element={
         <CaptainProtectWrapper> <CaptainLoggedOut/></CaptainProtectWrapper>
       }/>
-      <Route path='/riding' element={
+      <Route path='/riding/:rideId' element={
         <UserProtectWrapper> <Riding/></UserProtectWrapper>
       }/>
       <Route path='/captain-riding' element={

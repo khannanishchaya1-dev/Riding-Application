@@ -36,7 +36,7 @@ const RideDetails = () => {
 
   useEffect(() => {
     if (ride?.status === "ONGOING" && location.pathname !== "/riding") {
-      navigate("/riding", { state: { ride } });
+      navigate(`/riding/${ride._id}`);
     }
   }, [ride]);
 
@@ -305,7 +305,7 @@ const RideDetails = () => {
       {/* PAYMENT CTA */}
       {ride.paymentStatus !== "PAID" && ride.status === "ONGOING" && (
         <button
-          onClick={() => navigate("/riding", { state: { ride } })}
+          onClick={() => navigate(`/riding/${ride._id}`)}
           className="w-full mt-5 py-4 bg-[#E23744] text-white rounded-xl text-lg font-semibold hover:bg-[#c02f38] transition"
         >
           💳 Complete Payment

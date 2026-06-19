@@ -11,7 +11,7 @@ const UserProtectWrapper = ({children}) => {
     if(!token){
       navigate('/login');
       return;
-    }else if(user.blocked){
+    }else if(user?.blocked){
       navigate('/blocked');
     }
   },[token,navigate])

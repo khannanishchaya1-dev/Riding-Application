@@ -18,7 +18,7 @@ const aiRouter = require("./router/chatbot");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-
+ app.use(express.static("public"));
 
 app.use(cors({
   origin: [
@@ -40,6 +40,13 @@ app.use("/analytics", analyticsRoute);
 app.use("/captain-analytics", captainAnalytics);
 app.use("/admin", adminRoutes);
 app.use("/api", aiRouter);
+
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 

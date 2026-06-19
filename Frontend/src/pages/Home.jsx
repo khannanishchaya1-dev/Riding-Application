@@ -249,7 +249,7 @@ useEffect(() => {
     localStorage.removeItem("activeRide")
     setWaitingForDriver(false);
     localStorage.removeItem("activeRide");
-    navigate("/riding", { state: { ride: data,vehicleType: vehicleType } });
+    navigate(`/riding/${data._id}`, { state: { ride: data,vehicleType: vehicleType } });
   };
   const cancelHandler = (data) => {
     console.log("Ride cancelled by captain");

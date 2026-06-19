@@ -1,0 +1,15 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="48" fill="#E23744"/>
+  <text
+    x="50%"
+    y="52%"
+    font-size="150"
+    font-weight="700"
+    font-family="Inter, Helvetica, Arial, sans-serif"
+    fill="white"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >
+    G
+  </text>
+</svg>
